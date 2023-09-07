@@ -175,6 +175,9 @@ This action will execute `npx` commands under specified directory with parameter
 ## Output:
 * A client-side solution package that is located in `{workingDirectory}`/sharepoint/solution/*.sppkg
 
+## Troubleshooting:
+There's a known issue that `gulp bundle --ship --no-color` command will fail with exit code 1 if there's lint errors in your SPFx project. You'll need to fix them to continue although they're displayed as warning in log details.
+
 
 # cli/runNpmCommand
 This action will execute `npm` commands under specified directory with parameters. The parameter `workingDirectory` can be removed if you want to run this command in the project root.
