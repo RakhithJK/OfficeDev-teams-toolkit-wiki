@@ -611,6 +611,9 @@ This error means the format of the lifecycle is invalid. A lifecycle needs to be
 provision:
 ```
 In this case, the value of lifecycle 'provision' will be interpreted as an empty string, which is invalid. If you want to remove all actions in provision, please remove it entirely, including the 'provision:' line.
+
+Another possibile reason for this error is that the version of teamsapp.yml/teamspp.local.yml is not supported by your current Teams Toolkit. Please upgrade Teams Toolkit to latest version and try again.
+
 ## InvalidEnvFolderPath
 This error means the 'environmentFolderPath' field is invalid. Please make sure it's a valid path.
 ## InvalidEnvFieldError
