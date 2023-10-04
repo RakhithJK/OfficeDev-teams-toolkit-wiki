@@ -16,7 +16,7 @@ For more information, start with [Outlook Add-ins Overview](https://learn.micros
 
 To configure an Office Add-in as additional capability, you must meet the following conditions:
 
-- You have a Microsoft 365 account to test the application. For example, an *.onmicrosoft.com account.
+- You have a Microsoft 365 account that includes Teams, or separate subscriptions to both Microsoft 365 and Teams, to test the application. For example, an *.onmicrosoft.com account.
 - Your Microsoft 365 account has been added as an account in desktop Outlook. See [Add an email account to Outlook](https://support.microsoft.com/office/add-an-email-account-to-outlook-e9da47c4-9b89-4b49-b945-a204aeea6726)
 - To deploy the Teams app to Azure as described in the last section of this article, you need an Azure account to an Azure subscription. Create your free Azure account if you don't already have one by using the link [Free Azure account](https://azure.microsoft.com/free/).
 
