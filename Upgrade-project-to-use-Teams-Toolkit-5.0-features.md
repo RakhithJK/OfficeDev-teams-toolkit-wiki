@@ -115,6 +115,15 @@ If you've encountered the error message "Teams Toolkit now uses Dev Tunnel as de
 ### PROVISIONOUTPUT_AZUREWEBAPPBOTOUTPUT_DOMAIN missing error
 If you've customized `botMessagingEndpoint` in `debug-set-up-bot` task and never debug successfully, please set the `PROVISIONOUTPUT_AZUREWEBAPPBOTOUTPUT_DOMAIN` in `env/.env.local` with the domain of your `botMessagingEndpoint` after migrated to Teams Toolkit V5.
 
+### CLI Preview error
+If you've encountered error *"TeamsFxCLI.CannotDetectRunCommand: Cannot detect run command by project type"* when executing preview command via TeamsFx CLI 2.x. Please add parameter *"--run-command"* to the preview command, e.g.
+<br/>
+`teamsfx preview --env local --run-command "cd tabs && npm run dev:teamsfx"`
+<br/>
+or `teamsfx preview --env local --run-command "cd bot && npm run dev:teamsfx"`
+<br/>
+(Depends on your project folder structure)
+
 ## Feature changes that impact your development flow
 
 There're some changes to existing features you should be aware of:
