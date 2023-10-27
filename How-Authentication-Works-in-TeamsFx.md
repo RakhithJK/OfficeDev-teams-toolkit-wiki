@@ -2,11 +2,11 @@
 
 ## Overview
 
-A typical Teams tab application usually needs to obtain a currently logged-in user identity to build a single sign-on experience for the application user. To access user information protected by Azure Active Directory and to access data from services like Facebook and Twitter, the application needs to establish a trusted connection with those providers. For example, if your application is calling Microsoft Graph APIs to obtain a user's profile photo, you need to authenticate the user to retrieve the appropriate authentication tokens.
+A typical Teams tab application usually needs to obtain a currently logged-in user identity to build a single sign-on experience for the application user. To access user information protected by Microsoft Entra and to access data from services like Facebook and Twitter, the application needs to establish a trusted connection with those providers. For example, if your application is calling Microsoft Graph APIs to obtain a user's profile photo, you need to authenticate the user to retrieve the appropriate authentication tokens.
 
 ## How auth code flow works in a frontend only Teams Tab application
 
-frontend only Teams Tab application created by Teams Toolkit, we leverage the [AAD Auth Code Flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow) as the authentication mechanism to provide user login experience in Teams Tab apps. The template provides a simple Teams Tab that can get user login information.
+frontend only Teams Tab application created by Teams Toolkit, we leverage the [Microsoft Entra Auth Code Flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow) as the authentication mechanism to provide user login experience in Teams Tab apps. The template provides a simple Teams Tab that can get user login information.
 
 
 The sequence chart below shows how the authentication flow works in a frontend only Teams Tab application.
@@ -38,10 +38,10 @@ The sequence chart below shows how the authentication flow works in a frontend o
 
 2. When `teamsUserCredential.login` function is triggered, TeamsFx SDK would pop up a window and navigate to auth-start.html under `tabs/public` in your project. The above code would read `REACT_APP_START_LOGIN_PAGE_URL` from env as the endpoint of auth-start.html. You can customize your endpoint by updating `initiateLoginEndpoint` of `authConfig`.
     
-3. In auth-start.html, will navigate to AAD login page using [msal](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/login-user.md#login-the-user).
+3. In auth-start.html, will navigate to Microsoft Entra login page using [msal](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/login-user.md#login-the-user).
 You can find the template of auth-start.html [here](https://github.com/OfficeDev/TeamsFx/blob/main/templates/tab/js/default/public/auth-start.html) for JavaScript and [here](https://github.com/OfficeDev/TeamsFx/blob/main/templates/tab/ts/default/public/auth-start.html) for TypeScript.
 
-4. After login in the AAD login page, user will be redirected to auth-end.html. In auth-end.html, will use [msal](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/initialization.md#redirect-apis) to use Auth Code Flow with PKCE. Since msal use the session storage for [cache](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/caching.md), will return session storage to SDK. The scheme of response will be:
+4. After login in the Microsoft Entra login page, user will be redirected to auth-end.html. In auth-end.html, will use [msal](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/initialization.md#redirect-apis) to use Auth Code Flow with PKCE. Since msal use the session storage for [cache](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/caching.md), will return session storage to SDK. The scheme of response will be:
       ```
       {
         "sessionStorage": {
@@ -71,7 +71,7 @@ When getting token flow is triggered, Teams SDK will first try to use msal to ch
 
 
 ## How On-Behalf-Of flow works in Teams Tab with Azure Function backend
-If your Teams Tab App has an backend service such as Azure Function application, and you want to access current user information protected by Azure Active Directory in backend service, for example, if your Azure Function needs to call Microsoft Graph APIs to obtain a user's profile photo, then you need to authenticate the user with [On-Behalf-Of flow](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow) to retrieve the appropriate authentication tokens.
+If your Teams Tab App has an backend service such as Azure Function application, and you want to access current user information protected by Microsoft Entra in backend service, for example, if your Azure Function needs to call Microsoft Graph APIs to obtain a user's profile photo, then you need to authenticate the user with [On-Behalf-Of flow](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow) to retrieve the appropriate authentication tokens.
 
 The sequence chart below shows how the On-Behalf-Of flow works in a Teams Tab app.
 
@@ -79,7 +79,7 @@ The sequence chart below shows how the On-Behalf-Of flow works in a Teams Tab ap
 
 Step 1: Teams Tab App sends request with SSO token in header to Azure Function backend
 
-Step 2,3: Azure Function calls Azure AD use OBO flow to exchange access token for Graph API
+Step 2,3: Azure Function calls Microsoft Entra use OBO flow to exchange access token for Graph API
 
 Step 4,5: Azure Function use access token to call Graph API
 
@@ -150,7 +150,7 @@ The entire client credentials flow looks similar to the following diagram as bel
 
 
 ### Use TeamsFx SDK for client credentials flow
-1. Grant application permission in the AAD application follow this [link](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-access-web-apis#application-permission-to-microsoft-graph).
+1. Grant application permission in the Microsoft Entra application follow this [link](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-access-web-apis#application-permission-to-microsoft-graph).
 
 2. After permissions are granted, then in the Azure Function, use `AppCredential` in TeamsFx SDK to call Graph API as below:
 

@@ -1,31 +1,31 @@
 You may want to change the out-of-box provision behavior provided by the tooling. This section introduces what kind of customization you can achieve.
-# Use an existing AAD app for your Teams app
-You can add following configuration snippet to `.fx/configs/config.{your_env_name}.json` to use an AAD app created by yourself for your Teams app. You can follow https://aka.ms/teamsfx-existing-aad-doc to create an AAD app that can be used here.
+# Use an existing Microsoft Entra app for your Teams app
+You can add following configuration snippet to `.fx/configs/config.{your_env_name}.json` to use an Microsoft Entra app created by yourself for your Teams app. You can follow https://aka.ms/teamsfx-existing-aad-doc to create an Microsoft Entra app that can be used here.
 ```
 "auth": {
-    "clientId": "<your AAD app client id",
+    "clientId": "<your Microsoft Entra app client id",
     "clientSecret": "{{$env.ENV_NAME_THAT_STORES_YOUR_SECRET}}",
-    "objectId": "<your AAD app object id>",
+    "objectId": "<your Microsoft Entra app object id>",
     "accessAsUserScopeId": "<id of the access_as_user scope>"
 }
 ```
 
 After added above snippet, add your secret to related environment variable so the tooling can resolve the actual secret during provision.
 
-> Note: You should not share one AAD app in multiple environments. If you do not have permission to update the AAD app, you will get a warning with instructions about how to manually update the AAD app. Please follow the instructions to update your AAD app after provision.
+> Note: You should not share one Microsoft Entra app in multiple environments. If you do not have permission to update the Microsoft Entra app, you will get a warning with instructions about how to manually update the Microsoft Entra app. Please follow the instructions to update your Microsoft Entra app after provision.
 
-# Use an existing AAD app for your bot
-You can add following configuration snippet to `.fx/configs/config.{your_env_name}.json` file to use an AAD app created by yourself for your bot.
+# Use an existing Microsoft Entra app for your bot
+You can add following configuration snippet to `.fx/configs/config.{your_env_name}.json` file to use an Microsoft Entra app created by yourself for your bot.
 ```
 "bot": {
-    "appId": "<your AAD app client id>",
+    "appId": "<your Microsoft Entra app client id>",
     "appPassword": "{{$env.ENV_NAME_THAT_STORES_YOUR_SECRET}}"
 }
 ```
 
 After added above snippet, add your secret to related environment variable so the tooling can resolve the actual secret during provision.
 
-> Note: You should not share one AAD app in multiple environments.
+> Note: You should not share one Microsoft Entra app in multiple environments.
 
 # Skip adding user for SQL database
 Sometimes you may get insufficient permission error when the tool tries to add user to SQL database. You can add following configuration snippet to `.fx/configs/config.{your_env_name}.json` file to skip adding SQL database user.
@@ -70,16 +70,16 @@ Here's a list of predefined parameters available:
 In the meanwhile, following parameters are available with values populated during provision. If you want to change value of these parameters, you can delete the placeholder and fill your expected value to it directly. The purpose of these placeholders is to ensure we can create new resources for you when you created a new environment. The actual values are resolved from `.fx/states/state.{your_env_name}.json`.
 | Parameter name | Default value place holder | Meaning of the place holder |
 | --- | --- | --- |
-| m365ClientId | {{state.fx-resource-aad-app-for-teams.clientId}} | Your app's AAD app client id created during provision |
-| m365ClientSecret | {{state.fx-resource-aad-app-for-teams.clientSecret}} | Your app's AAD app client secret created during provision |
-| m365TenantId | {{state.fx-resource-aad-app-for-teams.tenantId}} | Tenant id of your app's AAD app |
-| m365OauthAuthorityHost | {{state.fx-resource-aad-app-for-teams.oauthHost}} | OAuth authority host of your app's AAD app |
+| m365ClientId | {{state.fx-resource-aad-app-for-teams.clientId}} | Your app's Microsoft Entra app client id created during provision |
+| m365ClientSecret | {{state.fx-resource-aad-app-for-teams.clientSecret}} | Your app's Microsoft Entra app client secret created during provision |
+| m365TenantId | {{state.fx-resource-aad-app-for-teams.tenantId}} | Tenant id of your app's Microsoft Entra app |
+| m365OauthAuthorityHost | {{state.fx-resource-aad-app-for-teams.oauthHost}} | OAuth authority host of your app's Microsoft Entra app |
 | azureSqlAdmin | {{state.fx-resource-azure-sql.admin}} | Azure SQL Server admin account you provided during provision |
 | azureSqlAdminPassword | {{state.fx-resource-azure-sql.adminPassword}} | Azure SQL Server admin password you provided during provision |
-| botAadAppClientId | {{state.fx-resource-bot.botId}} | Bot's AAD app client id created during provision |
-| botAadAppClientSecret | {{state.fx-resource-bot.botPassword}} | Bot's AAD app client secret created during provision |
-| apimClientId | {{state.fx-resource-apim.apimClientAADClientId}} | APIM's AAD app client id created during provision |
-| apimClientSecret | {{state.fx-resource-apim.apimClientAADClientSecret}} | APIM's AAD app client secret created during provision |
+| botAadAppClientId | {{state.fx-resource-bot.botId}} | Bot's Microsoft Entra app client id created during provision |
+| botAadAppClientSecret | {{state.fx-resource-bot.botPassword}} | Bot's Microsoft Entra app client secret created during provision |
+| apimClientId | {{state.fx-resource-apim.apimClientAADClientId}} | APIM's Microsoft Entra app client id created during provision |
+| apimClientSecret | {{state.fx-resource-apim.apimClientAADClientSecret}} | APIM's Microsoft Entra app client secret created during provision |
 | apimPublisherEmail | {{state.fx-resource-apim.publisherEmail}} | APIM's publisher email, default value is your Azure account |
 | apimPublisherName | {{state.fx-resource-apim.publisherName}} | APIM's publisher name, default value is your Azure account |
 

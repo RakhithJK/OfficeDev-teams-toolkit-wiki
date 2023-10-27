@@ -1,5 +1,5 @@
 ## Collaborating on TeamsFx Project
-Previous version of Teams Toolkit is not easy for multiple users to develop the same project due to missing privilege to access Teams APP and AAD APP. If multiple developers want to share remote resources and work together, they need to manually handle permissions of Teams App and AAD APP which need deep understanding the low-level details about the TeamsFx project.
+Previous version of Teams Toolkit is not easy for multiple users to develop the same project due to missing privilege to access Teams APP and Microsoft Entra APP. If multiple developers want to share remote resources and work together, they need to manually handle permissions of Teams App and Microsoft Entra APP which need deep understanding the low-level details about the TeamsFx project.
 
 Teams Toolkit now natively support add other collaborators for TeamsFx project which is much easy and straightforward for collaborative development.
 
@@ -22,8 +22,8 @@ Teams Toolkit now natively support add other collaborators for TeamsFx project w
     ![collaboration-select-app](https://user-images.githubusercontent.com/63089166/229402856-6af63850-03c3-45fa-a80b-05c5122713e4.png)
   - (Optional) Select and confirm Teams `manifest.json` file
     ![collaboration-select-manifest](https://user-images.githubusercontent.com/63089166/229403125-95ab5594-4cdd-4b03-a30f-2f5579017b33.png)
-  - (Optional) Select and confirm Azure Active Directory app `aad.manifest.json` file
-    ![collaboration-select-aad-manifest](https://user-images.githubusercontent.com/63089166/229403266-189fe064-cf01-4dbc-be8c-e25e31af2397.png)
+  - (Optional) Select and confirm Microsoft Entra app `aad.manifest.json` file
+    ![collaboration-select-Microsoft-Entra-manifest](https://user-images.githubusercontent.com/63089166/229403266-189fe064-cf01-4dbc-be8c-e25e31af2397.png)
   - Input the M365 account email address you want to add as app owner (this account should be in the same tenant with your M365 account)
     ![collaboration-input-collaborator](https://user-images.githubusercontent.com/63089166/229403537-647d9a1b-4443-4fe7-8b8a-109e2925fae0.png)
 
@@ -35,8 +35,8 @@ Teams Toolkit now natively support add other collaborators for TeamsFx project w
     ![collaboration-select-app](https://user-images.githubusercontent.com/63089166/229402856-6af63850-03c3-45fa-a80b-05c5122713e4.png)
   - (Optional) Select and confirm Teams `manifest.json` file
     ![collaboration-select-manifest](https://user-images.githubusercontent.com/63089166/229403125-95ab5594-4cdd-4b03-a30f-2f5579017b33.png)
-  - (Optional) Select and confirm Azure Active Directory app `aad.manifest.json` file
-    ![collaboration-select-aad-manifest](https://user-images.githubusercontent.com/63089166/229403266-189fe064-cf01-4dbc-be8c-e25e31af2397.png)
+  - (Optional) Select and confirm Microsoft Entra app `aad.manifest.json` file
+    ![collaboration-select-Microsoft-Entra-manifest](https://user-images.githubusercontent.com/63089166/229403266-189fe064-cf01-4dbc-be8c-e25e31af2397.png)
 
 
 - Share your project with the collaborator:
@@ -74,7 +74,7 @@ Teams Toolkit CLI provides `teamsFx permission` Commands for collaboration scena
   Provide path of your Teams app `manifest.json` file.
 
 - #### `--aad-app-manifest`
-  Provide path of your Azure Active Directory `aad.manifest.json` file.
+  Provide path of your Microsoft Entra `aad.manifest.json` file.
 
 #### Parameters for `teamsfx permission status`
 - ##### `--env`
@@ -87,7 +87,7 @@ Teams Toolkit CLI provides `teamsFx permission` Commands for collaboration scena
   Provide path of your Teams app `manifest.json` file.
 
 - #### `--aad-app-manifest`
-  Provide path of your Azure Active Directory `aad.manifest.json` file.
+  Provide path of your Microsoft Entra `aad.manifest.json` file.
 
 ### Examples
 Here are some examples for you to better handling permission for `TeamsFx` projects.

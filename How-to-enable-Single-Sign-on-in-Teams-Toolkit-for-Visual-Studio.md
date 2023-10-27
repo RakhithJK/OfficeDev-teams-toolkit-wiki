@@ -3,18 +3,18 @@
 You can add Single Sign-on to your Teams Project using the Teams Toolkit for Visual Studio. Click Visual Studio menu Project -> Teams Toolkit -> Add Authentication Code.
 ![image](https://user-images.githubusercontent.com/113089977/203260466-cc6ab581-c391-425d-8503-53a8f4044c66.png)
 
-Teams Toolkit helps you generate the authentication files in "TeamsFx-Auth" folder, including a manifest template file for Azure AD application and authentication redirect pages. Then you will need to link the files to your Teams application by updating authentication configurations to make sure the Single Sign-on works for your application. Please be noted that for different Teams application type like Tab or Bot, the detailed steps are slightly different.
+Teams Toolkit helps you generate the authentication files in "TeamsFx-Auth" folder, including a manifest template file for Microsoft Entra application and authentication redirect pages. Then you will need to link the files to your Teams application by updating authentication configurations to make sure the Single Sign-on works for your application. Please be noted that for different Teams application type like Tab or Bot, the detailed steps are slightly different.
 
 Basically you will need take care these configurations: 
 
-* In the Azure AD manifest file, you need to specify URIs such as the URI to identify the Azure AD authentication app and the redirect URI for returning token. 
+* In the Microsoft Entra manifest file, you need to specify URIs such as the URI to identify the Microsoft Entra authentication app and the redirect URI for returning token. 
 * In the Teams manifest file, add the SSO application to link it with Teams application. 
 * Add SSO application information in Teams Toolkit configuration files in order to make sure the authentication app can be registered on backend service and started by Teams Toolkit when you debugging or previewing Teams application.
 
 For Teams Tab Application
 -------------------------
-1. Update AAD app manifest
-`TeamsFx-Auth/aad.manifest.template.json` is an Azure AD manifest template. You can copy and paste this file to any folder of your project, rename as `aad.manifest.json` and take notes of the path to this file. Because the path will be useful later. And you need to make the following updates in the template to create/update an Azure AD app for SSO:
+1. Update Microsoft Entra app manifest
+`TeamsFx-Auth/aad.manifest.template.json` is an Microsoft Entra manifest template. You can copy and paste this file to any folder of your project, rename as `aad.manifest.json` and take notes of the path to this file. Because the path will be useful later. And you need to make the following updates in the template to create/update an Microsoft Entra app for SSO:
 
     1. "identifierUris": Used to uniquely identify and access the resource.
     [HelpLink.](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#identifieruris-attribute)
@@ -27,7 +27,7 @@ For Teams Tab Application
     ]
     ```
  
-    2. "replyUrlsWithType": List of registered redirect_uri values that Azure AD will accept as destinations when returning tokens.
+    2. "replyUrlsWithType": List of registered redirect_uri values that Microsoft Entra will accept as destinations when returning tokens.
     [HelpLink.](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#replyurlswithtype-attribute)
     You need to set necessary Redirect Uris into "replyUrlsWithType" for successfully returning token.
     For example:
@@ -58,7 +58,7 @@ For Teams Tab Application
       }
     ]
     ```
-   3. "name": Replace the value with your expected AAD app name.
+   3. "name": Replace the value with your expected Microsoft Entra app name.
 
 2. Update Teams app manifest. Open your Teams app manifest file, add a `WebApplicationInfo` object with the value of your SSO app.[HelpLink.](https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#webapplicationinfo)
   
@@ -82,25 +82,25 @@ For Teams Tab Application
     ```
  
 3. Update `teamsapp.yml` and `teamsapp.local.yml`
-  AAD related changes and configs needs to be added into your `yml` files:
+  Microsoft Entra related changes and configs needs to be added into your `yml` files:
     - add `aadApp/create` under `provision`:
-      For creating new AAD apps used for SSO.
+      For creating new Microsoft Entra apps used for SSO.
       [HelpLink](https://aka.ms/teamsfx-actions/aadapp-create)
     - add `aadApp/update` under `provision`
-      For updating your AAD app with AAD app manifest in step 1.
+      For updating your Microsoft Entra app with Microsoft Entra app manifest in step 1.
       [HelpLink](https://aka.ms/teamsfx-actions/aadapp-update)
     - update `file/createOrUpdateJsonFile`
       For adding following environment variables when local debug:
-        a. ClientId: AAD app client id
-        b. ClientSecret: AAD app client secret
-        c. OAuthAuthority: AAD app oauth authority
+        a. ClientId: Microsoft Entra app client id
+        b. ClientSecret: Microsoft Entra app client secret
+        c. OAuthAuthority: Microsoft Entra app oauth authority
       [HelpLink](https://github.com/OfficeDev/TeamsFx/wiki/Available-actions-in-Teams-Toolkit#fileupdatejson)
 
 
     Example for TeamsFx Tab template
     
     In both `teamsapp.yml` and `teamsapp.local.yml` files:
-    - Add following lines under `provision` to create AAD app.
+    - Add following lines under `provision` to create Microsoft Entra app.
       ```
       - uses: aadApp/create
         with:
@@ -115,19 +115,19 @@ For Teams Tab Application
           authority: AAD_APP_OAUTH_AUTHORITY
           authorityHost: AAD_APP_OAUTH_AUTHORITY_HOST
       ```
-      > Note: Replace the value of "name" with your expected AAD app name.
+      > Note: Replace the value of "name" with your expected Microsoft Entra app name.
     
-    - Add following lines under `provision` to configure AAD app with AAD app template in the step 1.
+    - Add following lines under `provision` to configure Microsoft Entra app with Microsoft Entra app template in the step 1.
       ```
       - uses: aadApp/update
         with:
           manifestPath: "YOUR_PATH_TO_AAD_APP_MANIFEST"
           outputFilePath : ./build/aad.manifest.${{TEAMSFX_ENV}}.json
       ```
-      > Note: Replace the value of `manifestPath` with the relative path of AAD app manifest noted in step 1. For example, `./aad.manifest.json`
+      > Note: Replace the value of `manifestPath` with the relative path of Microsoft Entra app manifest noted in step 1. For example, `./aad.manifest.json`
 
     In `teamsapp.local.yml` only:
-    - Add following lines under `provision` to add AAD related configs to local debug service.
+    - Add following lines under `provision` to add Microsoft Entra related configs to local debug service.
       ```
         - uses: file/createOrUpdateJsonFile
           with:
@@ -142,10 +142,10 @@ For Teams Tab Application
       ```
 
 4. Update Infra
-   AAD related configs needs to be configured in your remote service. Following example shows the configs on Azure Webapp.
-     1. TeamsFx__Authentication__ClientId: AAD app client id
-     2. TeamsFx__Authentication__ClientSecret: AAD app client secret
-     3. TeamsFx__Authentication__OAuthAuthority: AAD app oauth authority
+   Microsoft Entra related configs needs to be configured in your remote service. Following example shows the configs on Azure Webapp.
+     1. TeamsFx__Authentication__ClientId: Microsoft Entra app client id
+     2. TeamsFx__Authentication__ClientSecret: Microsoft Entra app client secret
+     3. TeamsFx__Authentication__OAuthAuthority: Microsoft Entra app oauth authority
   
    Example for TeamsFx Tab template
 
@@ -226,14 +226,14 @@ For Teams Tab Application
    ```
 
 5. Update `appsettings.json` and `appsettings.Development.json`
-  AAD related configs needs to be configure to your .Net project settings:
+  Microsoft Entra related configs needs to be configure to your .Net project settings:
     ```
     TeamsFx: {
       Authentication: {
-        ClientId: AAD app client id
-        ClientSecret: AAD app client secret,
+        ClientId: Microsoft Entra app client id
+        ClientSecret: Microsoft Entra app client secret,
         InitiateLoginEndpoint: Login Endpoint,
-        OAuthAuthority: AAD app oauth authority
+        OAuthAuthority: Microsoft Entra app oauth authority
       }
     }
     ```
@@ -310,7 +310,7 @@ For Teams Tab Application
 
 For Teams Bot Applications
 -------------------------
-1. Update AAD app manifest. `TeamsFx-Auth/aad.manifest.template.json` is an Azure AD manifest template. You can copy and paste this file to any folder of your project, rename as `aad.manifest.json` and take notes of the path to this file. Because the path will be useful later. And you need to make the following updates in the template to create/update an Azure AD app for SSO:
+1. Update Microsoft Entra app manifest. `TeamsFx-Auth/aad.manifest.template.json` is an Microsoft Entra manifest template. You can copy and paste this file to any folder of your project, rename as `aad.manifest.json` and take notes of the path to this file. Because the path will be useful later. And you need to make the following updates in the template to create/update an Microsoft Entra app for SSO:
 
    1. "identifierUris": Used to uniquely identify and access the resource.[HelpLink.](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#identifieruris-attribute) You need to set correct Redirect Uris into "identifierUris" for successfully identify this app.
     
@@ -322,7 +322,7 @@ For Teams Bot Applications
     ```
     > Note: You can use use `${{ENV_NAME}}` to reference variables in `env/.env.{TEAMSFX_ENV}`.
 
-   2. "replyUrlsWithType": List of registered redirect_uri values that Azure AD will accept as destinations when returning tokens.[HelpLink.](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#replyurlswithtype-attribute) You need to set necessary Redirect Uris into "replyUrlsWithType" for successfully returning token.
+   2. "replyUrlsWithType": List of registered redirect_uri values that Microsoft Entra will accept as destinations when returning tokens.[HelpLink.](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#replyurlswithtype-attribute) You need to set necessary Redirect Uris into "replyUrlsWithType" for successfully returning token.
     
     For example:
     ```
@@ -345,7 +345,7 @@ For Teams Bot Applications
     ]
     ```
 
-   3. "name": Replace the value with your expected AAD app name.
+   3. "name": Replace the value with your expected Microsoft Entra app name.
 
 2. Update Teams app manifest
   
@@ -396,24 +396,24 @@ For Teams Bot Applications
     ```
 
 3. Update `teamsapp.yml` and `teamsapp.local.yml` files:
-   AAD related changes and configs needs to be added into your `yml` files:
+   Microsoft Entra related changes and configs needs to be added into your `yml` files:
     - add `aadApp/create` under `provision`:
-      For creating new AAD apps used for SSO.
+      For creating new Microsoft Entra apps used for SSO.
       [HelpLink](https://aka.ms/teamsfx-actions/aadapp-create)
     - add `aadApp/update` under `provision`
-      For updating your AAD app with AAD app manifest in step 1.
+      For updating your Microsoft Entra app with Microsoft Entra app manifest in step 1.
       [HelpLink](https://aka.ms/teamsfx-actions/aadapp-update)
     - update `file/createOrUpdateJsonFile`
       For adding following environment variables when local debug:
-        a. ClientId: AAD app client id
-        b. ClientSecret: AAD app client secret
-        c. OAuthAuthority: AAD app oauth authority
+        a. ClientId: Microsoft Entra app client id
+        b. ClientSecret: Microsoft Entra app client secret
+        c. OAuthAuthority: Microsoft Entra app oauth authority
       [HelpLink](https://github.com/OfficeDev/TeamsFx/wiki/Available-actions-in-Teams-Toolkit#fileupdatejson)
 
    Example for TeamsFx Bot template
 
    In both `teamsapp.yml` and `teamsapp.local.yml` files:
-    - Add following lines under `provision` to create AAD app.
+    - Add following lines under `provision` to create Microsoft Entra app.
       ```
       - uses: aadApp/create
         with:
@@ -428,20 +428,20 @@ For Teams Bot Applications
             authority: AAD_APP_OAUTH_AUTHORITY
             authorityHost: AAD_APP_OAUTH_AUTHORITY_HOST
       ```
-      > Note: Replace the value of "name" with your expected AAD app name.
+      > Note: Replace the value of "name" with your expected Microsoft Entra app name.
     
-    - Add following lines under `provision` to configure AAD app with AAD app template in the step 1.
+    - Add following lines under `provision` to configure Microsoft Entra app with Microsoft Entra app template in the step 1.
       ```
       - uses: aadApp/update
         with:
           manifestPath: "./aad.manifest.json"
           outputFilePath : ./build/aad.manifest.${{TEAMSFX_ENV}}.json
       ```
-      > Note: Replace the value of "manifestPath" with the relative path of AAD app manifest noted in step 1.
+      > Note: Replace the value of "manifestPath" with the relative path of Microsoft Entra app manifest noted in step 1.
             For example, './aad.manifest.json'
 
    In `teamsapp.local.yml` only:
-    - Update `file/createOrUpdateJsonFile` under `provision` to add AAD related configs to local debug service.
+    - Update `file/createOrUpdateJsonFile` under `provision` to add Microsoft Entra related configs to local debug service.
       ```
       - uses: file/createOrUpdateJsonFile
         with:
@@ -459,12 +459,12 @@ For Teams Bot Applications
                   InitiateLoginEndpoint: https://${{BOT_DOMAIN}}/bot-auth-start
       ```
 
-4. Update Infra. AAD related configs needs to be configure to your remote service. Following example shows the configs on Azure Webapp.
-    1. TeamsFx__Authentication__ClientId: AAD app client id
-    2. TeamsFx__Authentication__ClientSecret: AAD app client secret
-    3. TeamsFx__Authentication__OAuthAuthority: AAD app oauth authority
+4. Update Infra. Microsoft Entra related configs needs to be configure to your remote service. Following example shows the configs on Azure Webapp.
+    1. TeamsFx__Authentication__ClientId: Microsoft Entra app client id
+    2. TeamsFx__Authentication__ClientSecret: Microsoft Entra app client secret
+    3. TeamsFx__Authentication__OAuthAuthority: Microsoft Entra app oauth authority
     4. TeamsFx__Authentication__Bot__InitiateLoginEndpoint: Auth start page for Bot
-    5. TeamsFx__Authentication__ApplicationIdUri: AAD app identify uris
+    5. TeamsFx__Authentication__ApplicationIdUri: Microsoft Entra app identify uris
 
    Example for TeamsFx Bot template
 
@@ -516,14 +516,14 @@ For Teams Bot Applications
    ```
    > Note: If you want add additional configs to your Azure Webapp, please add the configs in the webAppSettings.
 
-5. Update `appsettings.json` and `appsettings.Development.json`. AAD related configs needs to be configure to your .Net project settings:
+5. Update `appsettings.json` and `appsettings.Development.json`. Microsoft Entra related configs needs to be configure to your .Net project settings:
     ```
     TeamsFx: {
       Authentication: {
-        ClientId: AAD app client id
-        ClientSecret: AAD app client secret,
-        OAuthAuthority: AAD app oauth authority,
-        ApplicationIdUri: AAD app identify uri,
+        ClientId: Microsoft Entra app client id
+        ClientSecret: Microsoft Entra app client secret,
+        OAuthAuthority: Microsoft Entra app oauth authority,
+        ApplicationIdUri: Microsoft Entra app identify uri,
         Bot: {
           InitiateLoginEndpoint: Auth start page for Bot
         }

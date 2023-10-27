@@ -1,6 +1,6 @@
 Teams Toolkit continuously evolves to offer more powerful features for developers. Teams Toolkit 5.0 provides following new features to help you better build your existing Teams app project using Teams Toolkit:
 * Use an existing Teams app ID
-* Use an existing Azure AD app registration ID
+* Use an existing Microsoft Entra app registration ID
 * Use a different tunneling solution or customize the defaults
 * Use existing infrastructure, resource groups, and more when provisioning
 * Add custom steps to debugging, provisioning, deploying, publishing, etc.
@@ -150,8 +150,8 @@ If you didn't use Teams Toolkit to add SQL databases to your project, these chan
    1. Go to `env/.env.{envName}` and find SQL Server resource id. The resource id usually saved in `PROVISIONOUTPUT__AZURESQLOUTPUT__SQLRESOURCEID` environment variable and has this pattern: `/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Sql/servers/{sql_server_name}`. Record the resource group name and SQL Server name, they will be used later.
    2. Go to `env/.env.{envName}` and find SQL Server database name. The database name usually saved in `PROVISIONOUTPUT__AZURESQLOUTPUT__DATABASENAME` environment variable.
    3. Go to `env/.env.{envName}` and find User Assigned Identity resource id. The resource id usually saved in `PROVISIONOUTPUT__IDENTITYOUTPUT__IDENTITYRESOURCEID` environment variable and has this pattern `/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{user_assigned_identity_name}`. Record the User Assigned Identity name, it will be used later.
-   4. Configure AAD admin in SQL Database. You can follow [set AAD admin](https://docs.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-configure?tabs=azure-powershell#provision-azure-ad-admin-sql-database) to set AAD admin for the SQL Server found in step i. Usually you can use the **account logged-in Azure** as AAD admin.
-   5. Go to your SQL Database found in step ii, login using the AAD admin
+   4. Configure Microsoft Entra admin in SQL Database. You can follow [set Microsoft Entra admin](https://docs.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-configure?tabs=azure-powershell#provision-azure-ad-admin-sql-database) to set Microsoft Entra admin for the SQL Server found in step i. Usually you can use the **account logged-in Azure** as Microsoft Entra admin.
+   5. Go to your SQL Database found in step ii, login using the Microsoft Entra admin
 ![image](https://user-images.githubusercontent.com/16605901/217272776-36aeb5ba-ceb7-4922-ae22-c9553f3bb501.png)
 
    6. Create contained database users. Replace `{user_assigned_identity_name}` with the value from step iii in following Transact-SQL and execute:
@@ -171,7 +171,7 @@ If you didn't use Teams Toolkit to add SQL databases to your project, these chan
 If you didn't use Teams Toolkit to add API Management service to your project, these changes won't impact your project.
 
 1. When you provision an environment, you need to provide values for `APIM__PUBLISHEREMAIL` and `APIM__PUBLISHERNAME` in `.env.{env_name}` which are required inputs for creating or updating APIM services.
-2. You need to manually create an Azure Active Directory app for APIM service when provisioning a new environment. This [document](https://aka.ms/teamsfx-add-azure-apim) includes tutorials about how to create an Azure Active Directory app for APIM service.
+2. You need to manually create an Microsoft Entra app for APIM service when provisioning a new environment. This [document](https://aka.ms/teamsfx-add-azure-apim) includes tutorials about how to create an Microsoft Entra app for APIM service.
 3. Teams Toolkit no longer support deploy API spec to APIM any more.
 Teams Toolkit will reuse your provisioned resource when upgrading (except Bot Service), when you wish to add a new environment after project upgrading, please remember to change resource name in `azure.parameters.{your_env_name}.json` to avoid name conflicts. 
 
@@ -346,7 +346,7 @@ For every manifest or parameter file, you need to do following things. This is j
         > If your project uses additional `{{config.xxx}}` placeholders, you can refer the sample to add additional environment variables.
 
 2. Replace `{{{state.fx-resource-aad-app-for-teams.applicationIdUris}}}` placeholder in `appPackage/manifest.json`, `aad.manifest.json` and `infra/azure.parameters.{env}.json` files.
-    * If you do not use any SSO functionality and your project does not require an AAD application, you can remove following redundant things in your project
+    * If you do not use any SSO functionality and your project does not require an Microsoft Entra application, you can remove following redundant things in your project
         1. Remove `aad.manifest.json` file
         2. Remove `aadApp/create` and `aadApp/update` actions in `teamsapp.yml` and `teamsapp.local.yml`
         3. Remove `webApplicationInfo` property in `appPackage/manifest.json`
@@ -377,7 +377,7 @@ For every manifest or parameter file, you need to do following things. This is j
         AAD_APP_OAUTH_AUTHORITY_HOST=https://login.microsoftonline.com # use ${{AAD_APP_OAUTH_AUTHORITY_HOST}} to replace the old placeholder {{state.fx-resource-aad-app-for-teams.oauthHost}} or {{state.aad-app.oauthHost}}
         AAD_APP_OAUTH_AUTHORITY=https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000 # use ${{AAD_APP_OAUTH_AUTHORITY}} to replace the old placeholder {{state.fx-resource-aad-app-for-teams.oauthAuthority}} or {{state.aad-app.oauthAuthority}}
         BOT_ID=00000000-0000-0000-0000-000000000000 # use ${{BOT_ID}} to replace the old placeholder {{state.fx-resource-bot.botId}} or {{state.teams-bot.botId}}
-        SECRET_BOT_PASSWORD=your-aad-app-secret # use ${{SECRET_BOT_PASSWORD}} to replace the old placeholder {{state.fx-resource-bot.botPassword}} or {{state.teams-bot.botPassword}}
+        SECRET_BOT_PASSWORD=your-Microsoft-Entra-app-secret # use ${{SECRET_BOT_PASSWORD}} to replace the old placeholder {{state.fx-resource-bot.botPassword}} or {{state.teams-bot.botPassword}}
         ```
         > You need to change the values to the actual one for your project. The values can be found in `.fx/states/state.{env}.json`. If there is no `state.{env}.json` file or `state.{env}.json` does not contain a property for the placeholder, leave the environment variable value empty.
 
@@ -440,7 +440,7 @@ For every manifest or parameter file, you need to do following things. This is j
         | fx-resource-frontend-hosting | teams-tab |
         | fx-resource-function | teams-api |
         | fx-resource-bot | teams-bot |
-        | fx-resource-aad-app-for-teams | aad-app |
+        | fx-resource-aad-app-for-teams | Microsoft-Entra-app |
 
         For example, the steps to replace placeholder `{{{state.fx-resource-frontend-hosting.endpoint}}}` are:
            1. The plugin id for this placeholder is `fx-resource-frontend-hosting`.
@@ -453,7 +453,7 @@ For every manifest or parameter file, you need to do following things. This is j
     4. Open `appPackage/manifest.json` and `aad.manifest.json` (if have), update any remaining old placeholders to reference the new environment variables you figured out in previous step.
        > Some old placeholders may contain 3 braces (e.g. `{{{state.fx-resource-frontend-hosting.endpoint}}}`), remove all the 3 braces when replacing it with the new placeholder.
 
-    5. Open `teamsapp.yml` and `teamsapp.local.yml`, replace `<your-teams-app-name>`,`<your-bot-aad-app-name>`,`<your-aad-app-name>`,`<your-bot-registration-name>` with the name you want.
+    5. Open `teamsapp.yml` and `teamsapp.local.yml`, replace `<your-teams-app-name>`,`<your-bot-Microsoft-Entra-app-name>`,`<your-Microsoft-Entra-app-name>`,`<your-bot-registration-name>` with the name you want.
     
     6. Find `Start local tunnel` in `.vscode/tasks.json`, update the output to output `endpoint` and `domain` to the new environment variables for bot. For example:
         ``` json

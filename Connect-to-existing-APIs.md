@@ -11,7 +11,7 @@ In this tutorial, you will:
 * [Invoke the API in the Teams Toolkit local environment](#Testing-your-API-connection-in-the-Teams-Toolkit-local-environment)
 * [Add configuration to access the API when you deploy your application to Azure](#Deploy-your-application-to-Azure)
 * [Use a custom authentication provider](#Custom-authentication-provider)
-* [Obtain API permissions with Azure Active Directory protected API request](#Connecting-to-APIs-that-require-AAD-permissions)
+* [Obtain API permissions with Microsoft Entra protected API request](#Connecting-to-APIs-that-require-Microsoft-Entra-permissions)
 
 ## How to use this feature
 
@@ -60,7 +60,7 @@ The base command of this feature is `teamsfx add api-connection [authentication 
 | --- | --- |
 | Basic | teamsfx add api-connection basic --endpoint https://example.com --component bot --alias example --user-name exampleuser --interactive false |
 | API Key | teamsfx add api-connection apikey --endpoint https://example.com --component bot --alias example --key-location header --key-name example-key-name --interactive false |
-| AAD | teamsfx add api-connection aad --endpoint https://example.com --component bot --alias example --app-type custom --tenant-id your_tenant_id --app-id your_app_id --interactive false |
+| Microsoft Entra | teamsfx add api-connection aad --endpoint https://example.com --component bot --alias example --app-type custom --tenant-id your_tenant_id --app-id your_app_id --interactive false |
 | Certificate | teamsfx add api-connection cert --endpoint https://example.com --component bot --alias example --interactive false |
 | Custom | teamsfx add api-connection custom --endpoint https://example.com --component bot --alias example --interactive false |
 
@@ -139,20 +139,20 @@ class CustomAuthProvider implements AuthProvider {
 
 <p align="right"><a href="#Connect-to-existing-APIs">back to top</a></p>
 
-### Connecting to APIs that require AAD permissions
+### Connecting to APIs that require Microsoft Entra permissions
 
-Some services are authenticated by AAD. To access these services, there are two common ways to configure the API permissions:
+Some services are authenticated by Microsoft Entra. To access these services, there are two common ways to configure the API permissions:
 * Use Access Control Lists (ACLs)
-* Use AAD application permissions
+* Use Microsoft Entra application permissions
 
 Obtaining a token with the right resource scopes for your API depends on the implementation of the API. Here are the steps to access these APIs:
 
-#### When using AAD application permissions
+#### When using Microsoft Entra application permissions
 
 1. Open `templates/appPackage/aad.template.json` and add the following to `requiredResourceAccess` property:
    ```
     {
-        "resourceAppId": "The AAD App Id for the service providing the API you are connecting to",
+        "resourceAppId": "The Microsoft Entra App Id for the service providing the API you are connecting to",
         "resourceAccess": [
             {
                 "id": "Target API's application permission Id",
@@ -161,12 +161,12 @@ Obtaining a token with the right resource scopes for your API depends on the imp
         ]
     }
    ```
-2. Start local debug or provision an cloud environment for your project. This will create an AAD Application Registration your Teams application.
+2. Start local debug or provision an cloud environment for your project. This will create an Microsoft Entra Application Registration your Teams application.
 3. Open `.fx/states/state.{env}.json` and note the value of `clientId` under `fx-resource-aad-app-for-teams` property. This is your Teams application client id.
 4. Follow this [document](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/grant-admin-consent#grant-admin-consent-in-app-registrations) to gain admin consent for the required application permission. You will need your application client id.
 
 #### When using Access Control Lists (ACsL)
-1. Start local debug or provision an cloud environment for your project. This will create an AAD Application Registration your Teams application.
+1. Start local debug or provision an cloud environment for your project. This will create an Microsoft Entra Application Registration your Teams application.
 2. Open `.fx/states/state.{env}.json` and note the value of `clientId` under `fx-resource-aad-app-for-teams` property.
 3. Provide the client id to your API provider to configure ACLs on the API service.
 

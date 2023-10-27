@@ -292,12 +292,12 @@ Please check the guide [Create a message extension app with Teams Toolkit](https
     provision:
       - uses: botAadApp/create
         with:
-          # The Azure Active Directory application's display name
+          # The Microsoft Entra application's display name
           name: bot-${{TEAMSFX_ENV}}
         writeToEnvironmentFile:
-          # The Azure Active Directory application's client id created for bot.
+          # The Microsoft Entra application's client id created for bot.
           botId: BOT_ID
-          # The Azure Active Directory application's client secret created for bot.
+          # The Microsoft Entra application's client secret created for bot.
           botPassword: SECRET_BOT_PASSWORD 
 
       # Create or update the bot registration on dev.botframework.com

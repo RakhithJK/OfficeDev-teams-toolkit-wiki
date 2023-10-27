@@ -61,7 +61,7 @@ Teams Toolkit helps you run your app in different environments so that you can d
 
 1. Copy the `env` directory from the `template directory` to the root of your `project directory`. 
 
-Teams Toolkit environments groups of configuration using .env files and variables. If you already have existing resources like a Teams App ID, Azure AD App ID, etc. then make sure to review [using your existing Teams app resources]().
+Teams Toolkit environments groups of configuration using .env files and variables. If you already have existing resources like a Teams App ID, Microsoft Entra App ID, etc. then make sure to review [using your existing Teams app resources]().
 
 ### Add support for hosting in Azure
 Teams Toolkit includes (optional) features to help create (provision) Azure resources to host your apps infrastructure and deploy the code to those resources. This is useful for small teams with an Azure subscription where all of that DevOps can be done from VS Code or the CLI. For larger teams or to meet other requirements, the CLI could be used with these features in combination with CI/CD. 
@@ -103,7 +103,7 @@ Where applicable, you can continue updating the manifest to use the matching env
 - etc.
 
 ## Using existing resources like an App ID
-If you have existing resources like a Teams App ID, Azure AD Client ID, etc. then you can update the corresponding environments `.env` file with those values. This makes sure that the variable expansion still works, but that the automation tasks don't re-create new resources. You can also remove automation tasks from `teamsapp.yml` or `teamsapp.local.yml` for the operations you don't need like like `teamsApp/create`. 
+If you have existing resources like a Teams App ID, Microsoft Entra Client ID, etc. then you can update the corresponding environments `.env` file with those values. This makes sure that the variable expansion still works, but that the automation tasks don't re-create new resources. You can also remove automation tasks from `teamsapp.yml` or `teamsapp.local.yml` for the operations you don't need like like `teamsApp/create`. 
 
 > Note: It can be helpful for future developers who join the project to create their own resources for local development. For that reasons, we recommend leaving the defaults in `teamsapp.local.yml` so that the right resources are created to run the app.
 

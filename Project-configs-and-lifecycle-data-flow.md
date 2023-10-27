@@ -77,7 +77,7 @@ Solution plugin is resposible to collect bicep templates from resource plugins a
 
 Solution will execute Azure resource provision task for resources that can be created by ARM templates. For such resources, resource plugin only need to define bicep templates and will never call Azure SDK to provision the resource by their own. 
 But there are still some exceptions cases that ARM templates can not cover, for example:
-    - Azure Active Directory app registration is not supported by ARM templates.
+    - Microsoft Entra app registration is not supported by ARM templates.
     - Some data plane operations that are closely bound in provision tasks, for example, create admin user in Azure SQL database.
 
 ### Provision output configs (publishProfiles/profile.dev.json)

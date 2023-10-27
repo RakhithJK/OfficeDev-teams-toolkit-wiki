@@ -16,9 +16,9 @@
 * [Examples](#examples)
   * [Customize your Dev Tunnel configuration for debug](#customize-your-dev-tunnel-configuration-for-debug)
   * [Use your existing Teams app ID](#use-your-existing-teams-app-id)
-  * [Use your existing Azure Active Directory app ID](#use-your-existing-azure-active-directory-app-id)
-    * [Using existing Azure Active Directory app ID for bot](#using-existing-azure-active-directory-app-id-for-bot)
-    * [Using existing Azure Active Directory app ID for SSO](#using-existing-azure-active-directory-app-id-for-sso)
+  * [Use your existing Microsoft Entra app ID](#use-your-existing-Microsoft-Entra-app-id)
+    * [Using existing Microsoft Entra app ID for bot](#using-existing-Microsoft-Entra-app-id-for-bot)
+    * [Using existing Microsoft Entra app ID for SSO](#using-existing-Microsoft-Entra-app-id-for-sso)
   * [Customize Azure subscription ID and resource group](#customize-azure-subscription-id-and-resource-group)
   * [Using existing Azure Bot Service Messaging Endpoint](#using-existing-azure-bot-service-messaging-endpoint)
 
@@ -269,16 +269,16 @@ If you are upgrading a project created by Teams Toolkit v4.x.x, the Teams app ID
 
 ![image](https://user-images.githubusercontent.com/103554011/217706120-a2f7fc6a-d6e4-4950-a145-5d7f25b06590.png)
 
-## Use your existing Azure Active Directory app ID
+## Use your existing Microsoft Entra app ID
 
-Teams Toolkit creates Azure Active Directory apps for projects with bot or single sign-on tab capabilities by default using a few actions:
+Teams Toolkit creates Microsoft Entra apps for projects with bot or single sign-on tab capabilities by default using a few actions:
 * [`botAadApp/create`](https://aka.ms/teamsfx-actions/botaadapp-create)
 * [`aadApp/create`](https://aka.ms/teamsfx-actions/aadapp-create)
 * [`aadApp/update`](https://aka.ms/teamsfx-actions/aadapp-update)
 
-However, Teams Toolkit supports using existing Azure Active Directory app IDs. <b>[Learn more about Teams Toolkit actions](https://aka.ms/teamsfx-actions)</b>
+However, Teams Toolkit supports using existing Microsoft Entra app IDs. <b>[Learn more about Teams Toolkit actions](https://aka.ms/teamsfx-actions)</b>
 
-### Using existing Azure Active Directory app ID for bot
+### Using existing Microsoft Entra app ID for bot
 
 If you are developing with a Teams Toolkit scaffolded project, you can set `BOT_ID` in `.env` files listed under the env folder, you can set `SECRET_BOT_PASSWORD` in `.env.{envName}.user` files.
 
@@ -286,7 +286,7 @@ If you are developing with a Teams Toolkit scaffolded project, you can set `BOT_
 
 ![image](https://github.com/OfficeDev/TeamsFx/assets/103554011/f72ef1a2-ff05-483b-a1aa-7845c8ada82b)
 
-You can find your app's `BOT_ID` and `SECRET_BOT_PASSWORD` in [Azure Active Directory](https://ms.portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Overview).
+You can find your app's `BOT_ID` and `SECRET_BOT_PASSWORD` in [Microsoft Entra](https://ms.portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Overview).
 * Select your app under "App registration"
 * In the "Overview" page, `BOT_ID` is the value of "Application (client) ID"
 
@@ -308,17 +308,17 @@ If you are upgrading a project created by Teams Toolkit v4.x.x, `BOT_ID` and `SE
 
 <img src='https://user-images.githubusercontent.com/103554011/218045248-a827a42e-5e52-4b22-8c52-33073b6bc086.png' width='300px' />
 
-### Using existing Azure Active Directory app ID for SSO
+### Using existing Microsoft Entra app ID for SSO
 
 If you are developing with a Teams Toolkit scaffolded project, you can set the following environment variables in `.env` and `.env.{envName}.user` files listed under the env folder:
-* `AAD_APP_CLIENT_ID` - the client id of AAD app
-* `AAD_APP_CLIENT_SECRET` - the client secret of AAD app
-* `AAD_APP_OBJECT_ID` - the object id of AAD app
-* `AAD_APP_TENANT_ID` - the tenant id of AAD app
-* `AAD_APP_OAUTH_AUTHORITY_HOST` - the host of OAUTH authority of AAD app
-* `AAD_APP_OAUTH_AUTHORITY` - the OAUTH authority of AAD app
+* `AAD_APP_CLIENT_ID` - the client id of Microsoft Entra app
+* `AAD_APP_CLIENT_SECRET` - the client secret of Microsoft Entra app
+* `AAD_APP_OBJECT_ID` - the object id of Microsoft Entra app
+* `AAD_APP_TENANT_ID` - the tenant id of Microsoft Entra app
+* `AAD_APP_OAUTH_AUTHORITY_HOST` - the host of OAUTH authority of Microsoft Entra app
+* `AAD_APP_OAUTH_AUTHORITY` - the OAUTH authority of Microsoft Entra app
 
-You can find the values for these environment variables in [Azure Active Directory]:
+You can find the values for these environment variables in [Microsoft Entra]:
 * Select your app under "App registration"
 * In the "Overview" page:
     * "Application (client) ID" maps to `AAD_APP_CLIENT_ID`
@@ -354,7 +354,7 @@ Teams Toolkit scaffolded projects leverage ARM templates for provisioning. You c
 
 ## Using existing Azure Bot Service Messaging Endpoint
 
-Teams Toolkit scaffolded bot projects use Azure Bot Service when provisioning remote resources. You can follow [Using existing Azure Active Directory app ID for bot](https://aka.ms/teamsfx-v5.0-guide#using-existing-azure-active-directory-app-id-for-bot) to use the existing bot ID and bot password. However, unlike configuring the debugging process, where `BOT_DOMAIN` is set to a tunneling URL that changes frequently, for deploying to an existing remote bot service, you need to leverage the existing `BOT_DOMAIN`.
+Teams Toolkit scaffolded bot projects use Azure Bot Service when provisioning remote resources. You can follow [Using existing Microsoft Entra app ID for bot](https://aka.ms/teamsfx-v5.0-guide#using-existing-Microsoft-Entra-app-id-for-bot) to use the existing bot ID and bot password. However, unlike configuring the debugging process, where `BOT_DOMAIN` is set to a tunneling URL that changes frequently, for deploying to an existing remote bot service, you need to leverage the existing `BOT_DOMAIN`.
 
 You can find your existing messaging endpoint in your "Azure Bot Service" -> "Configuration" -> "Messaging endpoint". The value for `BOT_DOMAIN` is the URL between `https://` and `/api/messages`, it should look like `resourcegroup123.azurewebsites.net`.
 

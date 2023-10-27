@@ -315,8 +315,8 @@ This task is to register resources and prepare local launch information for Bot.
 
 | Arguments | Type | Required | Description |
 |--|--|--|--|
-| botId                | string | optional | The AAD app client id for bot. Set this argument to use an existing bot. |
-| botPassword          | string | optional | The AAD app client secret for bot. Set this argument to use an existing bot. |
+| botId                | string | optional | The Microsoft Entra app client id for bot. Set this argument to use an existing bot. |
+| botPassword          | string | optional | The Microsoft Entra app client secret for bot. Set this argument to use an existing bot. |
 | botMessagingEndpoint | string | required | The bot messaging endpoint. If without hostname (e.g., *api/messages*), Teams Toolkit uses the ngrok host from [Start Local Tunnel](#start-local-tunnel) task. If with hostname (e.g., *https://contoso.com/api/messages*), Teams Toolkit uses the provided full URL. |
 
 #### Sample
@@ -326,7 +326,7 @@ This task is to register resources and prepare local launch information for Bot.
     "type": "teamsfx",
     "command": "debug-set-up-bot",
     "args": {
-        //// Use your own AAD App for bot
+        //// Use your own Microsoft Entra App for bot
         // "botId": "",
         // "botPassword": "", // use plain text or environment variable reference like ${env:BOT_PASSWORD}
         "botMessagingEndpoint": "api/messages"
@@ -340,10 +340,10 @@ This task is to register resources and prepare local launch information for SSO 
 
 | Arguments | Type | Required | Description |
 |--|--|--|--|
-| clientId            | string | optional | The AAD app client id for SSO. Set this argument to use an existing AAD App. |
-| clientSecret        | string | optional | The AAD app client secret for SSO. Set this argument to use an existing AAD App. |
-| objectId            | string | optional | The AAD app object id for SSO. Set this argument to use an existing AAD App. |
-| accessAsUserScopeId | string | optional | The AAD app access_as_user scope id for SSO. Set this argument to use an existing AAD App. |
+| clientId            | string | optional | The Microsoft Entra app client id for SSO. Set this argument to use an existing Microsoft Entra App. |
+| clientSecret        | string | optional | The Microsoft Entra app client secret for SSO. Set this argument to use an existing Microsoft Entra App. |
+| objectId            | string | optional | The Microsoft Entra app object id for SSO. Set this argument to use an existing Microsoft Entra App. |
+| accessAsUserScopeId | string | optional | The Microsoft Entra app access_as_user scope id for SSO. Set this argument to use an existing Microsoft Entra App. |
 
 #### Sample
 ```json
@@ -352,7 +352,7 @@ This task is to register resources and prepare local launch information for SSO 
     "type": "teamsfx",
     "command": "debug-set-up-sso",
     "args": {
-        //// Use your own AAD App for SSO
+        //// Use your own Microsoft Entra App for SSO
         // "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
         // "clientSecret": "plain-text or ${env:YOUR_CLIENT_SECRET}",
         // "objectId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
@@ -549,7 +549,7 @@ For SPFx:
 2. Change `portOccupancy` argument in `Validate & Install prerequisites` task.
 2. Change the `staticTabs.contentUrl` and `configurableTabs.configurationUrl` arguments in `templates/appPackage/manifest.template.json`.
 
-### How to use the existing AAD app for SSO?
+### How to use the existing Microsoft Entra app for SSO?
 1. Set `objectId`, `clientId`, `clientSecret` and `accessAsUserScopeId` arguments in `Set up SSO` task. For `clientSecret`, use plain text or environment variable reference like `${env:CLIENT_SECRET}`.
 2. If bot is included, set the `M365_CLIENT_SECRET` environment variable in `bot/.env.teamsfx.local`.
 3. If backend is included, set the `M365_CLIENT_SECRET` environment variable in `api/.env.teamsfx.local`.

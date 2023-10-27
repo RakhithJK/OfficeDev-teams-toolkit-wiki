@@ -2,9 +2,9 @@
 
 > This feature is currently under active development. Report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
 
-Microsoft Teams provides a mechanism by which an application can obtain the signed-in Teams user token to access Microsoft Graph (and other APIs). Teams Toolkit facilitates this interaction by abstracting some of the Azure Active Directory flows and integrations behind some simple APIs. This enables you to add single sign-on experiences (SSO) easily to your Teams application.
+Microsoft Teams provides a mechanism by which an application can obtain the signed-in Teams user token to access Microsoft Graph (and other APIs). Teams Toolkit facilitates this interaction by abstracting some of the Microsoft Entra flows and integrations behind some simple APIs. This enables you to add single sign-on experiences (SSO) easily to your Teams application.
 
-For applications that interact with the user in a chat, a Team, or a channel, SSO manifests as an Adaptive Card which the user can interact with to invoke the AAD consent flow.
+For applications that interact with the user in a chat, a Team, or a channel, SSO manifests as an Adaptive Card which the user can interact with to invoke the Microsoft Entra consent flow.
 
 In this tutorial, you will:
 
@@ -53,7 +53,7 @@ Teams Toolkit will make the following changes to your project:
 
 |Type| File | Purpose |
 |-| - | - |
-|Create| `aad.template.json` under `templates/appPackage` | This is the Azure Active Directory application manifest. This template defines your application registration. Your application is registered during provisioning.|
+|Create| `aad.template.json` under `templates/appPackage` | This is the Microsoft Entra application manifest. This template defines your application registration. Your application is registered during provisioning.|
 |Modify | `manifest.template.json` under `templates/appPackage` | The Toolkit adds a `webApplicationInfo` definition to the Teams app manifest template. This field is required by Teams when enabling SSO. This change will take effect when provisioning the application.|
 |Create| `auth/tab` | Reference code and auth redirect pages for a tab project. |
 |Create| `auth/bot` | Reference code and auth redirect pages for a bot project. |
@@ -70,7 +70,7 @@ After adding the SSO feature, follow these steps to enable SSO in your applicati
 
 ### Tab applications
 
-1. Move `auth-start.html` and `auth-end.htm`** in `auth/public` folder to `tabs/public/`. Teams Toolkit registers these two endpoints in AAD for AAD's redirect flow.
+1. Move `auth-start.html` and `auth-end.htm`** in `auth/public` folder to `tabs/public/`. Teams Toolkit registers these two endpoints in Microsoft Entra for Microsoft Entra's redirect flow.
 
 1. Move `sso` folder under `auth/tab` to `tabs/src/sso/`.
 
@@ -90,7 +90,7 @@ After adding the SSO feature, follow these steps to enable SSO in your applicati
 ### Bot applications
 
 1. Move `auth/bot/public` folder to `bot/src`. 
-This folder contains HTML pages used for AAD's redirect flow. *Note*: you need to modify `bot/src/index` file to add routing to these pages.
+This folder contains HTML pages used for Microsoft Entra's redirect flow. *Note*: you need to modify `bot/src/index` file to add routing to these pages.
 
 2. Move `auth/bot/sso` folder to `bot/src`.
 These folder contains three files as reference for sso implementation:
@@ -107,7 +107,7 @@ These folder contains three files as reference for sso implementation:
     ```
     "build": "tsc --build && copyfiles public/*.html lib/",
     ```
-    This will copy the HTML files used for the AAD redirect flow during build.
+    This will copy the HTML files used for the Microsoft Entra redirect flow during build.
 
 5. Create a new `teamsSsoBot` instance in `bot/src/index` file. Replace the following code:
     ```
@@ -266,23 +266,23 @@ After adding SSO in your application, you can also add a new command for your bo
 
 You can debug your application by pressing F5.
 
-Teams Toolkit will use the AAD manifest file to register the AAD application for SSO.
+Teams Toolkit will use the Microsoft Entra manifest file to register the Microsoft Entra application for SSO.
 
 To learn more about Teams Toolkit local debugging, refer to this [document](https://docs.microsoft.com/microsoftteams/platform/toolkit/debug-local).
 
-## Customize the AAD application registration
+## Customize the Microsoft Entra application registration
 
-The AAD [manifest](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest) allows you to customize various aspects of your application registration. You can update the manifest as needed.
+The Microsoft Entra [manifest](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest) allows you to customize various aspects of your application registration. You can update the manifest as needed.
 
-Follow this [document](https://aka.ms/teamsfx-aad-manifest#customize-aad-manifest-template) if you need to include additional API permissions to access your desired APIs.
+Follow this [document](https://aka.ms/teamsfx-aad-manifest#Microsoft-Entra-manifest-template) if you need to include additional API permissions to access your desired APIs.
 
-Follow this [document](https://aka.ms/teamsfx-aad-manifest#How-to-view-the-AAD-app-on-the-Azure-portal) to view your AAD application in Azure Portal.
+Follow this [document](https://aka.ms/teamsfx-aad-manifest#How-to-view-the-Microsoft-Entra-app-on-the-Azure-portal) to view your Microsoft Entra application in Azure Portal.
 
 
 ## SSO authentication concepts
 ### How SSO works in Teams
 
-Single sign-on (SSO) authentication in Microsoft Azure Active Directory (Azure AD) silently refreshes the authentication token to minimize the number of times users need to enter their sign in credentials. If users agree to use your app, they don't have to provide consent again on another device as they're signed in automatically. 
+Single sign-on (SSO) authentication in Microsoft Entra silently refreshes the authentication token to minimize the number of times users need to enter their sign in credentials. If users agree to use your app, they don't have to provide consent again on another device as they're signed in automatically. 
 
 Teams Tabs and bots have similar flows for SSO. To learn more, refer to:
 * [Use SSO authentication in Tabs](https://docs.microsoft.com/en-us/microsoftteams/platform/tabs/how-to/authentication/auth-aad-sso?tabs=dotnet) 
