@@ -61,24 +61,24 @@ module.exports.apiClient = apiClient;
 ```
 </details>
 <details>
-<summary><b>Azure Active Directory
+<summary><b>Microsoft Entra
 </b></summary>
 
 There are 2 scenarios here, please choose one of them. 
-- Scenario 1 is reusing the project AAD app, make sure your project contains an existing AAD app.
-- Scenario 2 is using an existing AAD App.
+- Scenario 1 is reusing the project Microsoft Entra app, make sure your project contains an existing Microsoft Entra app.
+- Scenario 2 is using an existing Microsoft Entra App.
 
 ```javascript
 const teamsfxSdk = require("@microsoft/teamsfx");
 // There are 2 scenarios here, please choose one of them. This sample uses the client credential flow to acquire a token for your API.
-// Scenario 1. reuse the project AAD app.
+// Scenario 1. reuse the project Microsoft Entra app.
 const appAuthConfig: AppCredentialAuthConfig = {
   authorityHost: process.env.AAD_APP_OAUTH_AUTHORITY_HOST,
   clientId: process.env.TEAMSFX_API_CLIENT_ID,
   tenantId: process.env.TEAMSFX_API_TENANT_ID,
   clientSecret: process.env.TEAMSFX_API_CLIENT_SECRET,
 };
-// Scenario 2. use an existing AAD App.
+// Scenario 2. use an existing Microsoft Entra App.
 const appAuthConfig: AppCredentialAuthConfig = {
   authorityHost: "https://login.microsoftonline.com",
   clientId: process.env.TEAMSFX_API_CLIENT_ID,
@@ -212,12 +212,12 @@ TEAMSFX_API_ENDPOINT =
 ```
 </details>
 <details>
-<summary><b>Azure Active Directory
+<summary><b>Microsoft Entra
 </b></summary>
 
 There are 2 scenarios here, please choose one of them. 
-- Scenario 1 is reusing the project AAD app, make sure your project contains an existing AAD app.
-- Scenario 2 is using an existing AAD App.
+- Scenario 1 is reusing the project Microsoft Entra app, make sure your project contains an existing Microsoft Entra app.
+- Scenario 2 is using an existing Microsoft Entra App.
 
 Append your Api connection configuration to `env/.env.local`
 ```
@@ -341,7 +341,7 @@ resource botService 'Microsoft.BotService/botServices@2021-03-01' = {
 ```
 </details>
 <details>
-<summary><b>Azure Active Directory
+<summary><b>Microsoft Entra
 </b></summary>
 
 - Host in the **Azure Function**, append following values to `infra/azure.bicep`

@@ -129,7 +129,7 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
 
 ### Connect using Azure Managed Identity
 
-Managed identities provide an automatically managed identity in Azure Active Directory for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication.
+Managed identities provide an automatically managed identity in Microsoft Entra for applications to use when connecting to resources that support Microsoft Entra authentication.
 
 You can refer this document to understand how to connect to Azure SQL Database using Managed Identity: https://learn.microsoft.com/en-us/azure/app-service/tutorial-connect-msi-azure-database
 

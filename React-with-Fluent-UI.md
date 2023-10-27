@@ -9,7 +9,7 @@ This app template has three major components:
 
 2. Azure Function: Middle-tier service to call Graph. Adopted [On-Behalf-Of flow](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow). Code of the Azure Function can be found in `api` folder.
 
-3. Azure Active Directory: Both `Azure Storage` and `Azure Function` are configured with Azure Active Directory (AAD) app and use the AAD app for authentication.
+3. Microsoft Entra: Both `Azure Storage` and `Azure Function` are configured with Microsoft Entra app and use the Microsoft Entra app for authentication.
 
 # Authentication
 ![Authentication](https://github.com/OfficeDev/TeamsFx/assets/63089166/49781751-0910-42d9-b218-9de2a7495ddb)

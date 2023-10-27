@@ -11,33 +11,33 @@ For information on actions, visit [Actions](https://aka.ms/teamsfx-v5.0-guide#ac
 For information on environments, visit [Environments](https://aka.ms/teamsfx-v5.0-guide#environments).
 
 # aadApp/create
-This action will create a new Azure Active Directory (AAD) app to authenticate users if the environment variable that stores clientId is empty.
+This action will create a new Microsoft Entra app to authenticate users if the environment variable that stores clientId is empty.
 
 ## Syntax:
 ```
   - uses: aadApp/create
     with:
-      name: <your-application-name> # Required. when you run aadApp/update, the AAD app name will be updated based on the definition in manifest. If you don't want to change the name, make sure the name in AAD manifest is the same with the name defined here.
+      name: <your-application-name> # Required. when you run aadApp/update, the Microsoft Entra app name will be updated based on the definition in manifest. If you don't want to change the name, make sure the name in Microsoft Entra manifest is the same with the name defined here.
       generateClientSecret: true # Required. If the value is false, the action will not generate client secret for you
       signInAudience: "AzureADMyOrg" # Required. Specifies what Microsoft accounts are supported for the current application. Supported values are: `AzureADMyOrg`, `AzureADMultipleOrgs`, `AzureADandPersonalMicrosoftAccount`, `PersonalMicrosoftAccount`.
     writeToEnvironmentFile: # Write the information of created resources into environment file for the specified environment variable(s).
-      clientId: <your-preferred-env-var-name> # Required. The client (application) ID of AAD application. The action will refer the environment variable defined here to determine whether to create a new AAD app.
+      clientId: <your-preferred-env-var-name> # Required. The client (application) ID of Microsoft Entra application. The action will refer the environment variable defined here to determine whether to create a new Microsoft Entra app.
       clientSecret: <your-preferred-env-var-name> # Required when `generateClientSecret` is `true`. The action will refer the environment variable defined here to determine whether to create a new client secret. It's recommended to add `SECRET_` prefix to the environment variable name so it will be stored to the .env.{envName}.user environment file.
-      objectId: <your-preferred-env-var-name> # Required. The object ID of AAD application
-      tenantId: <your-preferred-env-var-name> # Optional. The tenant ID of AAD tenant
-      authority: <your-preferred-env-var-name> # Optional. The AAD authority
-      authorityHost: <your-preferred-env-var-name> # Optional. The host name of AAD authority
+      objectId: <your-preferred-env-var-name> # Required. The object ID of Microsoft Entra application
+      tenantId: <your-preferred-env-var-name> # Optional. The tenant ID of Microsoft Entra tenant
+      authority: <your-preferred-env-var-name> # Optional. The Microsoft Entra authority
+      authorityHost: <your-preferred-env-var-name> # Optional. The host name of Microsoft Entra authority
 ```
 
 # aadApp/update
-This action will update your AAD app based on give AAD app manifest. It will refer the `id` property in AAD app manifest to determine which AAD app to update.
+This action will update your Microsoft Entra app based on give Microsoft Entra app manifest. It will refer the `id` property in Microsoft Entra app manifest to determine which Microsoft Entra app to update.
 
 ## Syntax:
 ```
   - uses: aadApp/update
     with:
-      manifestPath: ./aad.manifest.json # Required. Relative path to this file. Environment variables in manifest will be replaced before apply to AAD app.
-      outputFilePath : ./build/aad.manifest.${{TEAMSFX_ENV}}.json # Required. Relative path to teamsfx folder. This action will output the final AAD manifest used to update AAD app to this path.
+      manifestPath: ./aad.manifest.json # Required. Relative path to this file. Environment variables in manifest will be replaced before apply to Microsoft Entra app.
+      outputFilePath : ./build/aad.manifest.${{TEAMSFX_ENV}}.json # Required. Relative path to teamsfx folder. This action will output the final Microsoft Entra manifest used to update Microsoft Entra app to this path.
 ```
 
 ## Output:
@@ -45,16 +45,16 @@ This action will update your AAD app based on give AAD app manifest. It will ref
 
 ## Troubleshooting:
 ### Error message "Permission (scope or role) cannot be deleted or updated unless disabled first
-This is a known issue that OAuth permission id for an existing permission in your AAD manifest is different than the id in AAD application. One possible reason is the value of `AAD_APP_ACCESS_AS_USER_PERMISSION_ID` environment variable in `.env.{env_name}` is out of sync.
+This is a known issue that OAuth permission id for an existing permission in your Microsoft Entra manifest is different than the id in Microsoft Entra application. One possible reason is the value of `AAD_APP_ACCESS_AS_USER_PERMISSION_ID` environment variable in `.env.{env_name}` is out of sync.
 
-To fix this error: find the id of `access_as_user` scope for your application in [AAD app registration portal](https://ms.portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) and set it to `AAD_APP_ACCESS_AS_USER_PERMISSION_ID` environment variable in `.env.{env_name}`.
+To fix this error: find the id of `access_as_user` scope for your application in [Microsoft Entra app registration portal](https://ms.portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) and set it to `AAD_APP_ACCESS_AS_USER_PERMISSION_ID` environment variable in `.env.{env_name}`.
 
 ![image](https://user-images.githubusercontent.com/16605901/204182487-8eb46f6d-cee6-4d97-9cd4-68db59d4a572.png)
 
 ### Expected property 'lang' is not present on resource of type 'Permissionscope'
-When you use AAD app manifest displayed in [Azure App Registration portal](https://ms.portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade), you may meet this error or other similar errors. This is because the AAD app manifest displayed in Azure Portal is not 100% compatible with [AAD app manifest schema](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest). This issue is being tracked and will be fixed in the future.
+When you use Microsoft Entra app manifest displayed in [Azure App Registration portal](https://ms.portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade), you may meet this error or other similar errors. This is because the Microsoft Entra app manifest displayed in Azure Portal is not 100% compatible with [Microsoft Entra app manifest schema](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest). This issue is being tracked and will be fixed in the future.
 
-To fix this error: remove the extra properties mentioned in the error message and try to update your AAD app again.
+To fix this error: remove the extra properties mentioned in the error message and try to update your Microsoft Entra app again.
 
 # teamsApp/create
 This action will create a new Teams app for you if the environment variable that stores Teams app id is empty or the app with given id is not found from Teams Developer Portal.
@@ -571,16 +571,16 @@ ALL_RESOURCE_IDS__AZURESTORAGEID=storage id
 ```
 
 # botAadApp/create
-This action will create a new or reuses an existing Azure Active Directory application for bot.
+This action will create a new or reuses an existing Microsoft Entra application for bot.
 
 ## Syntax:
 ```yaml
-  - uses: botAadApp/create # Creates a new or reuses an existing Azure Active Directory application for bot.
+  - uses: botAadApp/create # Creates a new or reuses an existing Microsoft Entra application for bot.
     with:
-      name: {{appName}}-${{TEAMSFX_ENV}} # The Azure Active Directory application's display name
+      name: {{appName}}-${{TEAMSFX_ENV}} # The Microsoft Entra application's display name
     writeToEnvironmentFile:
-      botId: BOT_ID # The Azure Active Directory application's client id created for bot.
-      botPassword: SECRET_BOT_PASSWORD # The Azure Active Directory application's client secret created for bot. 
+      botId: BOT_ID # The Microsoft Entra application's client id created for bot.
+      botPassword: SECRET_BOT_PASSWORD # The Microsoft Entra application's client secret created for bot. 
 ```
 
 # script
@@ -620,7 +620,7 @@ This error means the 'environmentFolderPath' field is invalid. Please make sure 
 This error means the 'env' field of an action is invalid. 'env' field is used to define environment variables for a certain action. So, it's expected to contain key-value pairs, whose value is of type string.
 Here is a valid example
 ```yaml
-  - uses: botAadApp/create # Creates a new AAD app for Bot Registration.
+  - uses: botAadApp/create # Creates a new Microsoft Entra app for Bot Registration.
     env:
         BOT_ID: SOME_FAKE_ID
     with:
@@ -628,7 +628,7 @@ Here is a valid example
 ```
 Below is an invalid example.
 ```yaml
-  - uses: botAadApp/create # Creates a new AAD app for Bot Registration.
+  - uses: botAadApp/create # Creates a new Microsoft Entra app for Bot Registration.
     env:
         BOT_ID: 123 # 123 is a number, not a string.
     with:

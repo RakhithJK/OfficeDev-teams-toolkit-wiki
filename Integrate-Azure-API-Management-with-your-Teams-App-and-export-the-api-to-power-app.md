@@ -5,14 +5,14 @@ Azure API Management enables professional developers to publish their Teams App 
 
 ## Prerequisites
 - A Teams tab app with Azure Functions. [Sample](https://github.com/OfficeDev/TeamsFx-Samples/tree/v3/hello-world-tab-with-backend)
-- A client Azure AD app used to visit the backend API. You can register a new Azure AD app add a client secret according to this [document](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app). Both the client app and the web API app must be registered in the same tenant.
+- A client Microsoft Entra app used to visit the backend API. You can register a new Microsoft Entra app add a client secret according to this [document](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app). Both the client app and the web API app must be registered in the same tenant.
 
 ## Add Azure API Management resource in Azure
-1. Add the the client id of the client Azure AD app to `env/.env.dev`.
+1. Add the the client id of the client Microsoft Entra app to `env/.env.dev`.
    ```
    APIM_CLIENT_AAD_CLIENT_ID=<your-apim-client-aad-client-id>
    ```
-   Add client secret of the client Azure AD app to `env/.env.dev.user`.
+   Add client secret of the client Microsoft Entra app to `env/.env.dev.user`.
    ```
    APIM_CLIENT_AAD_CLIENT_SECRET=<your-apim-client-aad-client-secret>
    ```
@@ -149,8 +149,8 @@ Azure API Management enables professional developers to publish their Teams App 
     }
     ```
 
-## Configure the AAD created by Teams Toolkit
-Add the client id of the client AAD to the `knownClientApplications` in the file `aad.manifest.json`.
+## Configure the Microsoft Entra created by Teams Toolkit
+Add the client id of the client Microsoft Entra to the `knownClientApplications` in the file `aad.manifest.json`.
 ```
 {
   "id": "${{AAD_APP_OBJECT_ID}}",
@@ -207,7 +207,7 @@ Add the OpenAPI document of the backend APIs to `infra/openapi.json`. The follow
 ## Provision the resources
 Run Teams: Provision in the cloud command in Visual Studio Code to apply the bicep to Azure.
 
-## Create the service principle for the AAD created by Teams Toolkit
+## Create the service principle for the Microsoft Entra created by Teams Toolkit
 1. The value of `AAD_APP_CLIENT_ID` can be found in environment file `env/.env.dev`.
 1. Create the service principle.
    - Use Azure CLI
@@ -218,16 +218,16 @@ Run Teams: Provision in the cloud command in Visual Studio Code to apply the bic
      ```
    - Use Azure Portal
      1. Sign in to the [Azure portal](https://portal.azure.com/).
-     1. Search for and select Azure Active Directory.
+     1. Search for and select Microsoft Entra.
      1. Under Manage, select App registrations.
      1. Select your application with client id `AAD_APP_CLIENT_ID`.
      1. Click `Create Service Principle`.
      ![image](https://user-images.githubusercontent.com/49138419/210941316-512c01ca-7beb-4544-bd85-e435a54f81fa.png)
 
 ## Configure the client APP registration to visit the backend API
-To configure the client APP registration to access the Teams App Backend API, the permission of Teams App should be added to the client AAD. 
+To configure the client APP registration to access the Teams App Backend API, the permission of Teams App should be added to the client Microsoft Entra. 
 1. Sign in to the [Azure portal](https://portal.azure.com/).
-1. Search for and select Azure Active Directory.
+1. Search for and select Microsoft Entra.
 1. Under Manage, select App registrations.
 1. Select your client application with client id `APIM_CLIENT_AAD_CLIENT_ID`.
 1. Select API permissions > Add a permission > My APIs.

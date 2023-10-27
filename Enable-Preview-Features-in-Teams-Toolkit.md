@@ -55,8 +55,8 @@ Here is some common scenarios we can support for customized provision:
 |--|--|
 | Azure Resource Customization | <ul> <li>bicep files under `templates/azure`.</li> <li>`.fx/azure.parameters.<envName>.json`.</li></ul> |
 | App Manifest | <ul> <li>`templates/manifest.template.json`.</li> <li>`manifest` section in`.fx/config.<envName>.json`.</li>  </ul> |
-| Reusing existing AAD app for Teams app | <ul> <li>`auth` section in`.fx/config.<envName>.json`.</li> </ul> |
-| Reusing existing AAD app for bot | <ul> <li>`bot` section in`.fx/config.<envName>.json`.</li> </ul> |
+| Reusing existing Microsoft Entra app for Teams app | <ul> <li>`auth` section in`.fx/config.<envName>.json`.</li> </ul> |
+| Reusing existing Microsoft Entra app for bot | <ul> <li>`bot` section in`.fx/config.<envName>.json`.</li> </ul> |
 | Skip add user when provision SQL | <ul> <li>`skipAddingSqlUser` property in`.fx/config.<envName>.json`.</li> </ul> |
 
 - For how to use the environment config file, you can refer to the [environment configuration schema](https://aka.ms/teamsfx-config).
@@ -83,7 +83,7 @@ Main changes in project's folder structure:
 Happy coding!
 
 ## Collaborating on TeamsFx Project
-Previous version of Teams Toolkit is not easy for multiple users to develop the same project due to missing privilege to access Teams APP and AAD APP. If multiple developers want to share remote resources and work together, they need to manually handle permissions of Teams App and AAD APP which need deep understanding the low-level details about the TeamsFx project.
+Previous version of Teams Toolkit is not easy for multiple users to develop the same project due to missing privilege to access Teams APP and Microsoft Entra APP. If multiple developers want to share remote resources and work together, they need to manually handle permissions of Teams App and Microsoft Entra APP which need deep understanding the low-level details about the TeamsFx project.
 
 Teams Toolkit now natively support add other collaborators for TeamsFx project which is much easy and straightforward for collaborative development.
 

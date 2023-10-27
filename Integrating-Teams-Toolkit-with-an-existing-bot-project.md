@@ -45,7 +45,7 @@ Teams Toolkit can integrate with your existing Teams app project or infrastructu
 * Here are some useful links to help you find your existing Teams app and bot configurations:
   * [Use your existing Teams app ID](https://aka.ms/teamsfx-v5.0-guide#use-your-existing-teams-app-id)
   * [Customize Azure subscription ID and resource group](https://aka.ms/teamsfx-v5.0-guide#customize-azure-subscription-id-and-resource-group)
-  * [Using existing Azure Active Directory app ID for bot](https://aka.ms/teamsfx-v5.0-guide#using-existing-azure-active-directory-app-id-for-bot)
+  * [Using existing Microsoft Entra app ID for bot](https://aka.ms/teamsfx-v5.0-guide#using-existing-Microsoft-Entra-app-id-for-bot)
   * [Using existing Azure Bot Service Messaging Endpoint](https://aka.ms/teamsfx-v5.0-guide#using-existing-azure-bot-service-messaging-endpoint)
 
 ### Integrate source code

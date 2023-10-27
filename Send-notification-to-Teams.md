@@ -544,7 +544,7 @@ If you choose http trigger, the scaffolded notification API does not have authen
 
 1. Use an API Key. If you chose Azure Functions to host your notification bot, it already provides [function access keys](https://docs.microsoft.com/en-us/azure/azure-functions/security-concepts?tabs=v4#function-access-keys), which may be helpful to you.
 
-2. Use an access token issued by [Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/authentication/)
+2. Use an access token issued by [Microsoft Entra](https://docs.microsoft.com/en-us/azure/active-directory/authentication/)
 
 There would be more authentication / authorization solutions for an API. You can choose the one that satisfies your requirement best.
 

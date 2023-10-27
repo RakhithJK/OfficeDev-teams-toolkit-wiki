@@ -1,6 +1,6 @@
 ## How to support Multi-tenancy single sign-on in TeamsFx project
 
-When SSO is enabled, Teams Toolkit will by default provision a [single-tenant](https://docs.microsoft.com/azure/active-directory/develop/single-and-multi-tenant-apps#who-can-sign-in-to-your-app) Azure AD app, which means only user and guest accounts in the same directory as your M365 account can successfully sign in to your Teams app. 
+When SSO is enabled, Teams Toolkit will by default provision a [single-tenant](https://docs.microsoft.com/azure/active-directory/develop/single-and-multi-tenant-apps#who-can-sign-in-to-your-app) Microsoft Entra app, which means only user and guest accounts in the same directory as your M365 account can successfully sign in to your Teams app. 
 
 To support [multi-tenant](https://docs.microsoft.com/azure/active-directory/develop/single-and-multi-tenant-apps#who-can-sign-in-to-your-app), you can follow the steps below to update your TeamsFx project.
 
@@ -9,7 +9,7 @@ To support [multi-tenant](https://docs.microsoft.com/azure/active-directory/deve
 ### (Optional) Update Application Id URI
 > This part is only for TAB projects for ts/js. If you are working on a Bot/Messaging Extension or a VS project, please go to [Update your project](#update-your-project).
 
-> Since Azure AD app requires an ["tenant verified domain"](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-modify-supported-accounts#why-changing-to-multi-tenant-can-fail) for `Application ID URI`, you can use your own Custom Domain or Create a new Custom Domain on Azure.
+> Since Microsoft Entra app requires an ["tenant verified domain"](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-modify-supported-accounts#why-changing-to-multi-tenant-can-fail) for `Application ID URI`, you can use your own Custom Domain or Create a new Custom Domain on Azure.
 
 1. [Provision](https://docs.microsoft.com/microsoftteams/platform/toolkit/provision) your TeamsFx project.
 

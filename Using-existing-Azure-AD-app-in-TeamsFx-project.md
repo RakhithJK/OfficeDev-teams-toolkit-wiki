@@ -1,12 +1,12 @@
-This doc is for using existing Azure AD app or Manually Create Azure AD app for TeamsFx project in Visual Studio or Visual Studio Code. Please follow the instruction and make sure all reqirued info is properly set in your TeamsFx project.
+This doc is for using existing Microsoft Entra app or Manually Create Microsoft Entra app for TeamsFx project in Visual Studio or Visual Studio Code. Please follow the instruction and make sure all reqirued info is properly set in your TeamsFx project.
 
 
-# Create an Azure AD app (Optional)
+# Create an Microsoft Entra app (Optional)
 
-> You may skip this part if you already has an Azure AD app.
-1. Go to the [Azure Portal](https://portal.azure.com) and select "Azure Active Directory".
+> You may skip this part if you already has an Microsoft Entra app.
+1. Go to the [Azure Portal](https://portal.azure.com) and select "Microsoft Entra".
 
-1. Select "App Registrations" and click on "New registration" to create a new Azure AD app:
+1. Select "App Registrations" and click on "New registration" to create a new Microsoft Entra app:
    * **Name**: The name of your configuration app.
    * **Supported account types**: Select "Account in this organizational directory only"
    * Leave the "Redirect URL" field blank for now.
@@ -14,7 +14,7 @@ This doc is for using existing Azure AD app or Manually Create Azure AD app for 
 
 1. When the app is registered, you'll be taken to the app's "Overview" page. Copy the **Application (client) ID** and **Object ID**; we will need it later. Verify that the "Supported account types" is set to **My organization only**.
 
-### Create client secret for Azure AD app (Required)
+### Create client secret for Microsoft Entra app (Required)
 
 1. Go to app's "Certificates & secrets" page, select "Client Secret" and Click on "New client secret".
    * **Description**: The descirption of your client secret.
@@ -24,11 +24,11 @@ This doc is for using existing Azure AD app or Manually Create Azure AD app for 
 1. When the client secret is added, press the copy button under the "Value" column to copy the **Client Secret**.
 
 
-# Create Access As User Scope for Azure AD app (Optional)
+# Create Access As User Scope for Microsoft Entra app (Optional)
 
-> You can skip this part if your M365 account has permission to update this Azure AD app. We will create the scope for you.
+> You can skip this part if your M365 account has permission to update this Microsoft Entra app. We will create the scope for you.
 1. Go to app's "Expose an API" page, click "Add" button to add a new Application ID URI:
-   - If your project is tab app, fill in `api://<your-tab-domain>/<aad-app-client-id>`
+   - If your project is tab app, fill in `api://<your-tab-domain>/<Microsoft-Entra-app-client-id>`
    - If your project is bot or message extension app, fill in `api://botid-<your-bot-id>`
    - If your project contains both tab and bot / message extension, fill in `api://<your-tab-domain>/botid-<your-bot-id>`
 
@@ -55,24 +55,24 @@ This doc is for using existing Azure AD app or Manually Create Azure AD app for 
 1. Go to app's "Manifest" page, copy the "id" under "oauth2Permissions" as **Access As User Scope ID**.
 
 
-# Get necessary info from existing Azure AD app
+# Get necessary info from existing Microsoft Entra app
 
-* You may skip this part if you follow the instruction above to create an Azure AD app.
+* You may skip this part if you follow the instruction above to create an Microsoft Entra app.
 
-1. Go to the [Azure Portal](https://portal.azure.com) and select "Azure Active Directory".
+1. Go to the [Azure Portal](https://portal.azure.com) and select "Microsoft Entra".
 
-1.  Select "App Registrations" and find your existing Azure AD app.
+1.  Select "App Registrations" and find your existing Microsoft Entra app.
 
 1. Go to app's "Overview" page, copy the **Application (client) ID** and **Object ID**; we will need it later. Verify that the "Supported account types" is set to **My organization only**.
 
 1. Go to app's "Certificates & secrets" page, press the copy button under the "Value" column to copy the **Client Secret**. Note: if you can not copy the secret, please follow the [instruction](#create-client-secret-for-azure-ad-app) to create a new client secret.
 
 1. Go to app's "Expose an API" page. Update the Application ID URI if the format is not as below:
-   - If your project is tab app, fill in `api://<your-tab-domain>/<aad-app-client-id>`
+   - If your project is tab app, fill in `api://<your-tab-domain>/<Microsoft-Entra-app-client-id>`
    - If your project is bot or message extension app, fill in `api://botid-<your-bot-id>`
    - If your project contains both tab and bot / message extension, fill in `api://<your-tab-domain>/botid-<your-bot-id>`
 
-1. If you have already add "access_as_user" scope under "Scopes defined by this API" and pre-auth the two Teams Client Ids, go to app's "Manifest" page, copy the "id" under "oauth2Permissions" as **Access As User Scope ID**. Otherwise, follow the steps in `Create Access As User Scope for Azure AD app` to create a new one.
+1. If you have already add "access_as_user" scope under "Scopes defined by this API" and pre-auth the two Teams Client Ids, go to app's "Manifest" page, copy the "id" under "oauth2Permissions" as **Access As User Scope ID**. Otherwise, follow the steps in `Create Access As User Scope for Microsoft Entra app` to create a new one.
 
 # Set necessary info in TeamsFx project
 
@@ -103,19 +103,19 @@ This doc is for using existing Azure AD app or Manually Create Azure AD app for 
 
 1. [For Visual Studio] Click "Project" -> "Teams Toolkit" -> "Provision in the cloud". Wait until your project is successfully provisioned.
 
-# Upload Azure AD app manifest to Azure portal
+# Upload Microsoft Entra app manifest to Azure portal
 
-* If Teams Toolkit failed to update Azure AD app, there will be an alert says:
+* If Teams Toolkit failed to update Microsoft Entra app, there will be an alert says:
 
   ```
-  Failed in step: Update AAD app. You need to go to Azure Protal and mannually update Azure AD app manifest for the provided Azure AD app.
+  Failed in step: Update Microsoft Entra app. You need to go to Azure Protal and mannually update Microsoft Entra app manifest for the provided Microsoft Entra app.
   ```
 
    Please follow the instruction to update permission if you see the above message.
 
 1. Open `templates/appPackage/aad.template.json`
 
-1. Get content of Azure AD app manifest
+1. Get content of Microsoft Entra app manifest
    - For Visual Studio Code:
 
       1. Click on "preview" as shown below:
@@ -132,8 +132,8 @@ This doc is for using existing Azure AD app or Manually Create Azure AD app for 
          - {{state.component.value}}: you can get the value by finding `value` under `component` in `.fx/states/state.{env}.json`
          - {{config.component.value}}: you can get the value by finding `value` under `component` in `.fx/configs/config.{env}.json`
 
-1. Go to the [Azure Portal](https://portal.azure.com) and select "Azure Active Directory".
+1. Go to the [Azure Portal](https://portal.azure.com) and select "Microsoft Entra".
 
-1.  Select "App Registrations" and find your existing Azure AD app.
+1.  Select "App Registrations" and find your existing Microsoft Entra app.
 
 1. Go to app's "Manifest" page, paste the manifest content into the editor and Click `Save` to save the changes.

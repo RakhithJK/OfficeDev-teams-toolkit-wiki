@@ -55,7 +55,7 @@ E2E test path: *packages\cli\tests\e2e\<myResroucePluginName>\xxx.tests.ts*. (E2
     name: '${functionAppName}/appsettings'
     properties: union({
         ...
-        M365_CLIENT_SECRET: m365ClientSecret // Client secret of AAD application
+        M365_CLIENT_SECRET: m365ClientSecret // Client secret of Microsoft Entra application
         ...
     }, currentAppSettings) // Merge new settings with existing settings
     }

@@ -11,7 +11,7 @@ Once migration succeeds, your project file structure will be changed.
 ### Project Configuration Files
 The existing project configuration files under the `.fx` folder are outdated and incompatible with the current version of Teams Toolkit. So some clean-ups are made and now your `.fx` folder will consist:
 * `azure.parameters.*.json:` Parameters for Provisioning Azure Resource, specific for each environment.
-* `config.*.json:` Configurations for Manifest, AAD, etc, specific for each environment.
+* `config.*.json:` Configurations for Manifest, Microsoft Entra, etc, specific for each environment.
 * `projectSettings.json:` Project Settings, including capabilities, programming languages, etc.
 * `localSettings.json:` Local Settings, including necessary information to start debugging the project locally.
 

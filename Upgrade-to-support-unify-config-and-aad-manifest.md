@@ -1,4 +1,4 @@
-We will update the configuration files so that your project is compatible with the latest Teams Toolkit features, including a consistent configuration file schema and a single Teams app manifest template across local and remote environments. If your project contains single sign-on (SSO) feature, then it will also aad an AAD manifest template file.
+We will update the configuration files so that your project is compatible with the latest Teams Toolkit features, including a consistent configuration file schema and a single Teams app manifest template across local and remote environments. If your project contains single sign-on (SSO) feature, then it will also aad an Microsoft Entra manifest template file.
 
 > Important Notes: If you collaborate on this project with your co-workers, please ensure your team members update the Teams Toolkit extension to the latest version after committing the changes with this upgrade.
 
@@ -6,7 +6,7 @@ We will update the configuration files so that your project is compatible with t
 Teams Toolkit continues to improve your Teams application development experience. We are upgrading the Teams app project structure so that you can:
 1. Use a consistent schema to manage configuration settings for local and remote environments.
 1. Use a single Teams application manifest template across local and remote environments.
-1. Use AAD manifest template to customize your AAD app (for project contains SSO feature).
+1. Use Microsoft Entra manifest template to customize your Microsoft Entra app (for project contains SSO feature).
 1. Allow to add SSO for these scenarios and capabilities: Notification bot (with restify server), Command bot, Bot, Tab and Embed existing web app.
 
 ## Know about the changes we made
@@ -16,7 +16,7 @@ After the project upgrade, the new file structure will consist:
 
 - For project contains SSO feature, also include these changes:
   * Update `.fx\configs\projectSettings.json` capabilities to include TabSSO and/or BotSSO based on original project capabilities.
-  * AAD manifest template file will be added to `templates\appPackage\aad.template.json`.
+  * Microsoft Entra manifest template file will be added to `templates\appPackage\aad.template.json`.
   * The required resource access information in `permissions.json` file will be merged into `aad.template.json` file and `permissions.json` file will be deprecated.
 
 Your existing `localSettings.json`, `manifest.local.template.json`, `manifest.remote.template.json` and `projectSettings.json` (for project contains SSO feature) files will be backed up in `.backup` folder.
