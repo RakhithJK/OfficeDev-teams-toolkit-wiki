@@ -13,8 +13,8 @@ Documentation
 * [Manage Microsoft Entra Application Registration with Teams Toolkit](https://aka.ms/teamsfx-aad-manifest)
 
 How To Guides
-* [How to use an existing Microsoft Entra app](https://github.com/OfficeDev/TeamsFx/wiki/Using-existing-Azure-AD-app-in-TeamsFx-project)
-* [How to use a multi-tenant Microsoft Entra app](https://github.com/OfficeDev/TeamsFx/wiki/Multi-tenancy-Support-for-Azure-AD-app)
+* [How to use an existing Microsoft Entra app](https://github.com/OfficeDev/TeamsFx/wiki/Using-existing-Microsoft-Entra-app-in-TeamsFx-project)
+* [How to use a multi-tenant Microsoft Entra app](https://github.com/OfficeDev/TeamsFx/wiki/Multi-tenancy-Support-for-Microsoft-Entra-app)
 * [How to customize debug tasks](https://github.com/OfficeDev/TeamsFx/wiki/%7BDebug%7D-Teams-Toolkit-VS-Code-Tasks)
 * [How to connect to existing APIs](https://aka.ms/teamsfx-connect-api)
 * [How to add single sign on in Teams Toolkit for Visual Studio Code](https://aka.ms/teamsfx-add-sso)
