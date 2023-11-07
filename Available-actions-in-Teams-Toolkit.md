@@ -528,6 +528,20 @@ Go to [the official website](https://github.com/Azure/azure-functions-core-tools
 
 > Note: Please restart all your Visual Studio Code instances after the installation is finished.
 
+#### How to install Teams App Test Tool
+
+If `testTool/install` action fails to automatically install [Teams App Test Tool](https://www.npmjs.com/package/@microsoft/teams-app-test-tool), you can disable the action and install it manually.
+
+Please run the following command to install the Test Tool globally.
+
+```
+npm install -g @microsoft/teams-app-test-tool
+```
+
+You can run `teamsapptester --version` to verify the installation.
+
+> Note: Please restart all your Visual Studio Code instances after the installation is finished.
+
 # arm/deploy
 This action will deploy given ARM templates parallelly
 
