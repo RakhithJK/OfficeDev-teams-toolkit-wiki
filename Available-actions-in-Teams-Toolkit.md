@@ -614,6 +614,21 @@ This action will execute a user defined script.
 ## Output:
 All stdout start with "::set-teamsfx-env key=value" will be interpreted into outputs in .env file.
 
+# apiKey/register
+This action will register an API key in Developer Portal for authentication of API based message extension.
+ 
+## Syntax:
+```
+  - uses: apiKey/register
+    with:
+      name: <your-api-key-name> # Required. Make sure the API key name in API specification is the same with the name defined here.
+      appId: <your-teams-app-id> # Required. The id for Teams app you want to allow access to the API key.
+      clientSecret: <your-api-key-secret> # Optional. The client secret of your API key. Client secret should follow: 1. Max 2 secrets per API key. 2. Use comma to separate secrets. 3. Length of every secret >= 10 and <= 128
+      apiSpecPath: <your-api-spec-path> # Required. Relative path to this file.
+    writeToEnvironmentFile:
+      registrationId: <your-preferred-env-var-name> # Required. The registration id of the API key.
+```
+
 # General Errors
 ## ActionNotFoundError
 This error means there's an unknown action in the yaml file. Please check whether the action type in 'uses' fields are supported. 
