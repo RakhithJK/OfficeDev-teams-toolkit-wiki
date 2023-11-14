@@ -17,7 +17,7 @@ According to the mechanism introduced in the article, we have implemented an api
 
 |API Name|Message Extension Invoke Type|Introduction|SDK Minimum Version|
 |--|--|--|--|
-|handleMessageExtensionLinkQueryWithSSO|composeExtension/queryLink|[ReadMe](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionlinkquerywithsso.md)|beta.2023110805.0|
+|handleMessageExtensionLinkQueryWithSSO|composeExtension/queryLink|[ReadMe](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionlinkquerywithsso.md)|2.3.1-beta.2023110805.0|
 |handleMessageExtensionQueryWithSSO|composeExtension/query|[ReadMe](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionquerywithsso.md)|2.0.0|
 
 ## API Implement Sample
