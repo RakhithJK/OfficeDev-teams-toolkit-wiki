@@ -13,11 +13,17 @@ There is [a MSDN document](https://learn.microsoft.com/en-us/microsoftteams/plat
 
 According to the mechanism introduced in the article, we have implemented an api `handleMessageExtensionQueryWithSSO` in `@microsoft/teamsfx`, which can help users realize me's sso more conveniently.
 
-## API Introduce
-Please read this API basic [introduce](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionquerywithsso.md)    
+## APIs Introduce
+
+|API Name|Message Extension Invoke Type|Introduction|SDK Requirement|
+|--|--|--|--|
+|handleMessageExtensionLinkQueryWithSSO|composeExtension/queryLink|[ReadMe](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionlinkquerywithsso.md)|@microsoft/teamsfx@2.3.1-beta.2023110805.0|
+|handleMessageExtensionQueryWithSSO|composeExtension/query|[ReadMe](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionquerywithsso.md)|@microsoft/teamsfx@2.0.0|
 
 ## API Implement Sample
 Please [reference this sample code](https://github.com/OfficeDev/TeamsFx-Samples/blob/49179ff8f766c2f99c5fa93d97ad8939ec880056/query-org-user-with-message-extension-sso/teamsBot.ts#L32) for the basic usage.
 
-## API limitation
-Currently this API only support `query`, which should be implement within `TeamsActivityHandler.handleTeamsMessagingExtensionQuery`. 
+|API sample link|
+|--|
+|[handleMessageExtensionLinkQueryWithSSO](https://github.com/OfficeDev/TeamsFx-Samples/blob/a2f075fb1aa64b4d2d3be413b09a2266e4042892/query-org-user-with-message-extension-sso/teamsBot.ts#L109)|
+|[handleMessageExtensionQueryWithSSO](https://github.com/OfficeDev/TeamsFx-Samples/blob/a2f075fb1aa64b4d2d3be413b09a2266e4042892/query-org-user-with-message-extension-sso/teamsBot.ts#L38C18-L38C52)| 
