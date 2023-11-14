@@ -15,10 +15,10 @@ According to the mechanism introduced in the article, we have implemented an api
 
 ## APIs Introduce
 
-|API Name|Message Extension Invoke Type|Introduction|SDK Minimum Version|
-|--|--|--|--|
-|handleMessageExtensionLinkQueryWithSSO|composeExtension/queryLink|[ReadMe](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionlinkquerywithsso.md)|2.3.1-beta.2023110805.0|
-|handleMessageExtensionQueryWithSSO|composeExtension/query|[ReadMe](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionquerywithsso.md)|2.0.0|
+|API Name|Message Extension Invoke Type|SDK Minimum Version|
+|--|--|--|
+|[handleMessageExtensionLinkQueryWithSSO](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionlinkquerywithsso.md)|composeExtension/queryLink|2.3.1-beta.2023110805.0|
+|[handleMessageExtensionQueryWithSSO](https://github.com/OfficeDev/TeamsFx/blob/dev/docs/sdk/teamsfx.handlemessageextensionquerywithsso.md)|composeExtension/query|2.0.0|
 
 ## API Implement Sample
 Please [reference this sample code](https://github.com/OfficeDev/TeamsFx-Samples/blob/49179ff8f766c2f99c5fa93d97ad8939ec880056/query-org-user-with-message-extension-sso/teamsBot.ts#L32) for the basic usage.
