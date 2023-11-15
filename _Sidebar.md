@@ -5,8 +5,8 @@ Scenario-based Tutorials
 * [Embed a dashboard canvas in Teams](https://aka.ms/teamsfx-dashboard-app)
 
 Extend Teams app across Microsoft 365
-* [Create and test a personal tab across Microsoft 365](https://github.com/OfficeDev/TeamsFx/wiki/Create-and-debug-a-personal-tab-across-Microsoft-365)
-* [Create and test a search-based message extension across Microsoft 365](https://github.com/OfficeDev/TeamsFx/wiki/Create-and-debug-a-search-based-message-extension-across-Microsoft-365)
+* [Create and test a personal tab across Microsoft 365](https://learn.microsoft.com/en-us/microsoftteams/platform/m365-apps/extend-m365-teams-personal-tab?tabs=manifest-teams-toolkit)
+* [Create and test a search-based message extension across Microsoft 365](https://learn.microsoft.com/en-us/microsoftteams/platform/m365-apps/extend-m365-teams-message-extension?tabs=manifest-teams-toolkit)
 
 Documentation
 * [Manage Application settings with Teams Toolkit](https://aka.ms/teamsfx-add-appsettings)
