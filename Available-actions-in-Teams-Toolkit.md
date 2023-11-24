@@ -615,11 +615,11 @@ This action will execute a user defined script.
 All stdout start with "::set-teamsfx-env key=value" will be interpreted into outputs in .env file.
 
 ## Default shell command
-If `shell` is not specified, use default shell. The rule is applied in the following order
-- 1) Use the value of the 'SHELL' environment variable if it is set. 
-- 2) If current OS is macOS, then use '/bin/zsh' if it exists, otherwise use '/bin/bash'; 
-- 3) If current OS is Windows, then use the value of the 'ComSpec' environment variable if it exists, otherwise use 'cmd.exe'; 
-- 4) If current OS is Linux or other OS systems, use '/bin/sh' if it exists. 
+If `shell` is not specified, use default shell. The rule is applied in the following order:
+1. Use the value of the 'SHELL' environment variable if it is set. 
+2. If current OS is macOS, then use '/bin/zsh' if it exists, otherwise use '/bin/bash'; 
+3. If current OS is Windows, then use the value of the 'ComSpec' environment variable if it exists, otherwise use 'cmd.exe'; 
+4. If current OS is Linux or other OS systems, use '/bin/sh' if it exists. 
 
 # apiKey/register
 This action will register an API key in Developer Portal for authentication of API based message extension.
