@@ -606,13 +606,20 @@ This action will execute a user defined script.
     with:
      run: $my_key="abc"; echo "::set-teamsfx-env mykey=${my_key}" # command to run or path to the script. Succeeds if exit code is 0. '::set-teamsfx-env key=value' is a special command to generate output variables into .env file, in this case, "mykey=abc" will be added the output in the corresponding .env file.
      workingDirectory: ./scripts # current working directory. Defaults to the directory of this file.
-     shell: bash # bash, sh, powershell(Powershell Desktop), pwsh(powershell core), cmd. Can be omitted. If omitted, it defaults to bash on Linux/MacOS, defaults to pwsh on windows.
+     shell: shell comand.
      timeout: 1000 # timeout in ms
      redirectTo: paht/to/file # redirect stdout and stderr to a file
 ```
 
 ## Output:
 All stdout start with "::set-teamsfx-env key=value" will be interpreted into outputs in .env file.
+
+## Default shell command
+If `shell` is not specified, use default shell. The rule is applied in the following order
+- 1) Use the value of the 'SHELL' environment variable if it is set. 
+- 2) If current OS is macOS, then use '/bin/zsh' if it exists, otherwise use '/bin/bash'; 
+- 3) If current OS is Windows, then use the value of the 'ComSpec' environment variable if it exists, otherwise use 'cmd.exe'; 
+- 4) If current OS is Linux or other OS systems, use '/bin/sh' if it exists. 
 
 # apiKey/register
 This action will register an API key in Developer Portal for authentication of API based message extension.
