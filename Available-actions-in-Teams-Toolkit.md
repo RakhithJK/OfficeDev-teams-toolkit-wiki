@@ -157,6 +157,26 @@ This action will enable static website setting in Azure Stroage.
 ## Output:
 NA
 
+# azureStaticWebApps/getDeploymentToken
+This action will get deployment token from Azure Static Web Apps.
+
+## Version Info
+Since v1.3
+
+## Syntax:
+```
+  - uses: azureStaticWebApps/getDeploymentToken
+    with:
+      resourceId: ${{AZURE_STATIC_WEB_APPS_RESOURCE_ID}}
+    writeToEnvironmentFile:
+      deploymentToken: SECRET_TAB_SWA_DEPLOYMENT_TOKEN
+```
+## Output:
+* The deployment token of the Azure Static Web Apps.
+
+## Troubleshooting:
+* The deployment token will persist until it is reset. If you have reset the token, you must run this action again or update the deployment token in your .env file.
+
 # cli/runNpxCommand
 This action will execute `npx` commands under specified directory with parameters. It can be used to run `gulp` commands to bundle and package sppkg.
 
