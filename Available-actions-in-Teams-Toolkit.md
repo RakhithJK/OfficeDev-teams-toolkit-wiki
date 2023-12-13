@@ -339,6 +339,9 @@ Please check the log output and try to upload the files located in your .deploym
 ### Error message: Failed to check deployment status.
 This error can be ignored if the deployment is already successful. You can check the deploy status by visiting `Deployment - Deployment center - Logs` in the Azure portal.
 
+### Error message: remote server error with status code: 502
+If the package you attempted to deploy is larger than 500MB and your Azure Functions SKU is set to Free, you may receive this notification. Please [refer this document for more information.](https://github.com/projectkudu/kudu/wiki/Understanding-the-Azure-App-Service-file-system#temporary-files).
+
 
 # azureStorage/deploy
 This action will upload and deploy the project to Azure Storage. The parameter `workingDirectory` can be removed if you want to run this command in the project root.
