@@ -572,6 +572,7 @@ If Teams Toolkit for Visual Studio failed to download and install Teams App Test
 1. Download the latest Teams App Test Tool from [here](https://github.com/OfficeDev/TeamsFx/releases?q=teams-app-test-tool&expanded=true).
 1. Unzip the downloaded package and you can see an exe binary file named `teamsapptester.exe`.
 1. In Visual Studio's menu bar, click Tools > Options > Teams Toolkit, then set Test Tool's installation path with the absolute path of the `teamsapptester.exe`:
+   
    <img src="https://github.com/OfficeDev/TeamsFx/assets/15644078/7985ec97-99f7-453c-b319-d5ab1154e2b2" height="320px"/>
 
 > Note: Once the installation path of Test Tool is set, Teams Toolkit for Visual Studio won't try to download and install the latest version of Test Tool anymore.
