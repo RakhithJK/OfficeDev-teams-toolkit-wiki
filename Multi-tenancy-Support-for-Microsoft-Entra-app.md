@@ -23,6 +23,24 @@ To support [multi-tenant](https://docs.microsoft.com/azure/active-directory/deve
 
     > Note: you can skip the last `Provision` and `Deploy` step since we will do this after everything is setup.
 
+### (Optional) Update Azure Function
+> This part is only for TAB projects with Azure Function.
+
+1. Open `./infra/azure.bicep`, find the following lines:
+    ```
+    resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
+        ...
+        properties: {
+            ...
+            cors: {
+                allowedOrigins: [ tabDomain ]
+            }
+            ...
+        }
+        ...
+    ```
+    and replace the tabDomain in cors.allowedOrigins with your Custom Domain.
+
 ### Update your project
 
 1. Open `./aad.manifest.json`, find `signInAudience` and set value as `AzureADMultipleOrgs`.
