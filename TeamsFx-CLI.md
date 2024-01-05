@@ -50,6 +50,60 @@ The following list provides the common scenarios for`teamsfx preview:
     teamsfx preview --env local
     ```
 
+- Preview Bot App in Teams App Test Tool
+  - For JavaScript / TypeScript projects, you can run the following commands in project directory:
+    - Install [Teams App Test Tool](https://www.npmjs.com/package/@microsoft/teams-app-test-tool) CLI.
+      ```
+      npm install -g @microsoft/teams-app-test-tool
+      ```
+    - Execute the deploy command to install required dependencies and npm packages.
+      ```
+      teamsfx deploy --env=testtool
+      ```
+    - Execute the command to start your bot app.
+      ```
+      npm run dev:teamsfx:testtool
+      ```
+    - Execute the command in another terminal to start Teams App Test Tool.
+      ```
+      npm run dev:teamsfx:launch-testtool
+      ```
+
+    > If you want to use a specific version of Teams App Test Tool, you can download it manually and add to the PATH environment variable. The `npm run dev:teamsfx:launch-testtool` script will try to find `teamsapptester` command from `PATH`.
+    
+    > If you changed your bot app's port number or message endpoint to one that differs from the default `http://127.0.0.1:3978/api/messages`, you need to set `BOT_ENDPOINT` environment variable in `.env.testtool` so that the test tool can connect to your bot app. After changing `.env.testtool`, you need to re-run the `teamsfx deploy --env=testtool` command. For example:
+    > ```
+    > BOT_ENDPOINT=http://127.0.0.1:6978/my/message/endpoint
+    > ```
+    
+    > If you failed to start test tool because of port conflict, you can change the test tool's port number by setting the `TEAMSAPPTESTER_PORT` environment variable in `.env.testtool`.
+    >
+    > For example:
+    > ```
+    > TEAMSAPPTESTER_PORT=56150
+    > ```
+
+  - For C# projects, you can run the following commands in the directory that contains `teamsapp.yml` file. This is usually in a subfolder named the same as your project name.
+    - Download Teams App Test Tool CLI from [GitHub release](https://github.com/OfficeDev/TeamsFx/releases?q=teams-app-test-tool&expanded=true) and unzip the downloaded package to a folder, for example, `C:\teams-app-test-tool`, and you can see an exe binary file named `teamsapptester.exe`.
+    - Execute the command to start your bot app.
+      ```
+      dotnet run --launch-profile "Teams App Test Tool (browser)"
+      ```
+    - Specify your bot message endpoint with `BOT_ENDPOINT` environment variable and execute the command in another terminal to start Teams App Test Tool.
+      - For Command Prompt:
+        ```cmd
+        set BOT_ENDPOINT=http://127.0.0.1:5130/api/messages
+        C:\teams-app-test-tool\teamsapptester.exe start
+        ```
+
+      - For Power Shell
+        ```powershell
+        $env:BOT_ENDPOINT = "http://127.0.0.1:5130/api/messages"
+        C:\teams-app-test-tool\teamsapptester.exe start
+        ```
+
+      > If you failed to start test tool because of port conflict, you can change the test tool's port number by setting the `TEAMSAPPTESTER_PORT` environment variable before running `teamsapptester.exe` command.
+
 - Remote Preview
 ```shell
 teamsfx provision --env dev
