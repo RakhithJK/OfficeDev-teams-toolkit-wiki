@@ -68,6 +68,7 @@ The following list provides the common scenarios for`teamsfx preview:
       ```
       npm run dev:teamsfx:launch-testtool
       ```
+
     - A browser will pop up to open Teams App Test Tool and you can test your bot in it.
 
     > If you want to use a specific version of Teams App Test Tool, you can download it manually and add to the PATH environment variable. The `npm run dev:teamsfx:launch-testtool` script will try to find `teamsapptester` command from `PATH`.
