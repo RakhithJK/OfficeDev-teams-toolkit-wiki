@@ -71,14 +71,12 @@ The following list provides the common scenarios for`teamsfx preview:
 
     > If you want to use a specific version of Teams App Test Tool, you can download it manually and add to the PATH environment variable. The `npm run dev:teamsfx:launch-testtool` script will try to find `teamsapptester` command from `PATH`.
     
-    > If you changed your bot app's port number or message endpoint to one that differs from the default `http://127.0.0.1:3978/api/messages`, you need to set `BOT_ENDPOINT` environment variable in `.env.testtool` so that the test tool can connect to your bot app. After changing `.env.testtool`, you need to re-run the `teamsfx deploy --env=testtool` command. For example:
+    > If you changed your bot app's port number or message endpoint to one that differs from the default `http://127.0.0.1:3978/api/messages`, you need to set `BOT_ENDPOINT` environment variable in `.env.testtool` so that the test tool can connect to your bot app. For example:
     > ```
     > BOT_ENDPOINT=http://127.0.0.1:6978/my/message/endpoint
     > ```
     
-    > If you failed to start test tool because of port conflict, you can change the test tool's port number by setting the `TEAMSAPPTESTER_PORT` environment variable in `.env.testtool`.
-    >
-    > For example:
+    > If you failed to start test tool because of port conflict, you can change the test tool's port number by setting the `TEAMSAPPTESTER_PORT` environment variable in `.env.testtool`. For example:
     > ```
     > TEAMSAPPTESTER_PORT=56150
     > ```
