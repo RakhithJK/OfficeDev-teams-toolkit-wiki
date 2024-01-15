@@ -278,10 +278,15 @@ For Teams Tab Application
     ```
      > Note: You need to replace `{{YOUR_NAMESPACE}}` with your namespace name
   
-   2. Move `TeamsFx-Auth/Tab/GetUserProfile.razor` to `Components/`
-   3. Add the `GetUserProfile` component to your razor page, for example:
+   2. Move `TeamsFx-Auth/Tab/GetUserProfile.razor` to `Components/Pages`
+   3. Add the `GetUserProfile` component to your razor page, for example find following line in `Components/Pages/Hello.razor`:
     ```
     <h1>Hello, World</h1>
+    <p>Your app is running @(GetHubName())</p>
+    ```
+   
+   and add following line after it:
+    ```
     <GetUserProfile />
     ```
 
