@@ -161,7 +161,7 @@ NA
 This action will get deployment token from Azure Static Web Apps.
 
 ## Version Info
-Since v1.3
+Since the Yaml schema v1.4
 
 ## Syntax:
 ```
