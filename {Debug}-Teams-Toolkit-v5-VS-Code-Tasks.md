@@ -55,7 +55,7 @@ This task is to validate prerequisites that will be used in following debugging 
 | prerequisites  | description |
 |----------------|------------------------------------------------------------------------------------------------------------|
 | nodejs | Validate if Node.js is installed. |
-| m365Account | Sign-in prompt for Microsoft 365 account, then validate if the account enables the sideloading permission. |
+| m365Account | Sign-in prompt for Microsoft 365 account, then validate if the account has the custom app upload permission. |
 | portOccupancy | Validate available ports to ensure those debugging ones are not occupied. |
 
 #### Sample
