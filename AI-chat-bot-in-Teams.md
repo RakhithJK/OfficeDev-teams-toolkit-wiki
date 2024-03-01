@@ -10,7 +10,7 @@ You can add customizations on top of this basic application to build more comple
 
 ### Customize prompt text
 
-In `src/prompts/planner/skprompt.txt`, author your prompt text. The content written in this file will be inserted into the prompt to instruct LLM. The SDK defines the following syntax that you can use in the prompt text.
+In `src/prompts/chat/skprompt.txt`, author your prompt text. The content written in this file will be inserted into the prompt to instruct LLM. The SDK defines the following syntax that you can use in the prompt text.
 
 **{{$[scope].property}}**: Renders the value of the scoped property that is defined in turn state. The SDK defines three scopes, temp, user and conversation. If scope is omitted, the temp scope will be used.
 - In `src/app/turnState.ts`, define your temp state, user state, conversation state and application turn state.
@@ -26,7 +26,7 @@ In `src/prompts/planner/skprompt.txt`, author your prompt text. The content writ
     ```ts
     const app = new Application<ApplicationTurnState>(...);
     ```
-- In `src/prompts/planner/skprompt.txt`, use the scoped state property such as `{{$conversation.tasks}}`.
+- In `src/prompts/chat/skprompt.txt`, use the scoped state property such as `{{$conversation.tasks}}`.
 
 **{{functionName}}**: Calls the specified function and renders the result.
 - In `src/app/app.ts`, register the function into prompt manager.
@@ -35,23 +35,23 @@ In `src/prompts/planner/skprompt.txt`, author your prompt text. The content writ
       return ...
     });
     ```
-- In `src/prompts/planner/skprompt.txt`, use the funtion such as `{{getTasks}}`.
+- In `src/prompts/chat/skprompt.txt`, use the funtion such as `{{getTasks}}`.
 
 **{{functionName arg1 arg2}}**: Calls the specified function with the provided arguments and renders the result.
 - In `src/app/app.ts`, register the function into prompt manager.
-- In `src/prompts/planner/skprompt.txt`, use the funtion such as `{{getTasks taskTitle}}`.
+- In `src/prompts/chat/skprompt.txt`, use the funtion such as `{{getTasks taskTitle}}`.
 
 ### Customize user input
 
-**Whether to include user input**: In `src/prompts/planner/config.json`, configure `completion.include_input`. If `true`, the user input will be appended into the prompt.
+**Whether to include user input**: In `src/prompts/chat/config.json`, configure `completion.include_input`. If `true`, the user input will be appended into the prompt.
 
-**Maximum number of user input tokens**: In `src/prompts/planner/config.json`, configure `completion.max_input_tokens`.
+**Maximum number of user input tokens**: In `src/prompts/chat/config.json`, configure `completion.max_input_tokens`.
 
 ### Customize conversation history
 
 The SDK automatically manages the conversation history and you can customize the followings.
 
-**Whether to include history.** In `src/prompts/planner/config.json`, configure `completion.include_history`. If `true`, the history will be inserted into the prompt to let LLM aware of the conversation history.
+**Whether to include history.** In `src/prompts/chat/config.json`, configure `completion.include_history`. If `true`, the history will be inserted into the prompt to let LLM aware of the conversation history.
 
 **Maximum number of history messages.** Configure `max_history_messages` when initializing `PromptManager`.
 ```ts
@@ -71,7 +71,7 @@ const prompts = new PromptManager({
 
 ### Customize model type
 
-In `src/prompts/planner/config.json`, configure `completion.model`. Below lists the models whether the SDK supports.
+In `src/prompts/chat/config.json`, configure `completion.model`. Below lists the models whether the SDK supports.
 
 **GPT-3.5**
 
@@ -104,11 +104,11 @@ Not supported currently.
 
 ### Customize completion type
 
-In `src/prompts/planner/config.json`, configure `completion.completion_type`. Supported options are `chat` and `text`.
+In `src/prompts/chat/config.json`, configure `completion.completion_type`. Supported options are `chat` and `text`.
 
 ### Customize model parameters
 
-In `src/prompts/planner/config.json`, configure the model parameters under `completion`:
+In `src/prompts/chat/config.json`, configure the model parameters under `completion`:
 - `max_tokens`
 - `temperature`
 - `top_p`
@@ -127,7 +127,7 @@ In `src/prompts/planner/config.json`, configure the model parameters under `comp
     ```
 - In `src/app/app.ts`, use `downloader` to initialize application.
     ```ts
-    const app = new Application<ApplicationTurnState>({
+    const app = new Application({
       ...
       fileDownloaders: [downloader]
     });
