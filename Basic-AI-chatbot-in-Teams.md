@@ -1,10 +1,10 @@
-# AI chat bot in Teams
+# Basic AI chatbot in Teams
 
-Microsoft Teams Toolkit enables you to build an AI chatbot that responds to user questions like ChatGPT. This enables your users to talk with the AI bot in Teams.
+Microsoft Teams Toolkit enables you to build a basic AI chatbot that responds to user questions like ChatGPT. This enables your users to talk with the AI bot in Teams.
 
 The app template is built using Teams AI library, which provides the capabilities to integrate with large language models (LLMs).
 
-## Customize AI chatbot
+## Customize Basic AI chatbot
 
 You can add customizations on top of this basic application to build more complex scenarios.
 
