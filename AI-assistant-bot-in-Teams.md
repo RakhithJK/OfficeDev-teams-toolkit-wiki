@@ -94,4 +94,4 @@ In `src/prompts/planner/config.json`, configure `augmentation.augmentation_type`
 
 ### Other common customizations
 
-Refer to [Customize AI chatbot](https://aka.ms/teamsfx-ai-chat-bot#customize-ai-chatbot) to see other common customizations with Teams AI library.
+Refer to [Customize Basic AI chatbot](https://aka.ms/teamsfx-basic-ai-chatbot#customize-basic-ai-chatbot) to see other common customizations with Teams AI library.
