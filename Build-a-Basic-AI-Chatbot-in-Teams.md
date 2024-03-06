@@ -93,6 +93,8 @@ The following are Teams Toolkit specific project files. You can [visit a complet
 |`teamsapp.local.yml`|This overrides `teamsapp.yml` with actions that enable local execution and debugging.|
 |`teamsapp.testtool.yml`|This overrides `teamsapp.yml` with actions that enable local execution and debugging in Teams App Test Tool.|
 
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
 ## How Teams AI Chatbot works
 
 Teams-AI library provides a typical flow to build an intelligent chatbot with AI capabilities.
@@ -129,21 +131,42 @@ The AI system in Teams AI library is responsible for moderating input and output
 * [Planner](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/PLANNER.md): The planner receives the user's ask and returns a plan on how to accomplish the request. The user's ask is in the form of a prompt or prompt template. It does this by using AI to mix and match atomic functions (called actions) registered to the AI system so that it can recombine them into a series of steps that complete a goal.
 * [Actions](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/ACTIONS.md): An action is an atomic function that is registered to the AI System. It is a fundamental building block of a plan.
 
-### Post Processing
-If there is activity handler matched and executed, it goes into after-turn-handler, which enables developers to customize the post-processing. A typical customization is to decorate the messages sent by your bot using rich UI elements such as Adaptive Cards.
+### Post Processing and respond to user
+If there is activity handler matched and executed, it goes into after-turn-handler, which enables developers to customize the post-processing. A typical customization is to decorate the messages sent by your bot using rich UI elements such as Adaptive Cards, you can design and iterate over your cards with [Microsoft Adaptive Card Previewer](https://learn.microsoft.com/microsoftteams/platform/concepts/build-and-test/adaptive-card-previewer?tabs=codelens).
 
-##$ Respond the messages
-Finally, it saves the state and bot can send the response to user.
+After post-processing, Teams AI library saves the state and bot can send the response to user.
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ## Customize Basic AI Chatbot
 
 You can add customizations on top of this basic application to build more complex scenarios.
 
-### Customize prompt text
+### Customize prompt
+Prompts play a crucial role in communicating and directing the behavior of Large Language Models (LLMs) AI. They serve as inputs or queries that users can provide to elicit specific responses from a model. Here's a prompt that asks the LLM for name suggestions:
 
-In `src/prompts/chat/skprompt.txt`, author your prompt text. The content written in this file will be inserted into the prompt to instruct LLM. The SDK defines the following syntax that you can use in the prompt text.
+_Input:_
 
-**{{$[scope].property}}**: Renders the value of the scoped property that is defined in turn state. The SDK defines three scopes, temp, user and conversation. If scope is omitted, the temp scope will be used.
+```
+Give me 3 name suggestions for my pet golden retriever.
+```
+
+_Response:_
+
+```
+Some possible name suggestions for a pet golden retriever are:
+
+- Bailey
+- Sunny
+- Cooper
+```
+
+Using project generated with Teams Toolkit, you can author the prompts in `src/prompts/chat/skprompt.txt` file. The prompts written in this file will be inserted into the prompt used to instruct the LLM. Teams AI library defines the following syntax that you can use in the prompt text.
+
+#### Syntax 1: `{{ $[scope].property }}`
+`{{ $[scope].property }}` Renders the value of the scoped property that is defined in turn state. Teams AI library defines three scopes: `temp`, `user` and `conversation`. If scope is omitted, the `temp` scope will be used.
+
+The `{{$[scope].property}}` is used in the following way:
 - In `src/app/turnState.ts`, define your temp state, user state, conversation state and application turn state.
     ```ts
     export interface TempState extends DefaultTempState { ... }
@@ -159,18 +182,23 @@ In `src/prompts/chat/skprompt.txt`, author your prompt text. The content written
     ```
 - In `src/prompts/chat/skprompt.txt`, use the scoped state property such as `{{$conversation.tasks}}`.
 
-**{{functionName}}**: Calls the specified function and renders the result.
-- In `src/app/app.ts`, register the function into prompt manager.
+#### Syntax 2: `{{ functionName }}`
+To call an external function and embed the result in your text, use the `{{ functionName }}` syntax. For example, if you have a function called `getTasks` that can return a list of task items, you can embed the results into the responses from LLM:
+
+1. Register the function into prompt manager in `src/app/app.ts`:
+
     ```ts
     prompts.addFunction("getTasks", async (context: TurnContext, memory: Memory, functions: PromptFunctions, tokenizer: Tokenizer, args: string[]) => {
       return ...
     });
     ```
-- In `src/prompts/chat/skprompt.txt`, use the funtion such as `{{getTasks}}`.
+2. Use the fucntion in `src/prompts/chat/skprompt.txt`: `Your tasks are: {{ getTasks }}`.
 
-**{{functionName arg1 arg2}}**: Calls the specified function with the provided arguments and renders the result.
-- In `src/app/app.ts`, register the function into prompt manager.
-- In `src/prompts/chat/skprompt.txt`, use the funtion such as `{{getTasks taskTitle}}`.
+#### Syntax 3: ` {{functionName arg1 arg2 }}`
+This syntax enables you to call the specified function with the provided arguments and renders the result. Similar to the usage of calling a function, you can:
+
+1. Register the function into prompt manager in `src/app/app.ts`.
+2. Use the function in `src/prompts/chat/skprompt.txt` such as `Your task is: {{ getTasks taskTitle }}`.
 
 ### Customize user input
 
