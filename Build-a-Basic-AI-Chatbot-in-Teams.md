@@ -9,18 +9,18 @@ Microsoft Teams Toolkit is an extension in Visual Studio Code that enables you t
 ## In this tutorial, you will learn:
 
 Get started with Teams Toolkit and Teams AI Library
-* [How to create a new basic ai chatbot]()
-* [How to understand the basic ai chatbot project]()
-* [How Teams AI Chatbot works]()
+* [How to create a new basic ai chatbot](#Create-a-new-Basic-AI-Chatbot-project)
+* [How to understand the basic ai chatbot project](#Understand-the-Basic-AI-Chatbot-project)
+* [How Teams AI Chatbot works](#How-Teams-AI-Chatbot-works)
 
 Customize the app template
-* [How to customize the prompts]()
-* [How to customize the user inputs]()
-* [How to customize conversation history]()
-* [How to customize model type]()
-* [How to customize completion type]()
-* [How to customize the model parameters]()
-* [How to handle messages with image]()
+* [How to customize the prompts](#Customize-prompt)
+* [How to customize the user inputs](#Customize-user-input)
+* [How to customize conversation history](#Customize-conversation-history)
+* [How to customize model type](#Customize-model-type)
+* [How to customize completion type](#Customize-completion-type)
+* [How to customize the model parameters](#Customize-model-parameters)
+* [How to handle messages with image](#Handle-messages-with-image)
 
 ***
 
@@ -105,7 +105,7 @@ Teams-AI library provides a typical flow to build an intelligent chatbot with AI
 ### Turn Context and Turn State
 At the beginning to handle any incoming requests to your bot, Teams AI library prepares `TurnContext` and `TurnState` objects. Those are the key objects going through the entire messaging process flow.
 * `TurnContext`: The turn context object provides information about the activity such as the sender and receiver, the channel, and other data needed to process the activity.
-* `TurnState`: The turn state object stores cookie-like data for the current turn. Just like the turn context, it is carried through the entire application logic, including the activity handlers and the AI System. 
+* `TurnState`: The turn state object stores cookie-like data for the current turn. Just like the turn context, it is carried through the entire application logic, including the activity handlers and the AI System.
 
 ### Pre Processing
 After loading the turn state, Teams AI library executes a `before-turn-handler`. This is built on top of the Microsoft Bot Framework that allows you to modify the `TurnState`, but in general you don't need to customize it.
@@ -130,7 +130,7 @@ The AI system in Teams AI library is responsible for moderating input and output
 * [Planner](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/PLANNER.md): The planner receives the user's ask and returns a plan on how to accomplish the request. The user's ask is in the form of a prompt or prompt template. It does this by using AI to mix and match atomic functions (called actions) registered to the AI system so that it can recombine them into a series of steps that complete a goal.
 * [Actions](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/ACTIONS.md): An action is an atomic function that is registered to the AI System. It is a fundamental building block of a plan.
 
-### Post Processing and respond to user
+### Post Processing and Respond to User
 If there is activity handler matched and executed, it goes into after-turn-handler, which enables developers to customize the post-processing.
 
 After post-processing, Teams AI library saves the state and bot can send the response to user.
@@ -199,12 +199,16 @@ This syntax enables you to call the specified function with the provided argumen
 1. Register the function into prompt manager in `src/app/app.ts`.
 2. Use the function in `src/prompts/chat/skprompt.txt` such as `Your task is: {{ getTasks taskTitle }}`.
 
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
 ### Customize user input
 
 Teams AI library allows you to augment the prompt sent to LLM by including the user inputs. When including user inputs, you need to specify it in a prompt configuration file by setting `completion.include_input` to `true` in `src/prompts/chat/config.json`. You can alos optionally configure the maximum number of user input tokens in `src/prompts/chat/config.json` by changing `completion.max_input_tokens`. The default token is 2048.
 
 > [!Important]
 > Note that the configuration properties in the file do not include all the possible configurations. To learn more about the description of each configuration and all the supported configurations see the [PromptTemplatConfig](https://github.com/microsoft/teams-ai/blob/2d43f5ca5b3bf27844f760663641741cae4a3243/js/packages/teams-ai/src/prompts/PromptTemplate.ts#L46C18-L46C39) Typescript interface.
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ### Customize conversation history
 
@@ -227,6 +231,8 @@ const prompts = new PromptManager({
     max_conversation_history_tokens: 1000,
 });
 ```
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ### Customize model type
 
@@ -253,6 +259,8 @@ In `src/prompts/chat/config.json`, configure `completion.model`. Below lists the
 **Whisper**: Not supported currently.
 **TTS**: Not supported currently.
 
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
 ### Customize completion type
 
 In `src/prompts/chat/config.json`, configure `completion.completion_type`. Supported options are `chat` and `text`.
@@ -266,6 +274,8 @@ In `src/prompts/chat/config.json`, configure the model parameters under `complet
 - `presence_penalty`
 - `frequency_penalty`
 - `stop_sequences`
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ### Handle messages with image
 
@@ -285,3 +295,5 @@ In `src/prompts/chat/config.json`, configure the model parameters under `complet
     ```
 - In `src/prompts/chat/config.json`, set `completion.include_images` to `true`. Configure `completion.model` with your model that can handle messages with image.
 - In `src/prompts/chat/skprompt.txt`, author your prompt text to handle messages with image.
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
