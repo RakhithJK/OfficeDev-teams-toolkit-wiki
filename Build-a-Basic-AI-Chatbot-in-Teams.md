@@ -1,6 +1,6 @@
 # Basic AI chatbot in Teams
 
-> We appreciate your feedback, please report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
+> The feature is in Preview, we appreciate your feedback, please report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
 
 [Teams AI Library](https://github.com/microsoft/teams-ai) is a SDK that specifically designed to assist you in creating bots capable of interacting with Teams and Microsoft 365 applications. It is constructed using the [Bot Framework SDK](https://github.com/microsoft/botbuilder-js) as its foundation, simplifying the process of developing bots that interact with Teams' artificial intelligence capabilities.
 
@@ -120,10 +120,20 @@ After that, Teams AI library executes a set of registered activity handlers. Thi
 The Teams AI library provides a set of handler registration APIs, e.g., `app.message(text, handler)` to handle specific text message input. Below is a sequential diagram shows how a bot handles the incoming activity on each turn:
 ![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/3ce415b6-f7be-49f7-8c91-3bad6dc35598)
 
+> [!Tip]
+> Check [Teams AI Library concept documentations](https://github.com/microsoft/teams-ai/tree/main/getting-started/CONCEPTS) here to learn more about other important concepts for the AI System such as Action Planner, Prompt Management and Retrieval Augmented Generations (RAG).
 
-4. If no activity handler is matched, it goes into the AI flow. See [Add AI](https://github.com/SmallBlackHole/Intelligence101/blob/main/wiki/AddAI.md).
-5. If activity handler is matched and executed, it goes into after-turn-handler, which enables developers to customize the post-processing.
-6. Finally, it saves the state and bot can send the response to user.
+### The AI System
+The AI system in Teams AI library is responsible for moderating input and output, generating plans, and executing them. It can be used free standing or routed to by the Application object. Those are the most important concepts you need to know:
+* [Moderator](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/MODERATOR.md): The Moderator is responsible for reviewing the input prompt and approving the AI generated plans. It is configured when orchestrating the `Application` class.
+* [Planner](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/PLANNER.md): The planner receives the user's ask and returns a plan on how to accomplish the request. The user's ask is in the form of a prompt or prompt template. It does this by using AI to mix and match atomic functions (called actions) registered to the AI system so that it can recombine them into a series of steps that complete a goal.
+* [Actions](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/ACTIONS.md): An action is an atomic function that is registered to the AI System. It is a fundamental building block of a plan.
+
+### Post Processing
+If there is activity handler matched and executed, it goes into after-turn-handler, which enables developers to customize the post-processing. A typical customization is to decorate the messages sent by your bot using rich UI elements such as Adaptive Cards.
+
+##$ Respond the messages
+Finally, it saves the state and bot can send the response to user.
 
 ## Customize Basic AI Chatbot
 
@@ -170,7 +180,7 @@ In `src/prompts/chat/skprompt.txt`, author your prompt text. The content written
 
 ### Customize conversation history
 
-The SDK automatically manages the conversation history and you can customize the followings.
+The SDK automatically manages the conversation history, and you can customize the following.
 
 **Whether to include history.** In `src/prompts/chat/config.json`, configure `completion.include_history`. If `true`, the history will be inserted into the prompt to let LLM aware of the conversation history.
 
@@ -211,17 +221,9 @@ In `src/prompts/chat/config.json`, configure `completion.model`. Below lists the
 | gpt-4-vision | Supported |
 | gpt-4-turbo | Supported |
 
-**DALL·E**
-
-Not supported currently.
-
-**Whisper**
-
-Not supported currently.
-
-**TTS**
-
-Not supported currently.
+**DALL·E**: Not supported currently.
+**Whisper**: Not supported currently.
+**TTS**: Not supported currently.
 
 ### Customize completion type
 
