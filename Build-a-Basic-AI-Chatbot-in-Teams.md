@@ -1,5 +1,3 @@
-# Basic AI chatbot in Teams
-
 > The feature is in Preview, we appreciate your feedback, please report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
 
 [Teams AI Library](https://github.com/microsoft/teams-ai) is a SDK that specifically designed to assist you in creating bots capable of interacting with Teams and Microsoft 365 applications. It is constructed using the [Bot Framework SDK](https://github.com/microsoft/botbuilder-js) as its foundation, simplifying the process of developing bots that interact with Teams' artificial intelligence capabilities.
@@ -26,7 +24,7 @@ Customize the app template
 
 ***
 
-## Create a new basic ai chatbot project
+## Create a new Basic AI Chatbot project
 
 ### In Visual Studio Code
 
