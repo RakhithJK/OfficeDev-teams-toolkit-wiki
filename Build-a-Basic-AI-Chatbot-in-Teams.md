@@ -100,7 +100,6 @@ The following are Teams Toolkit specific project files. You can [visit a complet
 Teams-AI library provides a typical flow to build an intelligent chatbot with AI capabilities.
 
 ![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/dd22e32b-5087-485d-8e47-3433e66ec76d)
-![image2](https://github.com/microsoft/teams-ai/blob/main/getting-started/assets/routing-logic.png)
 
 > [!TIP]
 > Click here to learn more about [Turn Context and Turn States](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/TURNS.md).
