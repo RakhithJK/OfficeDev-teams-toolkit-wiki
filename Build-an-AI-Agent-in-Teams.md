@@ -14,7 +14,7 @@ An AI agent in Microsoft Teams is a conversational chatbot that can reason with 
 
 Get started with Teams Toolkit, Teams AI Library and Assistants API:
 * [Prerequisite]()
-* [How to choose between Build New and Build with Assistants API]
+* [How to choose between Build New and Build with Assistants API]()
 * [How to create a new AI Agent]()
 * [How to understand the AI Agent project]()
 * [How Teams AI Library is used to create an AI Agent]()
