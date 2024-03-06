@@ -8,12 +8,12 @@ Microsoft Teams Toolkit is an extension in Visual Studio Code that enables you t
 
 ## In this tutorial, you will learn:
 
-Get started with Teams Toolkit and Teams AI Library
-* [How to create a new basic ai chatbot](#Create-a-new-Basic-AI-Chatbot-project)
-* [How to understand the basic ai chatbot project](#Understand-the-Basic-AI-Chatbot-project)
+Get started with Teams Toolkit and Teams AI Library:
+* [How to create a new Basic AI Chatbot](#Create-a-new-Basic-AI-Chatbot-project)
+* [How to understand the Basic AI Chatbot project](#Understand-the-Basic-AI-Chatbot-project)
 * [How Teams AI Chatbot works](#How-Teams-AI-Chatbot-works)
 
-Customize the app template
+Customize the app template:
 * [How to customize the prompts](#Customize-prompt)
 * [How to customize the user inputs](#Customize-user-input)
 * [How to customize conversation history](#Customize-conversation-history)
