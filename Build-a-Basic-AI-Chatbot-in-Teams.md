@@ -110,8 +110,8 @@ At the beginning to handle any incoming requests to your bot, Teams AI library p
 * `TurnContext`: The turn context object provides information about the activity such as the sender and receiver, the channel, and other data needed to process the activity.
 * `TurnState`: The turn state object stores cookie-like data for the current turn. Just like the turn context, it is carried through the entire application logic, including the activity handlers and the AI System. 
 
-### Pre-processing
-After loading the turn state, Teams AI library executes a `before-turn-handler`, which enables developers to customize the pre-processing.
+### Pre Processing
+After loading the turn state, Teams AI library executes a `before-turn-handler`. This is built on top of the Microsoft Bot Framework that allows you to modify the `TurnState`, but in general you don't need to customize it.
 
 > [!Important]
 > On each turn, Teams AI library sequentially goes through all registered handlers to see if the incoming activity matches the selector. Thus, only the first matched handler will be executed.
@@ -122,17 +122,19 @@ After that, Teams AI library executes a set of registered activity handlers. Thi
 The Teams AI library provides a set of handler registration APIs, e.g., `app.message(text, handler)` to handle specific text message input. Below is a sequential diagram shows how a bot handles the incoming activity on each turn:
 ![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/3ce415b6-f7be-49f7-8c91-3bad6dc35598)
 
+Aother typical usage of message handler is to decorate the messages sent by your bot using rich UI elements such as Adaptive Cards, you can design and iterate over your cards with [Microsoft Adaptive Card Previewer](https://learn.microsoft.com/microsoftteams/platform/concepts/build-and-test/adaptive-card-previewer?tabs=codelens).
+
 > [!Tip]
 > Check [Teams AI Library concept documentations](https://github.com/microsoft/teams-ai/tree/main/getting-started/CONCEPTS) here to learn more about other important concepts for the AI System such as Action Planner, Prompt Management and Retrieval Augmented Generations (RAG).
 
 ### The AI System
 The AI system in Teams AI library is responsible for moderating input and output, generating plans, and executing them. It can be used free standing or routed to by the Application object. Those are the most important concepts you need to know:
-* [Moderator](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/MODERATOR.md): The Moderator is responsible for reviewing the input prompt and approving the AI generated plans. It is configured when orchestrating the `Application` class.
+* [Prompt Manager](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/PROMPTS.md): Prompts play a crucial role in communicating and directing the behavior of Large Language Models (LLMs) AI. 
 * [Planner](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/PLANNER.md): The planner receives the user's ask and returns a plan on how to accomplish the request. The user's ask is in the form of a prompt or prompt template. It does this by using AI to mix and match atomic functions (called actions) registered to the AI system so that it can recombine them into a series of steps that complete a goal.
 * [Actions](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/ACTIONS.md): An action is an atomic function that is registered to the AI System. It is a fundamental building block of a plan.
 
 ### Post Processing and respond to user
-If there is activity handler matched and executed, it goes into after-turn-handler, which enables developers to customize the post-processing. A typical customization is to decorate the messages sent by your bot using rich UI elements such as Adaptive Cards, you can design and iterate over your cards with [Microsoft Adaptive Card Previewer](https://learn.microsoft.com/microsoftteams/platform/concepts/build-and-test/adaptive-card-previewer?tabs=codelens).
+If there is activity handler matched and executed, it goes into after-turn-handler, which enables developers to customize the post-processing.
 
 After post-processing, Teams AI library saves the state and bot can send the response to user.
 
