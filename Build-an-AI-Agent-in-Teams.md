@@ -1,16 +1,15 @@
-# AI assistant bot in Teams
+> The feature is in Preview, we appreciate your feedback, please report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
 
-Microsoft Teams Toolkit enables you to build applications that act as AI ssistants who can recognize users intents and completing common tasks on behalf of users. Example tasks include querying and summarizing information (e.g., "Do you have any flights to DC tomorrow?"), authoring content based on user intent (e.g., "Rephrase this sentence to be more professional"), or acting on the user’s behalf (e.g., "Please cancel my order"). 
+An AI agent in Microsoft Teams is a conversational chatbot that can reason with large language models to interact with users to understand the intention and choose a sequence of actions to take so the chatbot can complete common tasks. Example tasks include querying and summarizing information (e.g., "Do you have any flights to DC tomorrow?"), authoring content based on user intent (e.g., "Rephrase this sentence to be more professional"), or acting on the user’s behalf (e.g., "Please cancel my order"). To build an AI agent that works in Microsoft Teams, you will need:
 
-AI ssistants complete common task by using some pre-defined skills. The commonly used skills are:
-- **Role Prompting via Chat Completions** to generate a model response for given chat conversation.
-- **Invoke API Call via Function Calling**. This is a comprehensive approach to create skills that powered by an API, be it real-time information retrieval or any task completion. After you define a set of functions, the model can convert natural language to arguments so that you can call your internal API.
-- **Code Interpreter** is OpenAI hosted tool. This enables developers to run code iteratively to solve challenging code and math problems.
-- **Augmented Knowledge** through proprietary product information or documents. This is a scenario that should be coevered separately in Chat with Your Data.
+* [Teams AI Library](https://github.com/microsoft/teams-ai) is the SDK designed specifically for this use case. It's predictive engine that can map intents to actions by leveraging provided prompts and topic filters. You can even chain multiple actions together to make building complex workflows easy. 
 
-Microsoft Teams Toolkit provides two app templates to build AI assistant bot, both built using Teams AI library, which provides the capabilities to integrate with large language models (LLMs).
-- **Start with Assistant API**: This allows you to use existing tools in Open AI platform to build skills for an Assistant. Available tools such as Code Interpreter, Knowledge Retrieval and Function Calling.
-- **Start from Scratch**: This requires you to build custom skills for your assistant bot, through basic prompting or function calling using Teams AI library.
+* [Microsoft Teams Toolkit](https://marketplace.visualstudio.com/items?itemName=TeamsDevApp.ms-teams-vscode-extension) enables you to get started with building AI agents fast through a set of ready-to-use application templates, development lifecycle automations in Visual Studio Code.
+
+* (Optional) [Assistants API](https://platform.openai.com/docs/assistants/overview) from OpenAI. You can also optionally use the Assistants API from OpenAI to simplify the creation of an AI agent. OpenAI as a platform, offers pre-built tools such as [Code Interpreter](https://platform.openai.com/docs/assistants/tools/code-interpreter), [Knowledge Retrieval](https://platform.openai.com/docs/assistants/tools/knowledge-retrieval) and [Function Calling](https://platform.openai.com/docs/assistants/tools/knowledge-retrieval) that drastically simplifies the code you need to write for common scenarios.
+
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/103cfa64-897d-4384-8c07-bd239aaab2b8)
+
 
 ## Build AI assistant with Assistants API
 
