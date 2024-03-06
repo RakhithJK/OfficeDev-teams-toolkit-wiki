@@ -194,7 +194,7 @@ To call an external function and embed the result in your text, use the `{{ func
     ```
 2. Use the fucntion in `src/prompts/chat/skprompt.txt`: `Your tasks are: {{ getTasks }}`.
 
-#### Syntax 3: ` {{functionName arg1 arg2 }}`
+#### Syntax 3: ` {{ functionName arg1 arg2 }}`
 This syntax enables you to call the specified function with the provided arguments and renders the result. Similar to the usage of calling a function, you can:
 
 1. Register the function into prompt manager in `src/app/app.ts`.
@@ -202,9 +202,10 @@ This syntax enables you to call the specified function with the provided argumen
 
 ### Customize user input
 
-**Whether to include user input**: In `src/prompts/chat/config.json`, configure `completion.include_input`. If `true`, the user input will be appended into the prompt.
+Teams AI library allows you to augment the prompt sent to LLM by including the user inputs. When including user inputs, you need to specify it in a prompt configuration file by setting `completion.include_input` to `true` in `src/prompts/chat/config.json`. You can alos optionally configure the maximum number of user input tokens in `src/prompts/chat/config.json` by changing `completion.max_input_tokens`. The default token is 2048.
 
-**Maximum number of user input tokens**: In `src/prompts/chat/config.json`, configure `completion.max_input_tokens`.
+> [!Important]
+> Note that the configuration properties in the file do not include all the possible configurations. To learn more about the description of each configuration and all the supported configurations see the [PromptTemplatConfig](https://github.com/microsoft/teams-ai/blob/2d43f5ca5b3bf27844f760663641741cae4a3243/js/packages/teams-ai/src/prompts/PromptTemplate.ts#L46C18-L46C39) Typescript interface.
 
 ### Customize conversation history
 
