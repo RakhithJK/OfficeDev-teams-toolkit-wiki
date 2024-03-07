@@ -182,7 +182,7 @@ The `{{$[scope].property}}` is used in the following way:
 - In `src/prompts/chat/skprompt.txt`, use the scoped state property such as `{{$conversation.tasks}}`.
 
 #### Syntax 2: `{{ functionName }}`
-To call an external function and embed the result in your text, use the `{{ functionName }}` syntax. For example, if you have a function called `getTasks` that can return a list of task items, you can embed the results into the responses from LLM:
+To call an external function and embed the result in your text, use the `{{ functionName }}` syntax. For example, if you have a function called `getTasks` that can return a list of task items, you can embed the results into the prompt:
 
 1. Register the function into prompt manager in `src/app/app.ts`:
 
@@ -203,10 +203,10 @@ This syntax enables you to call the specified function with the provided argumen
 
 ### Customize user input
 
-Teams AI library allows you to augment the prompt sent to LLM by including the user inputs. When including user inputs, you need to specify it in a prompt configuration file by setting `completion.include_input` to `true` in `src/prompts/chat/config.json`. You can alos optionally configure the maximum number of user input tokens in `src/prompts/chat/config.json` by changing `completion.max_input_tokens`. The default token is 2048.
+Teams AI library allows you to augment the prompt sent to LLM by including the user inputs. When including user inputs, you need to specify it in a prompt configuration file by setting `completion.include_input` to `true` in `src/prompts/chat/config.json`. You can also optionally configure the maximum number of user input tokens in `src/prompts/chat/config.json` by changing `completion.max_input_tokens`. This is useful when you want to limit the length of user inputs to avoid token limit exceeded.
 
 > [!Important]
-> Note that the configuration properties in the file do not include all the possible configurations. To learn more about the description of each configuration and all the supported configurations see the [PromptTemplatConfig](https://github.com/microsoft/teams-ai/blob/2d43f5ca5b3bf27844f760663641741cae4a3243/js/packages/teams-ai/src/prompts/PromptTemplate.ts#L46C18-L46C39) Typescript interface.
+> Note that the configuration properties in the file may not include all the possible configurations. To learn more about the description of each configuration and all the supported configurations see the [PromptTemplatConfig](https://github.com/microsoft/teams-ai/blob/2d43f5ca5b3bf27844f760663641741cae4a3243/js/packages/teams-ai/src/prompts/PromptTemplate.ts#L46C18-L46C39) Typescript interface.
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
@@ -214,9 +214,9 @@ Teams AI library allows you to augment the prompt sent to LLM by including the u
 
 The SDK automatically manages the conversation history, and you can customize the following.
 
-**Whether to include history.** In `src/prompts/chat/config.json`, configure `completion.include_history`. If `true`, the history will be inserted into the prompt to let LLM aware of the conversation history.
+**Whether to include history.** In `src/prompts/chat/config.json`, configure `completion.include_history`. If `true`, the history will be inserted into the prompt to let LLM aware of the conversation context.
 
-**Maximum number of history messages.** Configure `max_history_messages` when initializing `PromptManager`.
+**Maximum number of history messages.** Configure `max_history_messages` when initializing `PromptManager`. This controls the automatic pruning of the conversation history. 
 ```ts
 const prompts = new PromptManager({
   promptsFolder: path.join(__dirname, "../prompts"),
@@ -259,26 +259,25 @@ In `src/prompts/chat/config.json`, configure `completion.model`. Below lists the
 **Whisper**: Not supported currently.
 **TTS**: Not supported currently.
 
+You can know more about the models information via [OpenAI models](https://platform.openai.com/docs/models) and [Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models).
+
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
-
-### Customize completion type
-
-In `src/prompts/chat/config.json`, configure `completion.completion_type`. Supported options are `chat` and `text`.
 
 ### Customize model parameters
 
 In `src/prompts/chat/config.json`, configure the model parameters under `completion`:
-- `max_tokens`
-- `temperature`
-- `top_p`
-- `presence_penalty`
-- `frequency_penalty`
-- `stop_sequences`
+- `max_tokens`: The maximum number of tokens to generate.
+- `temperature`: The models temperature as a number between 0 and 2.
+- `top_p`: The models top_p as a number between 0 and 2.
+- `presence_penalty`: The models presence_penalty as a number between 0 and 1.
+- `frequency_penalty`: The models frequency_penalty as a number between 0 and 1.
+- `stop_sequences`: Array of stop sequences that when hit will stop generation.
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ### Handle messages with image
 
+If you want to handle user messages that includes inline images, you can:
 - In `src/app/app.ts`, initialize `TeamsAttachmentDownloader`.
     ```ts
     const downloader = new TeamsAttachmentDownloader({
@@ -293,7 +292,8 @@ In `src/prompts/chat/config.json`, configure the model parameters under `complet
       fileDownloaders: [downloader]
     });
     ```
-- In `src/prompts/chat/config.json`, set `completion.include_images` to `true`. Configure `completion.model` with your model that can handle messages with image.
+- In `src/prompts/chat/config.json`, set `completion.include_images` to `true`. With this, the SDK will insert the images to the prompt sent to LLM.
+- In `src/prompts/chat/config.json`, configure `completion.model` with your model that can handle messages with image, like gpt-4-vision-preview.
 - In `src/prompts/chat/skprompt.txt`, author your prompt text to handle messages with image.
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
