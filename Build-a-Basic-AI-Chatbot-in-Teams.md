@@ -236,7 +236,9 @@ const prompts = new PromptManager({
 
 ### Customize model type
 
-In `src/prompts/chat/config.json`, configure `completion.model`. Below lists the models whether the SDK supports.
+You can use a specific model for a prompt. In `src/prompts/chat/config.json`, configure `completion.model`. If no model is configured for the prompt, the default model configured in `OpenAIModel` will be used.
+
+Below lists the models whether the SDK supports.
 
 **GPT-3.5**
 
@@ -277,7 +279,11 @@ In `src/prompts/chat/config.json`, configure the model parameters under `complet
 
 ### Handle messages with image
 
-If you want to handle user messages that includes inline images, you can:
+If you want to handle user messages that includes inline images, for example: 
+
+![Teams message with inline image](https://github.com/OfficeDev/TeamsFx/assets/37978464/226700f7-f6db-40ce-9b35-52ecfe473754)
+
+You can:
 - In `src/app/app.ts`, initialize `TeamsAttachmentDownloader`.
     ```ts
     const downloader = new TeamsAttachmentDownloader({
