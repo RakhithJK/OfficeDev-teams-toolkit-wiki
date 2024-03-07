@@ -13,11 +13,11 @@ An AI agent in Microsoft Teams is a conversational chatbot that can reason with 
 ## In this tutorial, you will learn:
 
 Get started with Teams Toolkit, Teams AI Library and Assistants API:
-* [Prerequisite]()
-* [How to choose between Build New and Build with Assistants API]()
-* [How to create a new AI Agent]()
-* [How to understand the AI Agent project]()
-* [How Teams AI Library is used to create an AI Agent]()
+* [Prerequisite](#Prerequisites)
+* [How to choose between Build New and Build with Assistants API](#How-to-choose-between-Build-New-and-Build-with-Assistants-API)
+* [How to create a new AI Agent](#How-to-create-a-new-AI-Agent)
+* [How to understand the AI Agent project](#How-to-understand-the-AI-Agent-project)
+* [How Teams AI Library is used to create an AI Agent](#How-Teams-AI-Library-is-used-to-create-an-AI-Agent)
 
 Customize the app template:
 
@@ -29,6 +29,8 @@ Build with Assistants API:
 * [Customize the Assistant creation]()
 * [Add functions]()
 
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
 ***
 
 ## Prerequisites
@@ -38,6 +40,8 @@ Building an AI agent is an advanced scenario, it requires basic understanding of
 > [!Tip]
 > If you are not familiar with those concepts, please start with [Build a Basic AI Chatbot in Teams](https://github.com/OfficeDev/TeamsFx/wiki/Build-a-Basic-AI-Chatbot-in-Teams).
 
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
 ## How to choose between Build New and Build with Assistants API
 | Comparison |Build New       | Build with Assistants API   |
 | - | - | - |
@@ -46,6 +50,8 @@ Building an AI agent is an advanced scenario, it requires basic understanding of
 |LLM Services| Azure OpenAI or OpenAI | OpenAI Only |
 |Example Implementations in Template | This app template is capable of chatting with users and helping users manage tasks. | This app templates uses Code Interpreter tool to solve math problems and also Function Calling tool to get city weather.|
 |Flexibilities| Offers maximum flexibilities | Currently, the Knowledge Retrieval tool is not supported by Teams AI library |
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ## How to create a new AI Agent
 
@@ -92,8 +98,10 @@ Build New:
 Build with Assistants API:
 ![ai agent with assistants api](https://github.com/OfficeDev/TeamsFx/assets/15644078/90868166-115b-4394-a0d2-272bd985d0aa)
 
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
 ## How to understand the AI Agent project
-Teams Toolkit generates a standard project that has built-in features to demonstarte how a basic AI chatbot works as well as some configuration files that helps automate the development experience.
+Teams Toolkit generates a standard project that has built-in features to demonstrate how a basic AI chatbot works as well as some configuration files that help automate the development experience.
 
 Below are common files used for both options to build an AI Agent:
 | Folder       | Contents                                            |
@@ -140,15 +148,23 @@ When starting the two options (`Build New` vs `Build with Assistants API`), the 
 |`src/app/messages.js`| Defines the message activity handlers.|
 |`src/app/actions.js`| Defines the AI actions.|
 
-Customize the application template
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
-## Build with Assistants API
+## How Teams AI Library is used to create an AI Agent
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
+***
+
+## Customize the application template
 
 ### Customize assistant creation
 
 The file `src/creator.ts` creates a new OpenAI Assistant. You can customize the assistant creation by updating the parameters including instruction, model, tools and functions.
 
-### Add functions
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
+### Add functions (with Assistants API)
 
 When the assistant returns a function that need to be called along with its arguments, the SDK maps the function to the corresponding action that is registered in advance, then calls the action handler and submits the results to the assistant. You can add your functions by registering the actions into the app.
 - In `src/app/actions.ts`, define the action handlers.
@@ -165,8 +181,7 @@ When the assistant returns a function that need to be called along with its argu
     ```ts
     app.ai.action("myFunction", myFunction);
     ```
-
-## Build New
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ### Customize prompt augmentation
 
@@ -179,7 +194,9 @@ In `src/prompts/planner/config.json`, configure `augmentation.augmentation_type`
 - `sequence`: suitable for tasks that require multiple steps or complex logic.
 - `monologue`: suitable for tasks that require natural language understanding and generation, and more flexibility and creativity.
 
-### Add functions
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
+### Add functions (Build New)
 
 - In `src/prompts/planner/actions.json`, define your actions schema.
   ```json
@@ -215,3 +232,5 @@ In `src/prompts/planner/config.json`, configure `augmentation.augmentation_type`
     ```ts
     app.ai.action("myFunction", myFunction);
     ```
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
