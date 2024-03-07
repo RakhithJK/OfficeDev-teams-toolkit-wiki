@@ -49,7 +49,7 @@ Building an AI agent is an advanced scenario, it requires basic understanding of
 | Dev Effort |      Medium   | Relatively Small | 
 |LLM Services| Azure OpenAI or OpenAI | OpenAI Only |
 |Example Implementations in Template | This app template is capable of chatting with users and helping users manage tasks. | This app templates uses Code Interpreter tool to solve math problems and also Function Calling tool to get city weather.|
-|Flexibilities| Offers maximum flexibilities | Currently, the Knowledge Retrieval tool is not supported by Teams AI library |
+|Limitations| N/A | Currently, the Knowledge Retrieval tool is not supported by Teams AI library. |
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
