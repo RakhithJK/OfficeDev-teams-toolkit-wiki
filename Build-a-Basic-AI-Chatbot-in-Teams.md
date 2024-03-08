@@ -35,10 +35,10 @@ Customize the app template:
 ![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/f2dcb612-aa90-4755-9dba-7580304b146d)
 
 3. Select `Basic AI Chatbot`.
-![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/033e6a76-f939-4cd3-9faf-c1f66169e31a)
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/ed78a7c4-6f6e-4bbc-ab21-3897560c18e8)
 
 4. Select a Programming Language
-![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/27f8c031-6a65-4395-bcba-681409beaa18)
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/6ab09958-2f53-4084-ba35-63a72684a1f3)
 
 5. Select a service to access LLMs
 ![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/053e62b2-f470-44b0-8105-af7d1eecf1cd)
