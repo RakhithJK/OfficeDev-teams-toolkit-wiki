@@ -64,10 +64,11 @@ Building an AI agent is an advanced scenario, it requires basic understanding of
 ![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/f2dcb612-aa90-4755-9dba-7580304b146d)
 
 3. Select `AI Agent`.
-![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/54215c4f-dbb1-4f4d-bd98-f846fd79456b)
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/db787234-9bb3-4ea1-b10e-f53440c8aa03)
+
 
 4. Select a way to start building the agent
-![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/5175ce67-8203-4178-b0e3-7ba469a04786)
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/3abaaf73-bdc8-4f7a-b9c1-7814cf1e2d57)
 
 5. Select a Programming Language
 ![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/27f8c031-6a65-4395-bcba-681409beaa18)
