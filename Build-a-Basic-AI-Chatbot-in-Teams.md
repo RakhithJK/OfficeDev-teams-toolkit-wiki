@@ -97,7 +97,7 @@ The following are Teams Toolkit specific project files. You can [visit a complet
 
 Teams-AI library provides a typical flow to build an intelligent chatbot with AI capabilities.
 
-![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/dd22e32b-5087-485d-8e47-3433e66ec76d)
+![Teams AI Architecture](https://github.com/OfficeDev/TeamsFx/assets/37978464/02d087c5-29f2-427f-9057-f8946b1f3d40)
 
 > [!TIP]
 > Click here to learn more about [Turn Context and Turn States](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/TURNS.md).
@@ -107,8 +107,11 @@ At the beginning to handle any incoming requests to your bot, Teams AI library p
 * `TurnContext`: The turn context object provides information about the activity such as the sender and receiver, the channel, and other data needed to process the activity.
 * `TurnState`: The turn state object stores cookie-like data for the current turn. Just like the turn context, it is carried through the entire application logic, including the activity handlers and the AI System.
 
-### Pre Processing
-After loading the turn state, Teams AI library executes a `before-turn-handler`. This is built on top of the Microsoft Bot Framework that allows you to modify the `TurnState`, but in general you don't need to customize it.
+## Authentication
+If user authentication is configured, Teams AI attempts to sign the user in. If the user is already signed in, the SDK retrieves the access token and continues. Otherwise, the SDK starts the sign in flow and ends the current turn.
+
+### BeforeTurn Handler
+Before the activity handler or AI system is executed, Teams AI library executes a `beforeTurn` handler. This allows you to do something before the turn is run. If it returns false, the SDK saves turn state to storage and ends the turn.
 
 > [!Important]
 > On each turn, Teams AI library sequentially goes through all registered handlers to see if the incoming activity matches the selector. Thus, only the first matched handler will be executed.
@@ -130,10 +133,10 @@ The AI system in Teams AI library is responsible for moderating input and output
 * [Planner](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/PLANNER.md): The planner receives the user's ask and returns a plan on how to accomplish the request. The user's ask is in the form of a prompt or prompt template. It does this by using AI to mix and match atomic functions (called actions) registered to the AI system so that it can recombine them into a series of steps that complete a goal.
 * [Actions](https://github.com/microsoft/teams-ai/blob/main/getting-started/CONCEPTS/ACTIONS.md): An action is an atomic function that is registered to the AI System. It is a fundamental building block of a plan.
 
-### Post Processing and Respond to User
-If there is activity handler matched and executed, it goes into after-turn-handler, which enables developers to customize the post-processing.
+### AfterTurn Handler and Respond to User
+After the activity handler or AI system is executed, Teams AI library executes an `afterTurn` handler. This allows you to do something after the turn. If it returns true, the SDK saves turn state to storage.
 
-After post-processing, Teams AI library saves the state and bot can send the response to user.
+After that, Teams AI library saves the state and bot can send the response to user.
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
