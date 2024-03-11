@@ -166,6 +166,9 @@ Using project generated with Teams Toolkit, you can author the prompts in `src/p
 `{{ $[scope].property }}` Renders the value of the scoped property that is defined in turn state. Teams AI library defines three scopes: `temp`, `user` and `conversation`. If scope is omitted, the `temp` scope will be used.
 
 The `{{$[scope].property}}` is used in the following way:
+<details>
+<summary> For TypeScript language: </summary>
+
 - In `src/app/turnState.ts`, define your temp state, user state, conversation state and application turn state.
     ```ts
     export interface TempState extends DefaultTempState { ... }
@@ -175,28 +178,95 @@ The `{{$[scope].property}}` is used in the following way:
     }
     export type ApplicationTurnState = TurnState<ConversationState, UserState, TempState>;
     ``` 
+
 - In `src/app/app.ts`, use application turn state to initialize application.
     ```ts
     const app = new Application<ApplicationTurnState>(...);
     ```
+
 - In `src/prompts/chat/skprompt.txt`, use the scoped state property such as `{{$conversation.tasks}}`.
+</details>
+
+<details>
+<summary> For Python language: </summary>
+
+- In `src/state.py`, define your temp state, user state, conversation state and application turn state.
+    ```python
+    from teams.state import TempState, ConversationState, UserState, TurnState
+
+    class AppConversationState(ConversationState):
+        tasks: Dict[str, Task] # Your data definition here
+
+        @classmethod
+        async def load(cls, context: TurnContext, storage: Optional[Storage] = None) -> "AppConversationState":
+            state = await super().load(context, storage)
+            return cls(**state)
+
+    class AppTurnState(TurnState[AppConversationState, UserState, TempState]):
+        conversation: AppConversationState
+
+        @classmethod
+        async def load(cls, context: TurnContext, storage: Optional[Storage] = None) -> "AppTurnState":
+            return cls(
+                conversation=await AppConversationState.load(context, storage),
+                user=await UserState.load(context, storage),
+                temp=await TempState.load(context, storage),
+            )
+    ```
+
+- In `src/bot.py`, user application turn state to initialize application.
+    ```python
+    from state import AppTurnState
+
+    app = Application[AppTurnState](...)
+    ```
+
+- In `src/prompts/chat/skprompt.txt`, use the scoped state property such as `{{$conversation.tasks}}`.
+
+</details>
 
 #### Syntax 2: `{{ functionName }}`
 To call an external function and embed the result in your text, use the `{{ functionName }}` syntax. For example, if you have a function called `getTasks` that can return a list of task items, you can embed the results into the prompt:
 
-1. Register the function into prompt manager in `src/app/app.ts`:
+<details>
+<summary> For TypeScript language: </summary>
+
+- Register the function into prompt manager in `src/app/app.ts`:
 
     ```ts
     prompts.addFunction("getTasks", async (context: TurnContext, memory: Memory, functions: PromptFunctions, tokenizer: Tokenizer, args: string[]) => {
       return ...
     });
     ```
-2. Use the fucntion in `src/prompts/chat/skprompt.txt`: `Your tasks are: {{ getTasks }}`.
+- Use the fucntion in `src/prompts/chat/skprompt.txt`: `Your tasks are: {{ getTasks }}`.
+</details>
+
+<details>
+<summary> For Python language: </summary>
+
+- Register the function into prompt manager in `src/bot.py`:
+    ```python
+    @prompts.function("getTasks")
+    async def get_tasks(
+        _context: TurnContext,
+        state: MemoryBase,
+        _functions: PromptFunctions,
+        _tokenizer: Tokenizer,
+        _args: List[str],
+    ):
+        return state.get("conversation.tasks")
+    ```
+
+- Use the fucntion in `src/prompts/chat/skprompt.txt`: `Your tasks are: {{ getTasks }}`.
+
+</details>
 
 #### Syntax 3: ` {{ functionName arg1 arg2 }}`
 This syntax enables you to call the specified function with the provided arguments and renders the result. Similar to the usage of calling a function, you can:
 
-1. Register the function into prompt manager in `src/app/app.ts`.
+1. Register the function into prompt manager:
+  * For TypeScript language, register it in `src/app/app.ts`.
+  * For Python language, register it in `src/bot.py`.
 2. Use the function in `src/prompts/chat/skprompt.txt` such as `Your task is: {{ getTasks taskTitle }}`.
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
@@ -216,21 +286,51 @@ The SDK automatically manages the conversation history, and you can customize th
 
 **Whether to include history.** In `src/prompts/chat/config.json`, configure `completion.include_history`. If `true`, the history will be inserted into the prompt to let LLM aware of the conversation context.
 
-**Maximum number of history messages.** Configure `max_history_messages` when initializing `PromptManager`. This controls the automatic pruning of the conversation history. 
+**Maximum number of history messages.** Configure `max_history_messages` when initializing `PromptManager`.
+<details>
+<summary> For TypeScript language: </summary>
+
 ```ts
 const prompts = new PromptManager({
   promptsFolder: path.join(__dirname, "../prompts"),
   max_history_messages: 3,
 });
 ```
+</details>
+
+<details>
+<summary> For Python language: </summary>
+
+```python
+prompts = PromptManager(PromptManagerOptions(
+    prompts_folder=f"{os.getcwd()}/prompts",
+    max_history_messages=3,
+))
+```
+</details>
 
 **Maximum number of history tokens.** Configure `max_conversation_history_tokens` when initializing `PromptManager`.
+<details>
+<summary> For TypeScript language: </summary>
+
 ```ts
   const prompts = new PromptManager({
     promptsFolder: path.join(__dirname, "../prompts"),
     max_conversation_history_tokens: 1000,
 });
 ```
+</details>
+
+<details>
+<summary> For Python language: </summary>
+
+```python
+prompts = PromptManager(PromptManagerOptions(
+    prompts_folder=f"{os.getcwd()}/prompts",
+    max_conversation_history_tokens=1000,
+))
+```
+</details>
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
@@ -284,6 +384,9 @@ If you want to handle user messages that includes inline images, for example:
 ![Teams message with inline image](https://github.com/OfficeDev/TeamsFx/assets/37978464/226700f7-f6db-40ce-9b35-52ecfe473754)
 
 You can:
+<details>
+<summary>For TypeScript language:</summary>
+
 - In `src/app/app.ts`, initialize `TeamsAttachmentDownloader`.
     ```ts
     const downloader = new TeamsAttachmentDownloader({
@@ -301,5 +404,14 @@ You can:
 - In `src/prompts/chat/config.json`, set `completion.include_images` to `true`. With this, the SDK will insert the images to the prompt sent to LLM.
 - In `src/prompts/chat/config.json`, configure `completion.model` with your model that can handle messages with image, like gpt-4-vision-preview.
 - In `src/prompts/chat/skprompt.txt`, author your prompt text to handle messages with image.
+
+</details>
+
+<details>
+<summary>For Python language:</summary>
+
+Currently not supported.
+
+</details>
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
