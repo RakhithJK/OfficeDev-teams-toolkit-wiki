@@ -167,7 +167,7 @@ Using project generated with Teams Toolkit, you can author the prompts in `src/p
 
 The `{{$[scope].property}}` is used in the following way:
 <details>
-<summary> For TypeScript language: </summary>
+<summary> For Javascript language: </summary>
 
 - In `src/app/turnState.ts`, define your temp state, user state, conversation state and application turn state.
     ```ts
@@ -229,7 +229,7 @@ The `{{$[scope].property}}` is used in the following way:
 To call an external function and embed the result in your text, use the `{{ functionName }}` syntax. For example, if you have a function called `getTasks` that can return a list of task items, you can embed the results into the prompt:
 
 <details>
-<summary> For TypeScript language: </summary>
+<summary> For Javascript language: </summary>
 
 - Register the function into prompt manager in `src/app/app.ts`:
 
@@ -265,7 +265,7 @@ To call an external function and embed the result in your text, use the `{{ func
 This syntax enables you to call the specified function with the provided arguments and renders the result. Similar to the usage of calling a function, you can:
 
 1. Register the function into prompt manager:
-  * For TypeScript language, register it in `src/app/app.ts`.
+  * For Javascript language, register it in `src/app/app.ts`.
   * For Python language, register it in `src/bot.py`.
 2. Use the function in `src/prompts/chat/skprompt.txt` such as `Your task is: {{ getTasks taskTitle }}`.
 
@@ -276,7 +276,7 @@ This syntax enables you to call the specified function with the provided argumen
 Teams AI library allows you to augment the prompt sent to LLM by including the user inputs. When including user inputs, you need to specify it in a prompt configuration file by setting `completion.include_input` to `true` in `src/prompts/chat/config.json`. You can also optionally configure the maximum number of user input tokens in `src/prompts/chat/config.json` by changing `completion.max_input_tokens`. This is useful when you want to limit the length of user inputs to avoid token limit exceeded.
 
 > [!Important]
-> Note that the configuration properties in the file may not include all the possible configurations. To learn more about the description of each configuration and all the supported configurations see the [PromptTemplatConfig](https://github.com/microsoft/teams-ai/blob/2d43f5ca5b3bf27844f760663641741cae4a3243/js/packages/teams-ai/src/prompts/PromptTemplate.ts#L46C18-L46C39) Typescript interface.
+> Note that the configuration properties in the file may not include all the possible configurations. To learn more about the description of each configuration and all the supported configurations see the [PromptTemplatConfig](https://github.com/microsoft/teams-ai/blob/2d43f5ca5b3bf27844f760663641741cae4a3243/js/packages/teams-ai/src/prompts/PromptTemplate.ts#L46C18-L46C39) Javascript interface.
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
@@ -288,7 +288,7 @@ The SDK automatically manages the conversation history, and you can customize th
 
 **Maximum number of history messages.** Configure `max_history_messages` when initializing `PromptManager`.
 <details>
-<summary> For TypeScript language: </summary>
+<summary> For Javascript language: </summary>
 
 ```ts
 const prompts = new PromptManager({
@@ -311,7 +311,7 @@ prompts = PromptManager(PromptManagerOptions(
 
 **Maximum number of history tokens.** Configure `max_conversation_history_tokens` when initializing `PromptManager`.
 <details>
-<summary> For TypeScript language: </summary>
+<summary> For Javascript language: </summary>
 
 ```ts
   const prompts = new PromptManager({
@@ -385,7 +385,7 @@ If you want to handle user messages that includes inline images, for example:
 
 You can:
 <details>
-<summary>For TypeScript language:</summary>
+<summary>For Javascript language:</summary>
 
 - In `src/app/app.ts`, initialize `TeamsAttachmentDownloader`.
     ```ts
