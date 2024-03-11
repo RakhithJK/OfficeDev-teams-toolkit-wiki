@@ -89,7 +89,7 @@ For Python language:
 
 | File                                 | Contents                                           |
 | - | - |
-|`src/api.py`| Host a aiohttp api server for the app.|
+|`src/api.py`| Hosts an aiohttp api server for the app.|
 |`src/bot.py`| Handles business logics for the Basic AI Chatbot.|
 |`src/config.py`| Defines the environment variables.|
 |`src/app.py`| Main module of the bot.|
