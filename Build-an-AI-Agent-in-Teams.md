@@ -97,7 +97,7 @@ Build New:
 ![ai agent new](https://github.com/OfficeDev/TeamsFx/assets/37978464/053218b7-cb17-4db4-9b8a-50ca04c1cb55)
 
 Build with Assistants API:
-![ai agent with assistants api](https://github.com/OfficeDev/TeamsFx/assets/15644078/90868166-115b-4394-a0d2-272bd985d0aa)
+![ai agent with assistants api](https://github.com/OfficeDev/TeamsFx/assets/37978464/e3b458f3-5e74-460d-9df2-bf77ed8d9c54)
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
