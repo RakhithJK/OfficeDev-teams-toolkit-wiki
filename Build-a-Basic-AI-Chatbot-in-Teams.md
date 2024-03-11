@@ -74,6 +74,8 @@ Teams Toolkit generates a standard project that has built-in features to demonst
 
 The following files can be customized and demonstrate an example implementation to get you started.
 
+For Javascript language:
+
 | File                                 | Contents                                           |
 | - | - |
 |`src/index.js`| Sets up the bot app server.|
@@ -82,6 +84,18 @@ The following files can be customized and demonstrate an example implementation 
 |`src/prompts/chat/skprompt.txt`| Defines the prompt.|
 |`src/prompts/chat/config.json`| Configures the prompt.|
 |`src/app/app.js`| Handles business logics for the Basic AI Chatbot.|
+
+For Python language: 
+
+| File                                 | Contents                                           |
+| - | - |
+|`src/api.py`| Host a aiohttp api server for the app.|
+|`src/bot.py`| Handles business logics for the Basic AI Chatbot.|
+|`src/config.py`| Defines the environment variables.|
+|`src/app.py`| Main module of the bot.|
+|`src/prompts/chat/skprompt.txt`| Defines the prompt.|
+|`src/prompts/chat/config.json`| Configures the prompt.|
+
 
 The following are Teams Toolkit specific project files. You can [visit a complete guide on Github](https://github.com/OfficeDev/TeamsFx/wiki/Teams-Toolkit-Visual-Studio-Code-v5-Guide#overview) to understand how Teams Toolkit works.
 
