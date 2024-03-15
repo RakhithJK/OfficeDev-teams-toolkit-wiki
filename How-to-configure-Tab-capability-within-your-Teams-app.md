@@ -260,15 +260,20 @@ However, this document assumes that you are adding a client-side tab app.
     }
     ```
 
-1. To host your tab app in Azure Storage, you'll need to enable the static website feature for the storage account. Add the following action in your `teamsapp.yml` file.
+1. To host your tab app in Azure Storage, you'll need to enable the static website feature for the storage account. Add the `azureStorage/enableStaticWebsite` action in your `teamsapp.yml` file. Please note that the action depends on the `TAB_AZURE_STORAGE_RESOURCE_ID` which is the output of the Bicep deployments, so you should put the action after the `arm/deploy` action. 
 
     ```yml
     provision:
+      ...
+      - uses: arm/deploy
+        ...
+      # Add this action
       - uses: azureStorage/enableStaticWebsite
         with:
           storageResourceId: ${{TAB_AZURE_STORAGE_RESOURCE_ID}}
           indexPage: index.html
           errorPage: error.html
+      ...
     ```
 
 1. Run `Teams: Provision` command in Visual Studio Code to apply the bicep to Azure.
