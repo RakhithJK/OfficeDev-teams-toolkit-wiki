@@ -11,10 +11,18 @@ Basically you will need take care these configurations:
 * In the Teams manifest file, add the SSO application to link it with Teams application. 
 * Add SSO application information in Teams Toolkit configuration files in order to make sure the authentication app can be registered on backend service and started by Teams Toolkit when you debugging or previewing Teams application.
 
+**Note that now we have two kinds of folder structure. Please kindly choose the placeholders according to your VS version.**
+- For VS 17.10 Preview 3 or later:
+  * PROJECT_FOLDER: ./{YOUR-APP-NAME}
+  * TEAMSAPP_FOLDER: ./TeamsApp
+- Others:
+  * PROJECT_FOLDER: ./
+  * TEAMSAPP_FOLDER: ./
+
 For Teams Tab Application
 -------------------------
 1. Update Microsoft Entra app manifest
-`TeamsFx-Auth/aad.manifest.template.json` is an Microsoft Entra manifest template. You can copy and paste this file to any folder of your project, rename as `aad.manifest.json` and take notes of the path to this file. Because the path will be useful later. And you need to make the following updates in the template to create/update an Microsoft Entra app for SSO:
+`{{TEAMSAPP_FOLDER}}/TeamsFx-Auth/aad.manifest.template.json` is an Microsoft Entra manifest template. You can copy and paste this file to any folder of your project, rename as `aad.manifest.json` and take notes of the path to this file. Because the path will be useful later. And you need to make the following updates in the template to create/update an Microsoft Entra app for SSO:
 
     1. "identifierUris": Used to uniquely identify and access the resource.
     [HelpLink.](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#identifieruris-attribute)
@@ -39,7 +47,7 @@ For Teams Tab Application
       }
     ]
     ```
-    > Note: You can use `${{ENV_NAME}}` to reference variables in `env/.env.{TEAMSFX_ENV}`.
+    > Note: You can use `${{ENV_NAME}}` to reference variables in `{{TEAMSAPP_FOLDER}}/env/.env.{TEAMSFX_ENV}`.
 
     Example for TeamsFx Tab template
     ```
@@ -69,11 +77,11 @@ For Teams Tab Application
       "resource": "SAME_AS_YOUR_IDENTIFIERURIS"
     }
     ```
-    > Note: update the value of resource to your `identifierUris` configed in step 1.i, and use `${{ENV_NAME}}` to reference envs in `env/.env.{TEAMSFX_ENV}`.
+    > Note: update the value of resource to your `identifierUris` configed in step 1.i, and use `${{ENV_NAME}}` to reference envs in `{{TEAMSAPP_FOLDER}}/env/.env.{TEAMSFX_ENV}`.
 
     Example for TeamsFx Tab template
 
-    Open `appPackage/manifest.json`, and append the following object in the manifest:
+    Open `{{TEAMSAPP_FOLDER}}/appPackage/manifest.json`, and append the following object in the manifest:
     ```
     "webApplicationInfo": {
       "id": "${{AAD_APP_CLIENT_ID}}",
@@ -81,7 +89,7 @@ For Teams Tab Application
     }
     ```
  
-3. Update `teamsapp.yml` and `teamsapp.local.yml`
+3. Update `{{TEAMSAPP_FOLDER}}/teamsapp.yml` and `{{TEAMSAPP_FOLDER}}/teamsapp.local.yml`
   Microsoft Entra related changes and configs needs to be added into your `yml` files:
     - add `aadApp/create` under `provision`:
       For creating new Microsoft Entra apps used for SSO.
@@ -99,7 +107,7 @@ For Teams Tab Application
 
     Example for TeamsFx Tab template
     
-    In both `teamsapp.yml` and `teamsapp.local.yml` files:
+    In both `{{TEAMSAPP_FOLDER}}/teamsapp.yml` and `{{TEAMSAPP_FOLDER}}/teamsapp.local.yml` files:
     - Add following lines under `provision` to create Microsoft Entra app.
       ```
       - uses: aadApp/create
@@ -126,7 +134,7 @@ For Teams Tab Application
       ```
       > Note: Replace the value of `manifestPath` with the relative path of Microsoft Entra app manifest noted in step 1. For example, `./aad.manifest.json`
 
-    In `teamsapp.local.yml` only:
+    In `{{TEAMSAPP_FOLDER}}/teamsapp.local.yml` only:
     - Add following lines under `provision` to add Microsoft Entra related configs to local debug service.
       ```
         - uses: file/createOrUpdateJsonFile
@@ -149,7 +157,7 @@ For Teams Tab Application
   
    Example for TeamsFx Tab template
 
-   Open `infra/azure.parameters.json` and add following lines into `parameters`:
+   Open `{{TEAMSAPP_FOLDER}}/infra/azure.parameters.json` and add following lines into `parameters`:
    ```
    "tabAadAppClientId": {
      "value": "${{AAD_APP_CLIENT_ID}}"
@@ -165,7 +173,7 @@ For Teams Tab Application
    }
    ```
 
-   Open `infra/azure.bicep` find follow line:
+   Open `{{TEAMSAPP_FOLDER}}/infra/azure.bicep` find follow line:
    ```
    param location string = resourceGroup().location
    ```
@@ -225,7 +233,7 @@ For Teams Tab Application
     }
    ```
 
-5. Update `appsettings.json` and `appsettings.Development.json`
+5. Update `{{PROJECT_FOLDER}}/appsettings.json` and `{{PROJECT_FOLDER}}/appsettings.Development.json`
   Microsoft Entra related configs needs to be configure to your .Net project settings:
     ```
     TeamsFx: {
@@ -241,7 +249,7 @@ For Teams Tab Application
 
    Example for TeamsFx Tab template
   
-   Open `appsettings.json` and `appsettings.Development.json`, and append the following lines:
+   Open `{{PROJECT_FOLDER}}/appsettings.json` and `{{PROJECT_FOLDER}}/appsettings.Development.json`, and append the following lines:
    ```
    "TeamsFx": {	
      "Authentication": {	
@@ -256,11 +264,11 @@ For Teams Tab Application
 6. Update source code. With all changes above, your environment is ready and can update your code to add SSO to your Teams app.
    You can find samples in following pages:
     - TeamsFx SDK: https://www.nuget.org/packages/Microsoft.TeamsFx/
-    - Sample Code: under `TeamsFx-Auth/Tab`
+    - Sample Code: under `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth/Tab`
   
    Example for TeamsFx Tab template
 
-   1. Create `Config.cs` and paste the following code:
+   1. Create `{{PROJECT_FOLDER}}/Config.cs` and paste the following code:
     ```
     using Microsoft.TeamsFx.Configuration;
 
@@ -278,8 +286,8 @@ For Teams Tab Application
     ```
      > Note: You need to replace `{{YOUR_NAMESPACE}}` with your namespace name
   
-   2. Move `TeamsFx-Auth/Tab/GetUserProfile.razor` to `Components/Pages`
-   3. Add the `GetUserProfile` component to your razor page, for example find following line in `Components/Pages/Hello.razor`:
+   2. Move `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth/Tab/GetUserProfile.razor` to `{{PROJECT_FOLDER}}/Components/Pages`
+   3. Add the `GetUserProfile` component to your razor page, for example find following line in `{{PROJECT_FOLDER}}/Components/Pages/Hello.razor`:
     ```
     <h1>Hello, World</h1>
     <p>Your app is running @(GetHubName())</p>
@@ -290,7 +298,7 @@ For Teams Tab Application
     <GetUserProfile />
     ```
 
-   4. Open `Program.cs`, find the following line:
+   4. Open `{{PROJECT_FOLDER}}/Program.cs`, find the following line:
     ```
     builder.Services.AddScoped<MicrosoftTeams>();
     ```
@@ -300,7 +308,7 @@ For Teams Tab Application
     builder.Services.AddTeamsFx(config.TeamsFx.Authentication);
     ```
 
-    > Note: You need to exclude the sample code under `TeamsFx-Auth` to avoid build failure by adding following lines into your `.csproj` file:
+    > [Optional] Note: You may need to exclude the sample code under `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth` to avoid build failure by adding following lines into your `.csproj` file:
    ```
    <ItemGroup>
      <Compile Remove="TeamsFx-Auth/**/*" />
@@ -309,13 +317,13 @@ For Teams Tab Application
    </ItemGroup>
    ```
 
-   5. Download `auth-start.html` and `auth-end.html` from [GitHub Repo](https://github.com/OfficeDev/TeamsFx/tree/dev/templates/csharp/sso-tab/wwwroot) to `{ProjectDirectory}/wwwroot`.
+   5. Download `auth-start.html` and `auth-end.html` from [GitHub Repo](https://github.com/OfficeDev/TeamsFx/tree/dev/templates/csharp/sso-tab/wwwroot) to `{{PROJECT_FOLDER}}/wwwroot`.
 
 7. To check the SSO app works as expected, run `Local Debug` in Visual Studio. Or run the app in cloud by clicking `Provision in the cloud` and then `Deploy to the cloud` to make the updates taking effects.
 
 For Teams Bot Applications
 -------------------------
-1. Update Microsoft Entra app manifest. `TeamsFx-Auth/aad.manifest.template.json` is an Microsoft Entra manifest template. You can copy and paste this file to any folder of your project, rename as `aad.manifest.json` and take notes of the path to this file. Because the path will be useful later. And you need to make the following updates in the template to create/update an Microsoft Entra app for SSO:
+1. Update Microsoft Entra app manifest. `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth/aad.manifest.template.json` is an Microsoft Entra manifest template. You can copy and paste this file to any folder of your project, rename as `aad.manifest.json` and take notes of the path to this file. Because the path will be useful later. And you need to make the following updates in the template to create/update an Microsoft Entra app for SSO:
 
    1. "identifierUris": Used to uniquely identify and access the resource.[HelpLink.](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#identifieruris-attribute) You need to set correct Redirect Uris into "identifierUris" for successfully identify this app.
     
@@ -325,7 +333,7 @@ For Teams Bot Applications
       "api://botid-${{BOT_ID}}"
     ]
     ```
-    > Note: You can use use `${{ENV_NAME}}` to reference variables in `env/.env.{TEAMSFX_ENV}`.
+    > Note: You can use use `${{ENV_NAME}}` to reference variables in `{{TEAMSAPP_FOLDER}}/env/.env.{TEAMSFX_ENV}`.
 
    2. "replyUrlsWithType": List of registered redirect_uri values that Microsoft Entra will accept as destinations when returning tokens.[HelpLink.](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#replyurlswithtype-attribute) You need to set necessary Redirect Uris into "replyUrlsWithType" for successfully returning token.
     
@@ -338,7 +346,7 @@ For Teams Bot Applications
       }
     ]
     ```
-    > Note: You can use use `${{ENV_NAME}}` to reference envs in `env/.env.{TEAMSFX_ENV}`.
+    > Note: You can use use `${{ENV_NAME}}` to reference envs in `{{TEAMSAPP_FOLDER}}/env/.env.{TEAMSFX_ENV}`.
 
     Example for TeamsFx Bot template
     ```
@@ -363,11 +371,11 @@ For Teams Bot Applications
       "resource": "SAME_AS_YOUR_IDENTIFIERURIS"
     }
     ```
-    > Note: You need to update the value of resource to your `identifierUris` configed in step 1.i, and use ${{ENV_NAME}} to reference envs in `env/.env.{TEAMSFX_ENV}`.
+    > Note: You need to update the value of resource to your `identifierUris` configed in step 1.i, and use ${{ENV_NAME}} to reference envs in `{{TEAMSAPP_FOLDER}}/env/.env.{TEAMSFX_ENV}`.
 
     Example for TeamsFx Bot template
 
-    Open `appPackage/manifest.json`, and append the following object in the manifest:
+    Open `{{TEAMSAPP_FOLDER}}/appPackage/manifest.json`, and append the following object in the manifest:
     ```
     "webApplicationInfo": {
       "id": "${{AAD_APP_CLIENT_ID}}",
@@ -400,7 +408,7 @@ For Teams Bot Applications
     ]
     ```
 
-3. Update `teamsapp.yml` and `teamsapp.local.yml` files:
+3. Update `{{TEAMSAPP_FOLDER}}/teamsapp.yml` and `{{TEAMSAPP_FOLDER}}/teamsapp.local.yml` files:
    Microsoft Entra related changes and configs needs to be added into your `yml` files:
     - add `aadApp/create` under `provision`:
       For creating new Microsoft Entra apps used for SSO.
@@ -417,7 +425,7 @@ For Teams Bot Applications
 
    Example for TeamsFx Bot template
 
-   In both `teamsapp.yml` and `teamsapp.local.yml` files:
+   In both `{{TEAMSAPP_FOLDER}}/teamsapp.yml` and `{{TEAMSAPP_FOLDER}}/teamsapp.local.yml` files:
     - Add following lines under `provision` to create Microsoft Entra app.
       ```
       - uses: aadApp/create
@@ -445,7 +453,7 @@ For Teams Bot Applications
       > Note: Replace the value of "manifestPath" with the relative path of Microsoft Entra app manifest noted in step 1.
             For example, './aad.manifest.json'
 
-   In `teamsapp.local.yml` only:
+   In `{{TEAMSAPP_FOLDER}}/teamsapp.local.yml` only:
     - Update `file/createOrUpdateJsonFile` under `provision` to add Microsoft Entra related configs to local debug service.
       ```
       - uses: file/createOrUpdateJsonFile
@@ -473,7 +481,7 @@ For Teams Bot Applications
 
    Example for TeamsFx Bot template
 
-   Open `infra/azure.parameters.json` and add following lines into `parameters`:
+   Open `{{TEAMSAPP_FOLDER}}/infra/azure.parameters.json` and add following lines into `parameters`:
    ```
    "m365ClientId": {
      "value": "${{AAD_APP_CLIENT_ID}}"
@@ -489,7 +497,7 @@ For Teams Bot Applications
    }
    ```
 
-   Open `infra/azure.bicep` find follow line:
+   Open `{{TEAMSAPP_FOLDER}}/infra/azure.bicep` find follow line:
    ```
    param location string = resourceGroup().location
    ```
@@ -521,7 +529,7 @@ For Teams Bot Applications
    ```
    > Note: If you want add additional configs to your Azure Webapp, please add the configs in the webAppSettings.
 
-5. Update `appsettings.json` and `appsettings.Development.json`. Microsoft Entra related configs needs to be configure to your .Net project settings:
+5. Update `{{PROJECT_FOLDER}}/appsettings.json` and `{{PROJECT_FOLDER}}/appsettings.Development.json`. Microsoft Entra related configs needs to be configure to your .Net project settings:
     ```
     TeamsFx: {
       Authentication: {
@@ -539,7 +547,7 @@ For Teams Bot Applications
 
    Example for TeamsFx Bot template
 
-   Open `appsettings.json` and `appsettings.Development.json`, and append the following lines:
+   Open `{{PROJECT_FOLDER}}/appsettings.json` and `{{PROJECT_FOLDER}}/appsettings.Development.json`, and append the following lines:
    ```
    "TeamsFx": {
      "Authentication": {
@@ -558,11 +566,11 @@ For Teams Bot Applications
   
    You can find samples in following pages:
     - TeamsFx SDK: https://www.nuget.org/packages/Microsoft.TeamsFx/
-    - Sample Code: under `TeamsFx-Auth/Bot`
+    - Sample Code: under `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth/Bot`
 
    Example for TeamsFx Bot template
    
-   1. Open `Config.cs` and replace all with following lines:
+   1. Open `{{PROJECT_FOLDER}}/Config.cs` and replace all with following lines:
     ```
     using Microsoft.TeamsFx.Configuration;
 
@@ -583,10 +591,10 @@ For Teams Bot Applications
     ```
     > Note: You need to replace {{YOUR_NAMESPACE}} with your namespace name
   
-   2. Move `TeamsFx-Auth/Bot/SSO` and `TeamsFx-Auth/Bot/Pages` to `/`
+   2. Move `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth/Bot/SSO` and `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth/Bot/Pages` to `{{PROJECT_FOLDER}}/`
      > Note: Remember to replace '{YOUR_NAMESPACE}' with your project namespace.
 
-   3. Open `Program.cs`, find following line:
+   3. Open `{{PROJECT_FOLDER}}/Program.cs`, find following line:
     ```
     builder.Services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
     ```
@@ -672,7 +680,7 @@ For Teams Bot Applications
       });
       ```
   
-    > Note: You need to exclude the sample code under `TeamsFx-Auth` to avoid build failure by adding following lines into your `.csproj` file:
+    > [Optional] Note: You may need to exclude the sample code under `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth` to avoid build failure by adding following lines into your `.csproj` file:
     ```
     <ItemGroup>
       <Compile Remove="TeamsFx-Auth/**/*" />
