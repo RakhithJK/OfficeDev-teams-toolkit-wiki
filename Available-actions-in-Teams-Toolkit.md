@@ -668,6 +668,25 @@ This action will register an API key in Developer Portal for authentication of A
       primaryClientSecret: <your-api-key-secret> # Optional. The client secret of your API key. Length of client secret >= 10 and <= 128
       secondaryClientSecret: <your-api-key-secret> # Optional. The client secret of your API key. Length of client secret >= 10 and <= 128
       apiSpecPath: <your-api-spec-path> # Required. Relative path to this file.
+      applicableToApps: <applicableToApps-setting-of-your-api-key> # Optional. Choose which apps can use this Api Key. Values: SpecificApp, AnyApp.
+      targetAudience: <targetAudience-setting-of-your-api-key> # Optional. Choose which tenant can use this API Key. Values: HomeTenant, AnyTenant
+    writeToEnvironmentFile:
+      registrationId: <your-preferred-env-var-name> # Required. The registration id of the API key.
+```
+
+# apiKey/update
+This action will update an API key in Developer Portal for authentication of API based message extension.
+ 
+## Syntax:
+```
+  - uses: apiKey/update
+    with:
+      name: <your-api-key-name> # Required. Make sure the API key name in API specification is the same with the name defined here.
+      appId: <your-teams-app-id> # Required. The id for Teams app you want to allow access to the API key.
+      apiSpecPath: <your-api-spec-path> # Required. Relative path to this file.
+      registrationId: <your-registraion-id> # Required. The registration id of the Api key.
+      applicableToApps: <applicableToApps-setting-of-your-api-key> # Optional. Choose which apps can use this Api Key. Values: SpecificApp, AnyApp.
+      targetAudience: <targetAudience-setting-of-your-api-key> # Optional. Choose which tenant can use this API Key. Values: HomeTenant, AnyTenant
     writeToEnvironmentFile:
       registrationId: <your-preferred-env-var-name> # Required. The registration id of the API key.
 ```
