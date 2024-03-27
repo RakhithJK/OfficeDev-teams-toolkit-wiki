@@ -139,7 +139,7 @@ For Teams Tab Application
       ```
         - uses: file/createOrUpdateJsonFile
           with:
-            target: ./appsettings.Development.json
+            target: ./{YOUR-APP-NAME}/appsettings.Development.json
             appsettings:
               TeamsFx:
                 Authentication:
@@ -458,7 +458,7 @@ For Teams Bot Applications
       ```
       - uses: file/createOrUpdateJsonFile
         with:
-          target: ./appsettings.Development.json
+          target: ./{YOUR-APP-NAME}/appsettings.Development.json
           appsettings:
             BOT_ID: ${{BOT_ID}}
             BOT_PASSWORD: ${{SECRET_BOT_PASSWORD}}
