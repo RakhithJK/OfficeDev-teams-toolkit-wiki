@@ -168,20 +168,110 @@ Here's a minimal set of implementations to add RAG to your app. In general, it i
   }
   ```
 
-### Retrieve data from different sources
+# Retrieve data from different sources
 
-In real scenario, you may have your knowledge stored somewhere else.
+## Azure AI Search as Data Source
 
-[Azure AI Search as Data Source](./RAG-AzureAISearch.md) provides a sample to add your documents to Azure AI Search Service, then use the search index as data source.
+This doc showcases a solution to:
+- Add your document to Azure AI Search via Azure OpenAI Service
+- Use Azure AI Search index as data source in the RAG app
 
-[Microsoft Graph Search API as Data Source](./RAG-MicrosoftGraph.md) provides a sample to use M365 content from Microsoft Graph Search API as data source.
+### Data Ingestion
 
-Or, to fully control the data ingestion, see the sample on [Build your own Data Ingestion](./RAG-BuildYourDataIngestion.md) to build your own vector index, and use it as data source.
+With [Azure OpenAI on your data](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/use-your-data?tabs=ai-search), you can ingest your knowledge documents to Azure AI Search Service and create a vector index. Then you can use the index as data source.
 
-There are other alternatives, e.g., Azure Cosmos DB Vector Database Extension or Azure PostgreSQL Server pgvector Extension as vector databases, or Bing Web Search API to get latest web content. You may implement any `DataSource` instance to connect with your own data source.
+- Prepare your data in Azure Blob Storage, or directly upload in later step
+- On Azure OpenAI Studio, add your data source
+  ![AOAI Data Source](https://github.com/OfficeDev/TeamsFx/assets/13211513/a5ca2e74-b95e-4c02-bc03-e06aec7208a3)
+- Fill fields to create a vector index
+  ![AOAI Data Source Step](a[ssets/aoai-datasource-step.png](https://github.com/OfficeDev/TeamsFx/assets/13211513/d86106bf-578f-4d9f-8c20-aaf6d02b4d33))
 
-### Pre-process user input
+> Note: this approach creates an end-to-end chat API to be called as AI model. But you can also just use the created index as data source, and use Teams AI library to customize the retrieval and prompt.
 
-In real scenario, you may want to pre-process user input before retrieval, e.g., to shorten and summarize long question, or to remove sensitive information, or to add some context to the input.
+### Data Source Impelmentation
 
-[Pre-process User Input](./RAG-PreProcessUserInput.md) provides a sample to summarize user input to some keywords before retrieval.
+After ingesting data into Azure AI Search, you can implement your own `DataSource` to retrieve data from search index.
+
+```typescript
+import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
+import { DataSource, Memory, OpenAIEmbeddings, RenderedPromptSection, Tokenizer } from "@microsoft/teams-ai";
+import { TurnContext } from "botbuilder";
+
+export interface Doc {
+  id: string,
+  content: string, // searchable
+  filepath: string,
+  // contentVector: number[] // vector field
+  // ... other fields
+}
+
+// Azure OpenAI configuration
+const aoaiEndpoint = "<your-aoai-endpoint>";
+const aoaiApiKey = "<your-aoai-key>";
+const aoaiDeployment = "<your-embedding-deployment, e.g., text-embedding-ada-002>";
+
+// Azure AI Search configuration
+const searchEndpoint = "<your-search-endpoint>";
+const searchApiKey = "<your-search-apikey>";
+const searchIndexName = "<your-index-name>";
+
+export class MyDataSource implements DataSource {
+  public readonly name = "my-datasource";
+  private readonly embeddingClient: OpenAIEmbeddings;
+  private readonly searchClient: SearchClient<Doc>;
+
+  constructor() {
+    this.embeddingClient = new OpenAIEmbeddings({
+      azureEndpoint: aoaiEndpoint,
+      azureApiKey: aoaiApiKey,
+      azureDeployment: aoaiDeployment
+    });
+    this.searchClient = new SearchClient<Doc>(searchEndpoint, searchIndexName, new AzureKeyCredential(searchApiKey));
+  }
+
+  public async renderData(context: TurnContext, memory: Memory, tokenizer: Tokenizer, maxTokens: number): Promise<RenderedPromptSection<string>> {
+    // use user input as query
+    const input = memory.getValue("temp.input") as string;
+
+    // generate embeddings
+    const embeddings = (await this.embeddingClient.createEmbeddings(input)).output[0];
+
+    // query Azure AI Search
+    const response = await this.searchClient.search(input, {
+      select: [ "id", "content", "filepath" ],
+      searchFields: ["rawContent"],
+      vectorSearchOptions: {
+        queries: [{
+          kind: "vector",
+          fields: [ "contentVector" ],
+          vector: embeddings,
+          kNearestNeighborsCount: 3
+        }]
+      }
+      queryType: "semantic",
+      top: 3,
+      semanticSearchOptions: {
+        // your semantic configuration name
+        configurationName: "default",
+      }
+    });
+
+    // Add documents until you run out of tokens
+    let length = 0, output = '';
+    for await (const result of response.results) {
+      // Start a new doc
+      let doc = `${result.document.content}\n\n`;
+      let docLength = tokenizer.encode(doc).length;
+      const remainingTokens = maxTokens - (length + docLength);
+      if (remainingTokens <= 0) {
+          break;
+      }
+
+      // Append do to output
+      output += doc;
+      length += docLength;
+    }
+    return { output, length, tooLong: length > maxTokens };
+  }
+}
+```
