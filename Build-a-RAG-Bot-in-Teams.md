@@ -389,3 +389,205 @@ export class GraphApiSearchDataSource implements DataSource {
   }
 }
 ```
+
+## Build your own Data Ingestion
+
+This doc showcases a solution to fully control the data ingestion process, including:
+
+- **Load your source documents** - Besides text, if you have other types of documents, you may need to convert them to meaningful text, since the embedding model takes text as input.
+- **Split into chunks** - The embedding model has input token limitation, so you may need to split documents into chunks to avoid API call failure.
+- **Call embedding model** - Call the embedding model APIs to create embeddings for the given inputs.
+- **Store embeddings** - Store the created embeddings into a vector database, also including useful metadata and raw content for further referencing.
+
+
+### Sample Code
+
+Here's a sample to create embeddings from source text document, and store into Azure AI Search Index:
+
+- **loader.ts** - plain text as source input
+  ```typescript
+  import * as fs from "node:fs";
+
+  export function loadTextFile(path: string): string {
+    return fs.readFileSync(path, "utf-8");
+  }
+  ```
+
+- **splitter.ts** - split text into chunks, with certain overlap
+  ```typescript
+  // split words by delimiters.
+  const delimiters = [" ", "\t", "\r", "\n"];
+
+  export function split(content: string, length: number, overlap: number): Array<string> {
+    const results = new Array<string>();
+    let cursor = 0, curChunk = 0;
+    results.push("");
+    while(cursor < content.length) {
+      const curChar = content[cursor];
+      if (delimiters.includes(curChar)) {
+        // check chunk length
+        while (curChunk < results.length && results[curChunk].length >= length) {
+          curChunk ++;
+        }
+        for (let i = curChunk; i < results.length; i++) {
+          results[i] += curChar;
+        }
+        if (results[results.length - 1].length >= length - overlap) {
+          results.push("");
+        }
+      } else {
+        // append
+        for (let i = curChunk; i < results.length; i++) {
+          results[i] += curChar;
+        }
+      }
+      cursor ++;
+    }
+    while (curChunk < results.length - 1) {
+      results.pop();
+    }
+    return results;
+  }
+  ```
+
+- **embeddings.ts** - use Teams AI library `OpenAIEmbeddings` to create embeddings
+  ```typescript
+  import { OpenAIEmbeddings } from "@microsoft/teams-ai";
+
+  const embeddingClient = new OpenAIEmbeddings({
+    azureApiKey: "<your-aoai-key>",
+    azureEndpoint: "<your-aoai-endpoint>",
+    azureDeployment: "<your-embedding-deployment, e.g., text-embedding-ada-002>"
+  });
+
+  export async function createEmbeddings(content: string): Promise<number[]> {
+    const response = await embeddingClient.createEmbeddings(content);
+    return response.output[0];
+  }
+  ```
+
+- **searchIndex.ts** - one-time and standalone method to create Azure AI Search Index
+  ```typescript
+  import { SearchIndexClient, AzureKeyCredential, SearchIndex } from "@azure/search-documents";
+
+  const endpoint = "<your-search-endpoint>";
+  const apiKey = "<your-search-key>";
+  const indexName = "<your-index-name>";
+
+  const indexDef: SearchIndex = {
+    name: indexName,
+    fields: [
+      {
+        type: "Edm.String",
+        name: "id",
+        key: true,
+      },
+      {
+        type: "Edm.String",
+        name: "content",
+        searchable: true,
+      },
+      {
+        type: "Edm.String",
+        name: "filepath",
+        searchable: true,
+        filterable: true,
+      },
+      {
+        type: "Collection(Edm.Single)",
+        name: "contentVector",
+        searchable: true,
+        vectorSearchDimensions: 1536,
+        vectorSearchProfileName: "default"
+      }
+    ],
+    vectorSearch: {
+      algorithms: [{
+        name: "default",
+        kind: "hnsw"
+      }],
+      profiles: [{
+        name: "default",
+        algorithmConfigurationName: "default"
+      }]
+    },
+    semanticSearch: {
+      defaultConfigurationName: "default",
+      configurations: [{
+        name: "default",
+        prioritizedFields: {
+          contentFields: [{
+            name: "content"
+          }]
+        }
+      }]
+    }
+  };
+
+  export async function createNewIndex(): Promise<void> {
+    const client = new SearchIndexClient(endpoint, new AzureKeyCredential(apiKey));
+    await client.createIndex(indexDef);
+  }
+  ```
+
+- **searchIndexer.ts** - upload created embeddings and other fields to Azure AI Search Index
+  ```typescript
+  import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
+
+  export interface Doc {
+    id: string,
+    content: string,
+    filepath: string,
+    contentVector: number[]
+  }
+
+  const endpoint = "<your-search-endpoint>";
+  const apiKey = "<your-search-key>";
+  const indexName = "<your-index-name>";
+  const searchClient: SearchClient<Doc> = new SearchClient<Doc>(endpoint, indexName, new AzureKeyCredential(apiKey));
+
+  export async function indexDoc(doc: Doc): Promise<boolean> {
+    const response = await searchClient.mergeOrUploadDocuments([doc]);
+    return response.results.every((result) => result.succeeded);
+  }
+  ```
+
+- **index.ts** - orchestrate above components
+  ```typescript
+  import { createEmbeddings } from "./embeddings";
+  import { loadTextFile } from "./loader";
+  import { createNewIndex } from "./searchIndex";
+  import { indexDoc } from "./searchIndexer";
+  import { split } from "./splitter";
+
+  async function main() {
+    // Only need to call once
+    await createNewIndex();
+
+    // local files as source input
+    const files = [`${__dirname}/data/A.md`, `${__dirname}/data/A.md`];
+    for (const file of files) {
+      // load file
+      const fullContent = loadTextFile(file);
+
+      // split into chunks
+      const contents = split(fullContent, 1000, 100);
+      let partIndex = 0;
+      for (const content of contents) {
+        partIndex ++;
+        // create embeddings
+        const embeddings = await createEmbeddings(content);
+
+        // upload to index
+        await indexDoc({
+          id: `${file.replace(/[^a-z0-9]/ig, "")}___${partIndex}`,
+          content: content,
+          filepath: file,
+          contentVector: embeddings,
+        });
+      }
+    }
+  }
+
+  main().then().finally();
+  ```
