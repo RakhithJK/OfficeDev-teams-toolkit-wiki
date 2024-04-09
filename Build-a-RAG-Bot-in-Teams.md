@@ -275,3 +275,117 @@ export class MyDataSource implements DataSource {
   }
 }
 ```
+
+## Microsoft Graph Search API as Data Source
+
+This doc showcases a solution to query M365 content from Microsoft Graph Search API as data source in the RAG app. To learn more about Microsoft Graph Search API, you can refer to [Use the Microsoft Search API to search OneDrive and SharePoint content](https://learn.microsoft.com/en-us/graph/search-concept-files).
+ 
+**Prerequisite** - You should create a Graph API client and grant it the Files.Read.All permission scope to access SharePoint and OneDrive files, folders, pages, and news.
+
+### Data Ingestion
+
+Microsoft Graph Search API is available for searching SharePoint content, thus you just need to ensure your document is uploaded to SharePoint / OneDrive, no extra data ingestion required.
+
+> Note: SharePoint Server indexes a file only if its file extension is listed on the Manage File Types page. For a complete list of supported file extensions, refer to the [Default crawled file name extensions and parsed file types in SharePoint Server and SharePoint in Microsoft 365](https://learn.microsoft.com/sharepoint/technical-reference/default-crawled-file-name-extensions-and-parsed-file-types).
+
+### Data Source Implementation
+
+The following is an example of search `txt` files in SharePoint and OneDrive.
+
+```typescript
+import {
+  DataSource,
+  Memory,
+  RenderedPromptSection,
+  Tokenizer,
+} from "@microsoft/teams-ai";
+import { TurnContext } from "botbuilder";
+import { Client, ResponseType } from "@microsoft/microsoft-graph-client";
+
+export class GraphApiSearchDataSource implements DataSource {
+  public readonly name = "my-datasource";
+  public readonly description =
+    "Searches the graph for documents related to the input";
+  public client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
+
+  public async renderData(
+    context: TurnContext,
+    memory: Memory,
+    tokenizer: Tokenizer,
+    maxTokens: number
+  ): Promise<RenderedPromptSection<string>> {
+    const input = memory.getValue("temp.input") as string;
+    const contentResults = [];
+    const response = await this.client.api("/search/query").post({
+      requests: [
+        {
+          entityTypes: ["driveItem"],
+          query: {
+            // Search for markdown files in the user's OneDrive and SharePoint
+            // The supported file types are listed here:
+            // https://learn.microsoft.com/sharepoint/technical-reference/default-crawled-file-name-extensions-and-parsed-file-types
+            queryString: `${input} filetype:txt`,
+          },
+          // This parameter is required only when searching with application permissions
+          // https://learn.microsoft.com/graph/search-concept-searchall
+          // region: "US",
+        },
+      ],
+    });
+    for (const value of response?.value ?? []) {
+      for (const hitsContainer of value?.hitsContainers ?? []) {
+        contentResults.push(...(hitsContainer?.hits ?? []));
+      }
+    }
+
+    // Add documents until you run out of tokens
+    let length = 0,
+      output = "";
+    for (const result of contentResults) {
+      const rawContent = await this.downloadSharepointFile(
+        result.resource.webUrl
+      );
+      if (!rawContent) {
+        continue;
+      }
+      let doc = `${rawContent}\n\n`;
+      let docLength = tokenizer.encode(doc).length;
+      const remainingTokens = maxTokens - (length + docLength);
+      if (remainingTokens <= 0) {
+        break;
+      }
+
+      // Append do to output
+      output += doc;
+      length += docLength;
+    }
+    return { output, length, tooLong: length > maxTokens };
+  }
+
+  // Download the file from SharePoint
+  // https://docs.microsoft.com/en-us/graph/api/driveitem-get-content
+  private async downloadSharepointFile(
+    contentUrl: string
+  ): Promise<string | undefined> {
+    const encodedUrl = this.encodeSharepointContentUrl(contentUrl);
+    const fileContentResponse = await this.client
+      .api(`/shares/${encodedUrl}/driveItem/content`)
+      .responseType(ResponseType.TEXT)
+      .get();
+
+    return fileContentResponse;
+  }
+
+  private encodeSharepointContentUrl(webUrl: string): string {
+    const byteData = Buffer.from(webUrl, "utf-8");
+    const base64String = byteData.toString("base64");
+    return (
+      "u!" + base64String.replace("=", "").replace("/", "_").replace("+", "_")
+    );
+  }
+}
+```
