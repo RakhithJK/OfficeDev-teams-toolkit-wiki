@@ -184,7 +184,7 @@ With [Azure OpenAI on your data](https://learn.microsoft.com/en-us/azure/ai-serv
 - On Azure OpenAI Studio, add your data source
   ![AOAI Data Source](https://github.com/OfficeDev/TeamsFx/assets/13211513/a5ca2e74-b95e-4c02-bc03-e06aec7208a3)
 - Fill fields to create a vector index
-  ![AOAI Data Source Step](a[ssets/aoai-datasource-step.png](https://github.com/OfficeDev/TeamsFx/assets/13211513/d86106bf-578f-4d9f-8c20-aaf6d02b4d33))
+  ![AOAI Data Source Step](https://github.com/OfficeDev/TeamsFx/assets/13211513/d86106bf-578f-4d9f-8c20-aaf6d02b4d33)
 
 > Note: this approach creates an end-to-end chat API to be called as AI model. But you can also just use the created index as data source, and use Teams AI library to customize the retrieval and prompt.
 
