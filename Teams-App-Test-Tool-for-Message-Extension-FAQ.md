@@ -1,6 +1,6 @@
 ## The "Command ID" and "Parameter name" Parameters in Search Command
 
-![image](https://github.com/OfficeDev/TeamsFx/assets/9698542/3e04557d-3805-46f8-b6d2-f5d80b2e992e)
+<img height=400px src='https://github.com/OfficeDev/TeamsFx/assets/9698542/3e04557d-3805-46f8-b6d2-f5d80b2e992e'/>
 
 In Teams, when you type in search box within a search-based message extension app, your app will receive an invoke activity with these two parameters. In rare cases, you app could use `activity.value.commandId` or `activity.value.parameters[0].name` to control different behaviors of search command in the activity handler for the `composeExtension/query` invoke activty (e.g. `handleTeamsMessagingExtensionQuery` method in `botbuilder-js` SDK). **But most of the time, you app doesn't need it** because [Teams only support a single search command](https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#composeextensionscommands) and you can leave them empty.
 
@@ -12,7 +12,7 @@ For details about the schema of this invoke activity payload, please refer to [T
 
 ## The "Command ID" Parameter in Action Command
 
-![image](https://github.com/OfficeDev/TeamsFx/assets/9698542/44935432-cc11-4da2-a20f-2b6de9e16285)
+<img height=400px src='https://github.com/OfficeDev/TeamsFx/assets/9698542/44935432-cc11-4da2-a20f-2b6de9e16285' />
 
 In Teams, throughout the process of stepping through the dialogs triggered from action commands, your app will receive an `composeExtension/fetchTask` or `composeExtension/submitAction` invoke activity that contains the `activity.value.commandId` parameter. Usually, you app uses it to dispatch different commands in the activity handler for the `composeExtension/fetchTask` or `composeExtension/submitAction` invoke activty (e.g. `handleTeamsMessagingExtensionFetchTask` or `handleTeamsMessagingExtensionSubmitAction` method in `botbuilder-js` SDK).
 
@@ -24,7 +24,7 @@ For details about the schema of this invoke activity payload, please refer to [C
 
 ## Test Static List of Parameters in Action Command
 
-![image](https://github.com/OfficeDev/TeamsFx/assets/9698542/db6d1843-9c29-4577-a73c-a9052d639053)
+<img height=400px src='https://github.com/OfficeDev/TeamsFx/assets/9698542/db6d1843-9c29-4577-a73c-a9052d639053' />
 
 Static list of parameters is the simplest method to create dialog for action commands, however you can't control the formatting in this case.
 
