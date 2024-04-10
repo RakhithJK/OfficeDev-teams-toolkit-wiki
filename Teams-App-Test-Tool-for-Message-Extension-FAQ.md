@@ -23,3 +23,11 @@ When testing different action commands, you need to specify it in the `Command I
 For details about the schema of this invoke activity payload, please refer to [Create and send dialogs](https://learn.microsoft.com/en-us/microsoftteams/platform/messaging-extensions/how-to/action-commands/create-task-module?tabs=dotnet) and [Respond to the dialog submit action](https://learn.microsoft.com/en-us/microsoftteams/platform/messaging-extensions/how-to/action-commands/respond-to-task-module-submit?tabs=dotnet%2Cdotnet-1).
 
 ## Test Static List of Parameters in Action Command
+
+Static list of parameters is the simplest method to create dialog for action commands, however you can't control the formatting in this case.
+
+If you select to create the dialog with a static list of parameters and when the user submits the dialog, the message extension app will receive an `composeExtension/submitAction` invoke activity.
+
+> Normally, you can define a list of parameters in your app manifest. However, Teams App Test Tool doesn't process the manifest (see [Limitations](https://aka.ms/teams-app-test-tool-manifest-not-processed)), so you need to manually specify it.
+
+For the schema of the static list of parameters, please refer to https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#composeextensionscommands.
