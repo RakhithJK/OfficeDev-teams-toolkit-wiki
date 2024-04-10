@@ -8,4 +8,4 @@ Teams retrieves this information from your app's manifest, but Teams App Test To
 
 ## The "Command ID" Parameter in Action Command
 
-## Static List of Parameters
+## Test Static List of Parameters in Action Command
