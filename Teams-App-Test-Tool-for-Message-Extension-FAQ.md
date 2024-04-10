@@ -22,7 +22,7 @@ When testing different action commands, you need to specify it in the `Command I
 
 For details about the schema of this invoke activity payload, please refer to [Create and send dialogs](https://learn.microsoft.com/en-us/microsoftteams/platform/messaging-extensions/how-to/action-commands/create-task-module?tabs=dotnet) and [Respond to the dialog submit action](https://learn.microsoft.com/en-us/microsoftteams/platform/messaging-extensions/how-to/action-commands/respond-to-task-module-submit?tabs=dotnet%2Cdotnet-1).
 
-## Test Static List of Parameters in Action Command
+## Static List of Parameters in Action Command
 
 <img height=400px src='https://github.com/OfficeDev/TeamsFx/assets/9698542/db6d1843-9c29-4577-a73c-a9052d639053' />
 
