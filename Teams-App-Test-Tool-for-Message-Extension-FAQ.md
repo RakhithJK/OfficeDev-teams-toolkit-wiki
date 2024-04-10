@@ -24,6 +24,8 @@ For details about the schema of this invoke activity payload, please refer to [C
 
 ## Test Static List of Parameters in Action Command
 
+![image](https://github.com/OfficeDev/TeamsFx/assets/9698542/db6d1843-9c29-4577-a73c-a9052d639053)
+
 Static list of parameters is the simplest method to create dialog for action commands, however you can't control the formatting in this case.
 
 If you select to create the dialog with a static list of parameters and when the user submits the dialog, the message extension app will receive an `composeExtension/submitAction` invoke activity.
