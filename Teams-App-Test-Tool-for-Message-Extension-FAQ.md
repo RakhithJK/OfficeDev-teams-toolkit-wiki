@@ -32,4 +32,4 @@ If you select to create the dialog with a static list of parameters and when the
 
 > Normally, you can define a list of parameters in your app manifest. However, Teams App Test Tool doesn't process the manifest (see [Limitations](https://aka.ms/teams-app-test-tool-manifest-not-processed)), so you need to manually specify it.
 
-For the schema of the static list of parameters, please refer to https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#composeextensionscommands.
+For the schema of the static list of parameters, please refer to [Manifest Schema](https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#composeextensionscommands).
