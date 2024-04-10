@@ -170,6 +170,16 @@ Here's a minimal set of implementations to add RAG to your app. In general, it i
 
 # Retrieve data from different sources
 
+In real scenario, you may have your knowledge stored somewhere else.
+
+[Azure AI Search as Data Source](#azure-ai-search-as-data-source) provides a sample to add your documents to Azure AI Search Service, then use the search index as data source.
+
+[Microsoft Graph Search API as Data Source](#microsoft-graph-search-api-as-data-source) provides a sample to use M365 content from Microsoft Graph Search API as data source.
+
+Or, to fully control the data ingestion, see the sample on [Build your own Data Ingestion](#build-your-own-data-ingestion) to build your own vector index, and use it as data source.
+
+There are other alternatives, e.g., Azure Cosmos DB Vector Database Extension or Azure PostgreSQL Server pgvector Extension as vector databases, or Bing Web Search API to get latest web content. You may implement any `DataSource` instance to connect with your own data source.
+
 ## Azure AI Search as Data Source
 
 This doc showcases a solution to:
