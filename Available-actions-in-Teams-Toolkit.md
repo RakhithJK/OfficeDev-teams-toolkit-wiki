@@ -687,8 +687,6 @@ This action will update an API key in Developer Portal for authentication of API
       registrationId: <your-registraion-id> # Required. The registration id of the Api key.
       applicableToApps: <applicableToApps-setting-of-your-api-key> # Optional. Choose which apps can use this Api Key. Values: SpecificApp, AnyApp.
       targetAudience: <targetAudience-setting-of-your-api-key> # Optional. Choose which tenant can use this API Key. Values: HomeTenant, AnyTenant
-    writeToEnvironmentFile:
-      registrationId: <your-preferred-env-var-name> # Required. The registration id of the API key.
 ```
 
 # General Errors
