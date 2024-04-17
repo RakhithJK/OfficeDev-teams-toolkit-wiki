@@ -1,16 +1,19 @@
 > The feature is in Preview, we appreciate your feedback, please report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
 
-RAG (Retrieval Augmented Generation) is a framework that can incorporate real-time, dynamic, and specified external data sources into Large Language Model (LLM), to generate up to date and contextually accurate responses. For example:
-- **Knowledge base** - "Company's shuttle bus may be 15 minutes late on rainy days."
-- **User ask** - "When will the shuttle bus arrive?"
-- **AI response with RAG** - "Today is rainy, the shuttle bus may be 15 minutes late than usual, so around 9:15 AM."
+One of the most powerful applications enabled by LLMs is sophisticated question-answering (Q&A) chatbots. These are applications that can answer questions about specific source information. These applications use a technique known as [Retrieval Augmented Generation](https://python.langchain.com/docs/use_cases/question_answering/#what-is-rag), or RAG. For example:
+- **Knowledge Base**: "Company's shuttle bus may be 15 minutes late on rainy days."
+- **User Query**: "When will the shuttle bus arrive?"
+- **AI Response (With RAG)**: "Today is rainy, the shuttle bus may be 15 minutes late than usual, so around 9:15 AM."
 
 ![RAG typical architecture](https://github.com/OfficeDev/TeamsFx/assets/13211513/30f81050-9db4-4680-aa1d-9db53df1ecaf)
 
 This chart has demonstrated a typical RAG architecture that has two main flows:
-- **Data Ingestion** - an one-time/regular/standalone process, that external knowledge bases are ingested into some data storages, to be queried or searched later.
+- **Data Ingestion** - A pipeline for ingesting data from a source and indexing it. This usually happens offline.
+- **Retrieval and Generation** - The actual RAG chain, which takes the user query at run time and retrieves the relevant data from the index, then passes that to the model.
 
-- **Retrieval and Generation** - a real-time process, that on every user input, retrieve relavant data source from storage, inject into a prompt, and let AI to summarize or generate response.
+Microsoft Teams enables developers to build a conversational bot with RAG capability to create a powerful experience to maximize the productivity.
+
+Teams Toolkit provides a series ready to use application templates under the category `Chat with your data` that combines the capabilities of Azure AI Search, Microsoft 365 & SharePoint and Custom API as different data source and Large Language Models (LLMs) to create a conversational search experience in Microsoft Teams.
 
 ## In this tutorial, you will learn:
 Get started with Teams Toolkit and Teams AI Library:
@@ -51,6 +54,7 @@ Get started with Teams Toolkit and Teams AI Library:
 9. Enter an application name and then press enter.
 ![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/2b183451-8d90-467b-8285-b7ba4c0d757e)
 
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ## How teams-ai helps to achieve RAG scenario
 
@@ -100,7 +104,7 @@ class MyDataSource implements DataSource {
 }
 ```
 
-- **Call AI with prompt**: In Teams-AI's prompt system, you can easily inject data source by adjusting the `augmentation.data_sources` configuration section, e.g., in prompt's `config.json` file:
+- **Call AI with prompt**: In Teams-AI's prompt system, you can easily inject data source by adjusting the `augmentation.data_sources` configuration section. This connects the prompt with the added `DataSource` in previous step, and library orchestrator will inject the data source text into final prompt. See [AuthorPrompt](./AuthorPrompt.md) for the details. For example, in prompt's `config.json` file:
 
 ```json
 {
@@ -114,11 +118,8 @@ class MyDataSource implements DataSource {
 }
 ```
 
-This connects the prompt with the added `DataSource` in previous step, and library orchestrator will inject the data source text into final prompt. See [AuthorPrompt](./AuthorPrompt.md) for the details.
-
 - **Build response**: By default, Teams-AI library replies the AI generated response as text message to user. If you'd like to customize the response, you can override the default SAY action (see [AI Actions](./AddAIActions.md)) or explicitly call AI model (see [AI Models](./AddAIModels.md)) to build your own replies, e.g., with adaptive cards.
 
-## Quick Start
 
 Here's a minimal set of implementations to add RAG to your app. In general, it implements `DataSource` to inject your own knowledge into prompt, so that AI can generate response based on the knowledge.
 
@@ -191,9 +192,10 @@ Here's a minimal set of implementations to add RAG to your app. In general, it i
   }
   ```
 
-# Retrieve data from different sources
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
-In real scenario, you may have your knowledge stored somewhere else.
+## Choose Between Data Sources
+In the `Chat With Your Data` or RAG scenarios, Teams Toolkit has provided four different types of data source.
 
 [Azure AI Search as Data Source](#azure-ai-search-as-data-source) provides a sample to add your documents to Azure AI Search Service, then use the search index as data source.
 
@@ -221,7 +223,7 @@ With [Azure OpenAI on your data](https://learn.microsoft.com/en-us/azure/ai-serv
 
 > Note: this approach creates an end-to-end chat API to be called as AI model. But you can also just use the created index as data source, and use Teams AI library to customize the retrieval and prompt.
 
-### Data Source Impelmentation
+### Data Source Implementation
 
 After ingesting data into Azure AI Search, you can implement your own `DataSource` to retrieve data from search index.
 
@@ -624,3 +626,4 @@ Here's a sample to create embeddings from source text document, and store into A
 
   main().then().finally();
   ```
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
