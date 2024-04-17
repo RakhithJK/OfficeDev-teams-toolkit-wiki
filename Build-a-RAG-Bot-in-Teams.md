@@ -1,26 +1,64 @@
-# RAG (Retrieval Augmented Generation)
+> The feature is in Preview, we appreciate your feedback, please report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
 
-RAG (Retrieval Augmented Generation) is a framework that can incorporate real-time, dynamic, and specified external data sources into Large Language Model (LLM), to generate up to date and contextually accurate responses.
-
-For example:
+RAG (Retrieval Augmented Generation) is a framework that can incorporate real-time, dynamic, and specified external data sources into Large Language Model (LLM), to generate up to date and contextually accurate responses. For example:
 - **Knowledge base** - "Company's shuttle bus may be 15 minutes late on rainy days."
 - **User ask** - "When will the shuttle bus arrive?"
 - **AI response with RAG** - "Today is rainy, the shuttle bus may be 15 minutes late than usual, so around 9:15 AM."
 
-## How RAG works with teams-ai library?
-
-A typical RAG architecture has two main flows:
-
-- **Data Ingestion** - an one-time/regular/standalone process, that external knowledge bases are ingested into some data storages, to be queried or searched later.
-- **Retrieval and Generation** - a real-time process, that on every user input, retrieve relavant data source from storage, inject into a prompt, and let AI to summarize or generate response.
-
 ![RAG typical architecture](https://github.com/OfficeDev/TeamsFx/assets/13211513/30f81050-9db4-4680-aa1d-9db53df1ecaf)
 
-### How teams-ai helps Data Ingestion
+This chart has demonstrated a typical RAG architecture that has two main flows:
+- **Data Ingestion** - an one-time/regular/standalone process, that external knowledge bases are ingested into some data storages, to be queried or searched later.
 
-In AI context, vector databases are widely used as RAG storages, which store embeddings data and provide vector-similarity search.
+- **Retrieval and Generation** - a real-time process, that on every user input, retrieve relavant data source from storage, inject into a prompt, and let AI to summarize or generate response.
 
-Teams-AI library provides utilities to help create embeddings for the given inputs.
+## In this tutorial, you will learn:
+Get started with Teams Toolkit and Teams AI Library:
+* [How to create a new RAG bot]()
+* [How to understand the RAG project]()
+* [How teams-ai helps to achieve RAG scenario]()
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
+## How to create a new RAG bot
+> [!IMPORTANT]
+> This flow is based on the choice of `Customize` as your data source, if you choose to start with `Azure AI Service`, `Custom API` or `Microsoft 365` you may see different prompts in Visual Studio Code. Make sure to follow the prompts and instructions in Teams Toolkit.
+
+1. From Teams Toolkit side bar click `Create a New App` or select `Teams: Create a New App` from the command palette.
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/115f5f83-0cb1-457f-86ce-f1d1136e840e)
+
+2. Select `Custom Copilot`.
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/fd3c90a2-6d36-4520-a7e6-ae886b6a0ff5)
+
+3. Select `Chat With Your Data`
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/9416dd1d-88bc-429c-899e-fc20eae3bf51)
+
+4. Select an option for your data source
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/d1a4f909-ab0c-4e54-9b68-5ddc5d7cc526)
+
+5. Select a Programming Language
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/88320899-f28d-4f69-b7e8-9e6f026fa9b7)
+
+6. Select a service to access LLMs
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/18d56ab2-1f70-4bce-ab16-a225e489b9ad)
+
+7. Based on your service selection, you can optionally enter the credentials to access OpenAI or Azure OpenAI. Hit enter to skip.
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/096ec112-f9c1-4937-9d2d-33cb54da90ad)
+
+8. Select a folder where to create you project. The default one is `${HOME}/TeamsApps/`.
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/4db42284-2eed-487b-bfb8-de92710a4778)
+
+9. Enter an application name and then press enter.
+![image](https://github.com/OfficeDev/TeamsFx/assets/11220663/2b183451-8d90-467b-8285-b7ba4c0d757e)
+
+
+## How teams-ai helps to achieve RAG scenario
+
+> [!TIP] 
+> Teams-AI library does not provide vector database implementation, so you need to add your own logic for further processing the created embeddings.
+
+In AI context, vector databases are widely used as RAG storages, which store embeddings data and provide vector-similarity search. Teams-AI library provides utilities to help create embeddings for the given inputs.
+
 ```typescript
 // create OpenAIEmbeddings instance
 const model = new OpenAIEmbeddings({ ... endpoint, apikey, model, ... });
@@ -30,22 +68,11 @@ const embeddings = await model.createEmbeddings(model, inputs);
 
 // your own logic to process embeddings
 ```
-
-> Note: Teams-AI library does not provide vector database implementation, so you need to add your own logic for further processing the created embeddings.
-
-### How teams-ai helps Retrieval and Generation
-
-Teams-AI library provides functionalities to ease each step of the retrieval and generation process.
-
 ![Teams AI helps RAG](https://github.com/OfficeDev/TeamsFx/assets/13211513/7b1d14b1-ac05-4b2e-b8f6-7f2f8aab5e8f)
+Teams-AI library also provides functionalities to ease each step of the retrieval and generation process.
+- **Step 1: Handle Input**: The most straightforward way is to pass user's input as is to retrieval. However, if you'd like to customize the input before retrieval, you can [add activity handler](./AddActivityHandlers.md) to certain incoming activities.
 
-**Handle input**
-
-The most straightforward way is to pass user's input as is to retrieval. However, if you'd like to customize the input before retrieval, you can [add activity handler](./AddActivityHandlers.md) to certain incoming activities.
-
-**Retrieve datasource**
-
-Teams-AI library provides `DataSource` interface to let you to add your own retrieval logic. You will need to create your own `DataSource` instance, and the library orchestrator will call it on demand.
+- **Retrieve data source**: Teams-AI library provides `DataSource` interface to let you to add your own retrieval logic. You will need to create your own `DataSource` instance, and the library orchestrator will call it on demand.
     
 ```typescript
 class MyDataSource implements DataSource {
@@ -73,9 +100,7 @@ class MyDataSource implements DataSource {
 }
 ```
 
-**Call AI with prompt**
-
-In Teams-AI's prompt system, you can easily inject data source by adjusting the `augmentation.data_sources` configuration section, e.g., in prompt's `config.json` file:
+- **Call AI with prompt**: In Teams-AI's prompt system, you can easily inject data source by adjusting the `augmentation.data_sources` configuration section, e.g., in prompt's `config.json` file:
 
 ```json
 {
@@ -91,9 +116,7 @@ In Teams-AI's prompt system, you can easily inject data source by adjusting the 
 
 This connects the prompt with the added `DataSource` in previous step, and library orchestrator will inject the data source text into final prompt. See [AuthorPrompt](./AuthorPrompt.md) for the details.
 
-**Build response**
-
-By default, Teams-AI library replies the AI generated response as text message to user. If you'd like to customize the response, you can override the default SAY action (see [AI Actions](./AddAIActions.md)) or explicitly call AI model (see [AI Models](./AddAIModels.md)) to build your own replies, e.g., with adaptive cards.
+- **Build response**: By default, Teams-AI library replies the AI generated response as text message to user. If you'd like to customize the response, you can override the default SAY action (see [AI Actions](./AddAIActions.md)) or explicitly call AI model (see [AI Models](./AddAIModels.md)) to build your own replies, e.g., with adaptive cards.
 
 ## Quick Start
 
