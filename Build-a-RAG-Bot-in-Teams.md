@@ -17,9 +17,15 @@ Teams Toolkit provides a series ready to use application templates under the cat
 
 ## In this tutorial, you will learn:
 Get started with Teams Toolkit and Teams AI Library:
-* [How to create a new RAG bot]()
+* [How to create a new RAG bot](#how-to-create-a-new-rag-bot)
+* [How teams-ai helps to achieve RAG scenario](#how-teams-ai-helps-to-achieve-rag-scenario)
+* [Choose between data sources](#choose-between-data-sources)
 * [How to understand the RAG project]()
-* [How teams-ai helps to achieve RAG scenario]()
+
+Customize the app template:
+* [Customize Azure AI as Data Source](#azure-ai-search-as-data-source)
+* [Customize Microsoft Graph & SharePoint as Data Source](#microsoft-graph-search-api-as-data-source)
+* [Build your own data ingestion](#build-your-own-data-ingestion)
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
@@ -74,7 +80,7 @@ const embeddings = await model.createEmbeddings(model, inputs);
 ```
 ![Teams AI helps RAG](https://github.com/OfficeDev/TeamsFx/assets/13211513/7b1d14b1-ac05-4b2e-b8f6-7f2f8aab5e8f)
 Teams-AI library also provides functionalities to ease each step of the retrieval and generation process.
-- **Step 1: Handle Input**: The most straightforward way is to pass user's input as is to retrieval. However, if you'd like to customize the input before retrieval, you can [add activity handler](./AddActivityHandlers.md) to certain incoming activities.
+- **Handle Input**: The most straightforward way is to pass user's input as is to retrieval. However, if you'd like to customize the input before retrieval, you can [add activity handler](./AddActivityHandlers.md) to certain incoming activities.
 
 - **Retrieve data source**: Teams-AI library provides `DataSource` interface to let you to add your own retrieval logic. You will need to create your own `DataSource` instance, and the library orchestrator will call it on demand.
     
@@ -120,7 +126,6 @@ class MyDataSource implements DataSource {
 
 - **Build response**: By default, Teams-AI library replies the AI generated response as text message to user. If you'd like to customize the response, you can override the default SAY action (see [AI Actions](./AddAIActions.md)) or explicitly call AI model (see [AI Models](./AddAIModels.md)) to build your own replies, e.g., with adaptive cards.
 
-
 Here's a minimal set of implementations to add RAG to your app. In general, it implements `DataSource` to inject your own knowledge into prompt, so that AI can generate response based on the knowledge.
 
 - Create **myDataSource.ts** to implement `DataSource` interface.
@@ -152,20 +157,20 @@ Here's a minimal set of implementations to add RAG to your app. In general, it i
   }
   ```
 
-- In **app.ts**, register the data source.
+- Register the data source in **`app.ts`**, 
   ```typescript
   // Register your data source to prompt manager
   planner.prompts.addDataSource(new MyDataSource());
   ```
 
-- Create **prompts/qa/skprompt.txt** for prompt template text.
+- Create **`prompts/qa/skprompt.txt`** for prompt template text.
   ```text
   The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly to answer user's question.
 
   Base your answer off the text below:
   ```
 
-- Create **prompts/qa/config.json** to connect with the data source.
+- Create **`prompts/qa/config.json`** to connect with the data source.
   ```json
   {
       "schema": 1.1,
@@ -197,233 +202,14 @@ Here's a minimal set of implementations to add RAG to your app. In general, it i
 ## Choose Between Data Sources
 In the `Chat With Your Data` or RAG scenarios, Teams Toolkit has provided four different types of data source.
 
-[Azure AI Search as Data Source](#azure-ai-search-as-data-source) provides a sample to add your documents to Azure AI Search Service, then use the search index as data source.
+- `Customize` allows you to fully control the data ingestion, see the sample on [Build your own Data Ingestion](#build-your-own-data-ingestion) to build your own vector index, and use it as data source. There are other alternatives, e.g., Azure Cosmos DB Vector Database Extension or Azure PostgreSQL Server pgvector Extension as vector databases, or Bing Web Search API to get latest web content. You may implement any `DataSource` instance to connect with your own data source.
+- [`Azure AI Search`](#azure-ai-search-as-data-source) provides a sample to add your documents to Azure AI Search Service, then use the search index as data source.
 
-[Microsoft Graph Search API as Data Source](#microsoft-graph-search-api-as-data-source) provides a sample to use M365 content from Microsoft Graph Search API as data source.
+- `Custom API` allows your chatbot can invoke the API defined in the OpenAPI description document to retrieve domain data from API service.
 
-Or, to fully control the data ingestion, see the sample on [Build your own Data Ingestion](#build-your-own-data-ingestion) to build your own vector index, and use it as data source.
+- [Microsoft Graph & SharePoint](#microsoft-graph-search-api-as-data-source) provides a sample to use M365 content from Microsoft Graph Search API as data source.
 
-There are other alternatives, e.g., Azure Cosmos DB Vector Database Extension or Azure PostgreSQL Server pgvector Extension as vector databases, or Bing Web Search API to get latest web content. You may implement any `DataSource` instance to connect with your own data source.
-
-## Azure AI Search as Data Source
-
-This doc showcases a solution to:
-- Add your document to Azure AI Search via Azure OpenAI Service
-- Use Azure AI Search index as data source in the RAG app
-
-### Data Ingestion
-
-With [Azure OpenAI on your data](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/use-your-data?tabs=ai-search), you can ingest your knowledge documents to Azure AI Search Service and create a vector index. Then you can use the index as data source.
-
-- Prepare your data in Azure Blob Storage, or directly upload in later step
-- On Azure OpenAI Studio, add your data source
-  ![AOAI Data Source](https://github.com/OfficeDev/TeamsFx/assets/13211513/a5ca2e74-b95e-4c02-bc03-e06aec7208a3)
-- Fill fields to create a vector index
-  ![AOAI Data Source Step](https://github.com/OfficeDev/TeamsFx/assets/13211513/d86106bf-578f-4d9f-8c20-aaf6d02b4d33)
-
-> Note: this approach creates an end-to-end chat API to be called as AI model. But you can also just use the created index as data source, and use Teams AI library to customize the retrieval and prompt.
-
-### Data Source Implementation
-
-After ingesting data into Azure AI Search, you can implement your own `DataSource` to retrieve data from search index.
-
-```typescript
-import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
-import { DataSource, Memory, OpenAIEmbeddings, RenderedPromptSection, Tokenizer } from "@microsoft/teams-ai";
-import { TurnContext } from "botbuilder";
-
-export interface Doc {
-  id: string,
-  content: string, // searchable
-  filepath: string,
-  // contentVector: number[] // vector field
-  // ... other fields
-}
-
-// Azure OpenAI configuration
-const aoaiEndpoint = "<your-aoai-endpoint>";
-const aoaiApiKey = "<your-aoai-key>";
-const aoaiDeployment = "<your-embedding-deployment, e.g., text-embedding-ada-002>";
-
-// Azure AI Search configuration
-const searchEndpoint = "<your-search-endpoint>";
-const searchApiKey = "<your-search-apikey>";
-const searchIndexName = "<your-index-name>";
-
-export class MyDataSource implements DataSource {
-  public readonly name = "my-datasource";
-  private readonly embeddingClient: OpenAIEmbeddings;
-  private readonly searchClient: SearchClient<Doc>;
-
-  constructor() {
-    this.embeddingClient = new OpenAIEmbeddings({
-      azureEndpoint: aoaiEndpoint,
-      azureApiKey: aoaiApiKey,
-      azureDeployment: aoaiDeployment
-    });
-    this.searchClient = new SearchClient<Doc>(searchEndpoint, searchIndexName, new AzureKeyCredential(searchApiKey));
-  }
-
-  public async renderData(context: TurnContext, memory: Memory, tokenizer: Tokenizer, maxTokens: number): Promise<RenderedPromptSection<string>> {
-    // use user input as query
-    const input = memory.getValue("temp.input") as string;
-
-    // generate embeddings
-    const embeddings = (await this.embeddingClient.createEmbeddings(input)).output[0];
-
-    // query Azure AI Search
-    const response = await this.searchClient.search(input, {
-      select: [ "id", "content", "filepath" ],
-      searchFields: ["rawContent"],
-      vectorSearchOptions: {
-        queries: [{
-          kind: "vector",
-          fields: [ "contentVector" ],
-          vector: embeddings,
-          kNearestNeighborsCount: 3
-        }]
-      }
-      queryType: "semantic",
-      top: 3,
-      semanticSearchOptions: {
-        // your semantic configuration name
-        configurationName: "default",
-      }
-    });
-
-    // Add documents until you run out of tokens
-    let length = 0, output = '';
-    for await (const result of response.results) {
-      // Start a new doc
-      let doc = `${result.document.content}\n\n`;
-      let docLength = tokenizer.encode(doc).length;
-      const remainingTokens = maxTokens - (length + docLength);
-      if (remainingTokens <= 0) {
-          break;
-      }
-
-      // Append do to output
-      output += doc;
-      length += docLength;
-    }
-    return { output, length, tooLong: length > maxTokens };
-  }
-}
-```
-
-## Microsoft Graph Search API as Data Source
-
-This doc showcases a solution to query M365 content from Microsoft Graph Search API as data source in the RAG app. To learn more about Microsoft Graph Search API, you can refer to [Use the Microsoft Search API to search OneDrive and SharePoint content](https://learn.microsoft.com/en-us/graph/search-concept-files).
- 
-**Prerequisite** - You should create a Graph API client and grant it the Files.Read.All permission scope to access SharePoint and OneDrive files, folders, pages, and news.
-
-### Data Ingestion
-
-Microsoft Graph Search API is available for searching SharePoint content, thus you just need to ensure your document is uploaded to SharePoint / OneDrive, no extra data ingestion required.
-
-> Note: SharePoint Server indexes a file only if its file extension is listed on the Manage File Types page. For a complete list of supported file extensions, refer to the [Default crawled file name extensions and parsed file types in SharePoint Server and SharePoint in Microsoft 365](https://learn.microsoft.com/sharepoint/technical-reference/default-crawled-file-name-extensions-and-parsed-file-types).
-
-### Data Source Implementation
-
-The following is an example of search `txt` files in SharePoint and OneDrive.
-
-```typescript
-import {
-  DataSource,
-  Memory,
-  RenderedPromptSection,
-  Tokenizer,
-} from "@microsoft/teams-ai";
-import { TurnContext } from "botbuilder";
-import { Client, ResponseType } from "@microsoft/microsoft-graph-client";
-
-export class GraphApiSearchDataSource implements DataSource {
-  public readonly name = "my-datasource";
-  public readonly description =
-    "Searches the graph for documents related to the input";
-  public client: Client;
-
-  constructor(client: Client) {
-    this.client = client;
-  }
-
-  public async renderData(
-    context: TurnContext,
-    memory: Memory,
-    tokenizer: Tokenizer,
-    maxTokens: number
-  ): Promise<RenderedPromptSection<string>> {
-    const input = memory.getValue("temp.input") as string;
-    const contentResults = [];
-    const response = await this.client.api("/search/query").post({
-      requests: [
-        {
-          entityTypes: ["driveItem"],
-          query: {
-            // Search for markdown files in the user's OneDrive and SharePoint
-            // The supported file types are listed here:
-            // https://learn.microsoft.com/sharepoint/technical-reference/default-crawled-file-name-extensions-and-parsed-file-types
-            queryString: `${input} filetype:txt`,
-          },
-          // This parameter is required only when searching with application permissions
-          // https://learn.microsoft.com/graph/search-concept-searchall
-          // region: "US",
-        },
-      ],
-    });
-    for (const value of response?.value ?? []) {
-      for (const hitsContainer of value?.hitsContainers ?? []) {
-        contentResults.push(...(hitsContainer?.hits ?? []));
-      }
-    }
-
-    // Add documents until you run out of tokens
-    let length = 0,
-      output = "";
-    for (const result of contentResults) {
-      const rawContent = await this.downloadSharepointFile(
-        result.resource.webUrl
-      );
-      if (!rawContent) {
-        continue;
-      }
-      let doc = `${rawContent}\n\n`;
-      let docLength = tokenizer.encode(doc).length;
-      const remainingTokens = maxTokens - (length + docLength);
-      if (remainingTokens <= 0) {
-        break;
-      }
-
-      // Append do to output
-      output += doc;
-      length += docLength;
-    }
-    return { output, length, tooLong: length > maxTokens };
-  }
-
-  // Download the file from SharePoint
-  // https://docs.microsoft.com/en-us/graph/api/driveitem-get-content
-  private async downloadSharepointFile(
-    contentUrl: string
-  ): Promise<string | undefined> {
-    const encodedUrl = this.encodeSharepointContentUrl(contentUrl);
-    const fileContentResponse = await this.client
-      .api(`/shares/${encodedUrl}/driveItem/content`)
-      .responseType(ResponseType.TEXT)
-      .get();
-
-    return fileContentResponse;
-  }
-
-  private encodeSharepointContentUrl(webUrl: string): string {
-    const byteData = Buffer.from(webUrl, "utf-8");
-    const base64String = byteData.toString("base64");
-    return (
-      "u!" + base64String.replace("=", "").replace("/", "_").replace("+", "_")
-    );
-  }
-}
-```
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ## Build your own Data Ingestion
 
@@ -626,4 +412,293 @@ Here's a sample to create embeddings from source text document, and store into A
 
   main().then().finally();
   ```
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
+## Azure AI Search as Data Source
+
+This doc showcases a solution to:
+- Add your document to Azure AI Search via Azure OpenAI Service
+- Use Azure AI Search index as data source in the RAG app
+
+### Data Ingestion
+
+With [Azure OpenAI on your data](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/use-your-data?tabs=ai-search), you can ingest your knowledge documents to Azure AI Search Service and create a vector index. Then you can use the index as data source.
+
+- Prepare your data in Azure Blob Storage, or directly upload in later step
+- On Azure OpenAI Studio, add your data source
+  ![AOAI Data Source](https://github.com/OfficeDev/TeamsFx/assets/13211513/a5ca2e74-b95e-4c02-bc03-e06aec7208a3)
+- Fill fields to create a vector index
+  ![AOAI Data Source Step](https://github.com/OfficeDev/TeamsFx/assets/13211513/d86106bf-578f-4d9f-8c20-aaf6d02b4d33)
+
+> Note: this approach creates an end-to-end chat API to be called as AI model. But you can also just use the created index as data source, and use Teams AI library to customize the retrieval and prompt.
+
+### Data Source Implementation
+
+After ingesting data into Azure AI Search, you can implement your own `DataSource` to retrieve data from search index.
+
+```typescript
+import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
+import { DataSource, Memory, OpenAIEmbeddings, RenderedPromptSection, Tokenizer } from "@microsoft/teams-ai";
+import { TurnContext } from "botbuilder";
+
+export interface Doc {
+  id: string,
+  content: string, // searchable
+  filepath: string,
+  // contentVector: number[] // vector field
+  // ... other fields
+}
+
+// Azure OpenAI configuration
+const aoaiEndpoint = "<your-aoai-endpoint>";
+const aoaiApiKey = "<your-aoai-key>";
+const aoaiDeployment = "<your-embedding-deployment, e.g., text-embedding-ada-002>";
+
+// Azure AI Search configuration
+const searchEndpoint = "<your-search-endpoint>";
+const searchApiKey = "<your-search-apikey>";
+const searchIndexName = "<your-index-name>";
+
+export class MyDataSource implements DataSource {
+  public readonly name = "my-datasource";
+  private readonly embeddingClient: OpenAIEmbeddings;
+  private readonly searchClient: SearchClient<Doc>;
+
+  constructor() {
+    this.embeddingClient = new OpenAIEmbeddings({
+      azureEndpoint: aoaiEndpoint,
+      azureApiKey: aoaiApiKey,
+      azureDeployment: aoaiDeployment
+    });
+    this.searchClient = new SearchClient<Doc>(searchEndpoint, searchIndexName, new AzureKeyCredential(searchApiKey));
+  }
+
+  public async renderData(context: TurnContext, memory: Memory, tokenizer: Tokenizer, maxTokens: number): Promise<RenderedPromptSection<string>> {
+    // use user input as query
+    const input = memory.getValue("temp.input") as string;
+
+    // generate embeddings
+    const embeddings = (await this.embeddingClient.createEmbeddings(input)).output[0];
+
+    // query Azure AI Search
+    const response = await this.searchClient.search(input, {
+      select: [ "id", "content", "filepath" ],
+      searchFields: ["rawContent"],
+      vectorSearchOptions: {
+        queries: [{
+          kind: "vector",
+          fields: [ "contentVector" ],
+          vector: embeddings,
+          kNearestNeighborsCount: 3
+        }]
+      }
+      queryType: "semantic",
+      top: 3,
+      semanticSearchOptions: {
+        // your semantic configuration name
+        configurationName: "default",
+      }
+    });
+
+    // Add documents until you run out of tokens
+    let length = 0, output = '';
+    for await (const result of response.results) {
+      // Start a new doc
+      let doc = `${result.document.content}\n\n`;
+      let docLength = tokenizer.encode(doc).length;
+      const remainingTokens = maxTokens - (length + docLength);
+      if (remainingTokens <= 0) {
+          break;
+      }
+
+      // Append do to output
+      output += doc;
+      length += docLength;
+    }
+    return { output, length, tooLong: length > maxTokens };
+  }
+}
+```
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
+## Add more API for Custom API as data source
+You can follow the following steps to extend the Custom Copilot from Custom API template with more APIs.
+
+1. Update `./appPackage/apiSpecificationFile/openapi.*`
+
+    Copy corresponding part of the API you want to add from your spec, and append to `./appPackage/apiSpecificationFile/openapi.*`.
+
+1. Update `./src/prompts/chat/actions.json`
+
+    Fill necessary info and properties for path, query and/or body for the API in the following object, and add it in the array in `./src/prompts/chat/actions.json`.
+    ```
+    {
+      "name": "${{YOUR-API-NAME}}",
+      "description": "${{YOUR-API-DESCRIPTION}}",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "${{YOUR-PROPERTY-NAME}}": {
+                "type": "${{YOUR-PROPERTY-TYPE}}",
+                "description": "${{YOUR-PROPERTY-DESCRIPTION}}",
+              }
+              // You can add more query properties here
+            }
+          },
+          "path": {
+            // Same as query properties
+          },
+          "body": {
+            // Same as query properties
+          }
+        }
+      }
+    }
+    ```
+
+1. Update `./src/adaptiveCards`
+
+    Create a new file with name `${{YOUR-API-NAME}}.json`, and fill in the adaptive card for the API response of your API.
+
+1. Update `./src/app/app.js`
+
+    Add following code before `module.exports = app;`. Remember to replace necessary info.
+
+    ```
+    app.ai.action(${{YOUR-API-NAME}}, async (context: TurnContext, state: ApplicationTurnState, parameter: any) => {
+      const client = await api.getClient();
+      
+      const path = client.paths[${{YOUR-API-PATH}}];
+      if (path && path.${{YOUR-API-METHOD}}) {
+        const result = await path.${{YOUR-API-METHOD}}(parameter.path, parameter.body, {
+          params: parameter.query,
+        });
+        const card = generateAdaptiveCard("../adaptiveCards/${{YOUR-API-NAME}}.json", result);
+        await context.sendActivity({ attachments: [card] });
+      } else {
+        await context.sendActivity("no result");
+      }
+      return "result";
+    });
+    ```
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
+## Microsoft 365 as Data Source
+
+This doc showcases a solution to query M365 content from Microsoft Graph Search API as data source in the RAG app. To learn more about Microsoft Graph Search API, you can refer to [Use the Microsoft Search API to search OneDrive and SharePoint content](https://learn.microsoft.com/en-us/graph/search-concept-files).
+ 
+**Prerequisite** - You should create a Graph API client and grant it the Files.Read.All permission scope to access SharePoint and OneDrive files, folders, pages, and news.
+
+### Data Ingestion
+
+Microsoft Graph Search API is available for searching SharePoint content, thus you just need to ensure your document is uploaded to SharePoint / OneDrive, no extra data ingestion required.
+
+> Note: SharePoint Server indexes a file only if its file extension is listed on the Manage File Types page. For a complete list of supported file extensions, refer to the [Default crawled file name extensions and parsed file types in SharePoint Server and SharePoint in Microsoft 365](https://learn.microsoft.com/sharepoint/technical-reference/default-crawled-file-name-extensions-and-parsed-file-types).
+
+### Data Source Implementation
+
+The following is an example of search `txt` files in SharePoint and OneDrive.
+
+```typescript
+import {
+  DataSource,
+  Memory,
+  RenderedPromptSection,
+  Tokenizer,
+} from "@microsoft/teams-ai";
+import { TurnContext } from "botbuilder";
+import { Client, ResponseType } from "@microsoft/microsoft-graph-client";
+
+export class GraphApiSearchDataSource implements DataSource {
+  public readonly name = "my-datasource";
+  public readonly description =
+    "Searches the graph for documents related to the input";
+  public client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
+
+  public async renderData(
+    context: TurnContext,
+    memory: Memory,
+    tokenizer: Tokenizer,
+    maxTokens: number
+  ): Promise<RenderedPromptSection<string>> {
+    const input = memory.getValue("temp.input") as string;
+    const contentResults = [];
+    const response = await this.client.api("/search/query").post({
+      requests: [
+        {
+          entityTypes: ["driveItem"],
+          query: {
+            // Search for markdown files in the user's OneDrive and SharePoint
+            // The supported file types are listed here:
+            // https://learn.microsoft.com/sharepoint/technical-reference/default-crawled-file-name-extensions-and-parsed-file-types
+            queryString: `${input} filetype:txt`,
+          },
+          // This parameter is required only when searching with application permissions
+          // https://learn.microsoft.com/graph/search-concept-searchall
+          // region: "US",
+        },
+      ],
+    });
+    for (const value of response?.value ?? []) {
+      for (const hitsContainer of value?.hitsContainers ?? []) {
+        contentResults.push(...(hitsContainer?.hits ?? []));
+      }
+    }
+
+    // Add documents until you run out of tokens
+    let length = 0,
+      output = "";
+    for (const result of contentResults) {
+      const rawContent = await this.downloadSharepointFile(
+        result.resource.webUrl
+      );
+      if (!rawContent) {
+        continue;
+      }
+      let doc = `${rawContent}\n\n`;
+      let docLength = tokenizer.encode(doc).length;
+      const remainingTokens = maxTokens - (length + docLength);
+      if (remainingTokens <= 0) {
+        break;
+      }
+
+      // Append do to output
+      output += doc;
+      length += docLength;
+    }
+    return { output, length, tooLong: length > maxTokens };
+  }
+
+  // Download the file from SharePoint
+  // https://docs.microsoft.com/en-us/graph/api/driveitem-get-content
+  private async downloadSharepointFile(
+    contentUrl: string
+  ): Promise<string | undefined> {
+    const encodedUrl = this.encodeSharepointContentUrl(contentUrl);
+    const fileContentResponse = await this.client
+      .api(`/shares/${encodedUrl}/driveItem/content`)
+      .responseType(ResponseType.TEXT)
+      .get();
+
+    return fileContentResponse;
+  }
+
+  private encodeSharepointContentUrl(webUrl: string): string {
+    const byteData = Buffer.from(webUrl, "utf-8");
+    const base64String = byteData.toString("base64");
+    return (
+      "u!" + base64String.replace("=", "").replace("/", "_").replace("+", "_")
+    );
+  }
+}
+```
+
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
