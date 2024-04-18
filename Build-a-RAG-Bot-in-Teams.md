@@ -26,6 +26,7 @@ Customize the app template:
 * [Customize Azure AI as Data Source](#azure-ai-search-as-data-source)
 * [Customize Microsoft Graph & SharePoint as Data Source](#microsoft-graph-search-api-as-data-source)
 * [Build your own data ingestion](#build-your-own-data-ingestion)
+* [Add more API for Custom API as data source](#add-more-api-for-custom-api-as-data-source)
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
