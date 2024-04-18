@@ -2,29 +2,6 @@
 
 1. **Important**: Visual Studio version >= 17.10 Preview 3
 
-## Debug with Multi-Project Launch Profiles in Visual Studio Preview Version
-
-To use this feature:
-1. Go to Tools -> Options -> Preview Features
-2. Select 'Enable Multi-Project Launch Profiles'
-<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/enable-multiple-profiles-feature.png)
-
-### Start the app in Outlook
-1. Select `Outlook (browser)` in debug dropdown menu
-<br/> ![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/switch-to-outlook.png)
-2. Press F5, or select Debug > Start Debugging menu in Visual Studio
-<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
-
-### Start the app in Teams App Test Tool
-1. Select `Teams App Test Tool (browser)` in the debug dropdown menu
-<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/switch-to-test-tool.png)
-2. Press F5, or select Debug > Start Debugging menu in Visual Studio
-<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
-
-### Others
-
-Same as above, select the pre-defined profile from the debug dropdown menu.
-
 ## Debug with Multiple Profiles in Visual Studio Generally Available Version
 
 ### Start the app in Outlook
@@ -58,3 +35,26 @@ Same as above, select the pre-defined profile from the debug dropdown menu.
 ### Others
 
 Same as above, select the correct profile of the `TeamsApp` and `{{YOUR_CSHARP_PROJECT}}`, configure `Multiple startup projects` and then start it.
+
+## Debug with Multi-Project Launch Profiles in Visual Studio Preview Version
+
+To use this feature:
+1. Go to Tools -> Options -> Preview Features
+2. Select 'Enable Multi-Project Launch Profiles'
+<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/enable-multiple-profiles-feature.png)
+
+### Start the app in Outlook
+1. Select `Outlook (browser)` in debug dropdown menu
+<br/> ![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/switch-to-outlook.png)
+2. Press F5, or select Debug > Start Debugging menu in Visual Studio
+<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
+
+### Start the app in Teams App Test Tool
+1. Select `Teams App Test Tool (browser)` in the debug dropdown menu
+<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/switch-to-test-tool.png)
+2. Press F5, or select Debug > Start Debugging menu in Visual Studio
+<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
+
+### Others
+
+Same as above, select the pre-defined profile from the debug dropdown menu.
