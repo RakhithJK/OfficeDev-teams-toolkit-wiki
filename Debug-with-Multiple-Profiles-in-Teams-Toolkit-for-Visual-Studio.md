@@ -17,6 +17,29 @@
 <br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
 
 ### Start the app in Teams App Test Tool
+
+> Note: if your template is `AI Assistant Bot` you should fill in both OpenAI API Key and the created Assistant ID into `appsettings.TestTool.json`
+>   ```
+>   "OpenAI": {
+>      "ApiKey": "<your-openai-api-key>",
+>      "AssistantId": "<your-openai-assistant-id>"
+>   }
+>   ```
+
+> If your template is `AI Chat Bot`, you should fill in your OpenAI API Key or Azure OpenAI settings in `appsettings.TestTool.json`
+>    ```
+>    # If using OpenAI
+>    "OpenAI": {
+>      "ApiKey": "<your-openai-api-key>"
+>    },
+>    # If using Azure OpenAI
+>    "Azure": {
+>      "OpenAIApiKey": "<your-azure-openai-api-key>",
+>      "OpenAIEndpoint": "<your-azure-openai-endpoint>"
+>    }
+>    ```
+> If using Azure OpenAI, update "gpt-35-turbo" in `Program.cs` to your own model deployment name
+
 1. Select `TeamsApp` in the project selection dropdown menu.
 <br/>![image](https://github.com/OfficeDev/TeamsFx/assets/15262146/e581920f-194e-4e6b-93c2-22ad633e328e)
 2. Select `Teams App Test Tool (browser)` in the debug dropdown menu.
@@ -50,6 +73,29 @@ To use this feature:
 <br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
 
 ### Start the app in Teams App Test Tool
+
+> Note: if your template is `AI Assistant Bot` you should fill in both OpenAI API Key and the created Assistant ID into `appsettings.TestTool.json`
+>   ```
+>   "OpenAI": {
+>      "ApiKey": "<your-openai-api-key>",
+>      "AssistantId": "<your-openai-assistant-id>"
+>   }
+>   ```
+
+> If your template is `AI Chat Bot`, you should fill in your OpenAI API Key or Azure OpenAI settings in `appsettings.TestTool.json`
+>    ```
+>    # If using OpenAI
+>    "OpenAI": {
+>      "ApiKey": "<your-openai-api-key>"
+>    },
+>    # If using Azure OpenAI
+>    "Azure": {
+>      "OpenAIApiKey": "<your-azure-openai-api-key>",
+>      "OpenAIEndpoint": "<your-azure-openai-endpoint>"
+>    }
+>    ```
+> If using Azure OpenAI, update "gpt-35-turbo" in `Program.cs` to your own model deployment name
+
 1. Select `Teams App Test Tool (browser)` in the debug dropdown menu
 <br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/switch-to-test-tool.png)
 2. Press F5, or select Debug > Start Debugging menu in Visual Studio
