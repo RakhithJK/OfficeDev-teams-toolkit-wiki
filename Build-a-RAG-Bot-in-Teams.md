@@ -70,6 +70,9 @@ Customize the app template:
 
 In AI context, vector databases are widely used as RAG storages, which store embeddings data and provide vector-similarity search. Teams-AI library provides utilities to help create embeddings for the given inputs.
 
+<details open>
+<summary> For Javascript language: </summary>
+
 ```typescript
 // create OpenAIEmbeddings instance
 const model = new OpenAIEmbeddings({ ... endpoint, apikey, model, ... });
@@ -79,12 +82,38 @@ const embeddings = await model.createEmbeddings(model, inputs);
 
 // your own logic to process embeddings
 ```
+
+</details>
+
+
+<details open>
+<summary> For Python language: </summary>
+
+```python
+# create OpenAIEmbeddings instance
+model = OpenAIEmbeddings(OpenAIEmbeddingsOptions(api_key, model))
+
+# create embeddings for the given inputs
+embeddings = await model.create_embeddings(inputs)
+
+# your own logic to process embeddings
+```
+
+</details>
+
+
+
+
 ![Teams AI helps RAG](https://github.com/OfficeDev/TeamsFx/assets/13211513/7b1d14b1-ac05-4b2e-b8f6-7f2f8aab5e8f)
 Teams-AI library also provides functionalities to ease each step of the retrieval and generation process.
 - **Handle Input**: The most straightforward way is to pass user's input as is to retrieval. However, if you'd like to customize the input before retrieval, you can [add activity handler](./AddActivityHandlers.md) to certain incoming activities.
 
 - **Retrieve data source**: Teams-AI library provides `DataSource` interface to let you to add your own retrieval logic. You will need to create your own `DataSource` instance, and the library orchestrator will call it on demand.
     
+
+<details open>
+<summary> For Javascript language: </summary>
+
 ```typescript
 class MyDataSource implements DataSource {
   /**
@@ -110,6 +139,25 @@ class MyDataSource implements DataSource {
   }
 }
 ```
+
+</details>
+
+<details open>
+<summary> For Python language: </summary>
+
+```python
+class MyDataSource(DataSource):
+  def __init__(self):
+    self.name = "my_datasource_name"
+  
+  def name(self):
+    return self.name
+
+  async def render_data(self, _context: TurnContext, memory: Memory, tokenizer: Tokenizer, maxTokens: int):
+    # your render data logic
+```
+
+</details>
 
 - **Call AI with prompt**: In Teams-AI's prompt system, you can easily inject data source by adjusting the `augmentation.data_sources` configuration section. This connects the prompt with the added `DataSource` in previous step, and library orchestrator will inject the data source text into final prompt. See [AuthorPrompt](./AuthorPrompt.md) for the details. For example, in prompt's `config.json` file:
 
@@ -159,10 +207,25 @@ Here's a minimal set of implementations to add RAG to your app. In general, it i
   ```
 
 - Register the data source in **`app.ts`**, 
-  ```typescript
-  // Register your data source to prompt manager
-  planner.prompts.addDataSource(new MyDataSource());
-  ```
+
+  <details open>
+  <summary> For Javascript language: </summary>
+
+    ```typescript
+    // Register your data source to prompt manager
+    planner.prompts.addDataSource(new MyDataSource());
+    ```
+
+  </details>
+
+  <details open>
+  <summary> For Python language: </summary>
+
+    ```python
+    planner.prompts.add_data_source(MyDataSource())
+    ```
+
+  </details>
 
 - Create **`prompts/qa/skprompt.txt`** for prompt template text.
   ```text
@@ -225,6 +288,9 @@ This doc showcases a solution to fully control the data ingestion process, inclu
 ### Sample Code
 
 Here's a sample to create embeddings from source text document, and store into Azure AI Search Index:
+
+<details>
+<summary> For Javascript language: </summary>
 
 - **loader.ts** - plain text as source input
   ```typescript
@@ -413,6 +479,128 @@ Here's a sample to create embeddings from source text document, and store into A
 
   main().then().finally();
   ```
+
+</details>
+
+<details>
+<summary> For Python language: </summary>
+
+- **loader.py** - plain text as source input
+```python
+def load_text_file(path: str) -> str:
+    with open(path, 'r', encoding='utf-8') as file:
+        return file.read()
+```
+
+- **splitter.py** - split text into chunks, with certain overlap
+```python
+def split(content: str, length: int, overlap: int) -> list[str]:
+    delimiters = [" ", "\t", "\r", "\n"]
+    results = [""]
+    cursor = 0
+    cur_chunk = 0
+    while cursor < len(content):
+        cur_char = content[cursor]
+        if cur_char in delimiters:
+            while cur_chunk < len(results) and len(results[cur_chunk]) >= length:
+                cur_chunk += 1
+            for i in range(cur_chunk, len(results)):
+                results[i] += cur_char
+            if len(results[-1]) >= length - overlap:
+                results.append("")
+        else:
+            for i in range(cur_chunk, len(results)):
+                results[i] += cur_char
+        cursor += 1
+    while cur_chunk < len(results) - 1:
+        results.pop()
+    return results
+```
+
+- **embeddings.py** - use Teams AI library OpenAIEmbeddings to create embeddings
+```python
+async def create_embeddings(text: str, embeddings):
+    result = await embeddings.create_embeddings(text)
+    
+    return result.output[0]
+```
+
+- **search_index.py** - one-time and standalone method to create Azure AI Search Index
+```python
+async def create_index_if_not_exists(client: SearchIndexClient, name: str):
+    doc_index = SearchIndex(
+        name=name,
+        fields = [
+            SimpleField(name="docId", type=SearchFieldDataType.String, key=True),
+            SimpleField(name="docTitle", type=SearchFieldDataType.String),
+            SearchableField(name="description", type=SearchFieldDataType.String, searchable=True),
+            SearchField(name="descriptionVector", type=SearchFieldDataType.Collection(SearchFieldDataType.Single), searchable=True, vector_search_dimensions=1536, vector_search_profile_name='my-vector-config'),
+        ],
+        scoring_profiles=[],
+        cors_options=CorsOptions(allowed_origins=["*"]),
+        vector_search = VectorSearch(
+            profiles=[VectorSearchProfile(name="my-vector-config", algorithm_configuration_name="my-algorithms-config")],
+            algorithms=[HnswAlgorithmConfiguration(name="my-algorithms-config")],
+        )
+    )
+
+    client.create_or_update_index(doc_index)
+```
+
+- **search_indexer.py** - upload created embeddings and other fields to Azure AI Search Index
+```python
+from embeddings import create_embeddings
+from search_index import create_index_if_not_exists
+from loader import load_text_file
+from split import split
+
+async def get_doc_data(embeddings):
+    file_path=f'{os.getcwd()}/my_file_path_1'
+    raw_description1 = split(load_text_file(file_path), 1000, 100)
+    doc1 = {
+        "docId": "1",
+        "docTitle": "my_titile_1",
+        "description": raw_description1,
+        "descriptionVector": await create_embeddings(raw_description1, embeddings=embeddings),
+    }
+    
+    file_path=f'{os.getcwd()}/my_file_path_2'
+    raw_description2 = split(load_text_file(file_path), 1000, 100)
+    doc2 = {
+        "docId": "2",
+        "docTitle": "my_titile_2",
+        "description": raw_description2,
+        "descriptionVector": await create_embeddings(raw_description2, embeddings=embeddings),
+    }
+
+    return [doc1, doc2]
+
+async def setup(search_api_key, search_api_endpoint):
+    index = 'my_index_name'
+    credentials = AzureKeyCredential(search_api_key)
+    search_index_client = SearchIndexClient(search_api_endpoint, credentials)
+    await create_index_if_not_exists(search_index_client, index)
+
+    search_client = SearchClient(search_api_endpoint, index, credentials)
+    embeddings=AzureOpenAIEmbeddings(AzureOpenAIEmbeddingsOptions(
+          azure_api_key="<your-aoai-key>",
+          azure_endpoint="<your-aoai-endpoint>",
+          azure_deployment="<your-embedding-deployment, e.g., text-embedding-ada-002>"
+    ))
+    data = await get_doc_data(embeddings=embeddings)
+    await search_client.merge_or_upload_documents(data)
+```
+
+- **index.py** - orchestrate above components
+```python
+from search_indexer import setup
+
+search_api_key = '<your-key>'
+search_api_endpoint = '<your-endpoint>'
+asyncio.run(setup(search_api_key, search_api_endpoint))
+```
+
+</details>
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ## Azure AI Search as Data Source
@@ -436,6 +624,9 @@ With [Azure OpenAI on your data](https://learn.microsoft.com/en-us/azure/ai-serv
 ### Data Source Implementation
 
 After ingesting data into Azure AI Search, you can implement your own `DataSource` to retrieve data from search index.
+
+<details>
+<summary> For Javascript language: </summary>
 
 ```typescript
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
@@ -520,6 +711,103 @@ export class MyDataSource implements DataSource {
   }
 }
 ```
+
+</details>
+
+<details>
+<summary> For Python language: </summary>
+
+```python
+async def get_embedding_vector(text: str):
+    embeddings = AzureOpenAIEmbeddings(AzureOpenAIEmbeddingsOptions(
+        azure_api_key='<your-aoai-key>',
+        azure_endpoint='<your-aoai-endpoint>',
+        azure_deployment='<your-aoai-embedding-deployment>'
+    ))
+    
+    result = await embeddings.create_embeddings(text)
+    if (result.status != 'success' or not result.output):
+        raise Exception(f"Failed to generate embeddings for description: {text}")
+    
+    return result.output[0]
+
+@dataclass
+class Doc:
+    docId: Optional[str] = None
+    docTitle: Optional[str] = None
+    description: Optional[str] = None
+    descriptionVector: Optional[List[float]] = None
+
+@dataclass
+class MyDataSourceOptions:
+    name: str
+    indexName: str
+    azureAISearchApiKey: str
+    azureAISearchEndpoint: str
+
+from azure.core.credentials import AzureKeyCredential
+from azure.search.documents import SearchClient
+import json
+
+@dataclass
+class Result:
+    def __init__(self, output, length, too_long):
+        self.output = output
+        self.length = length
+        self.too_long = too_long
+
+class MyDataSource(DataSource):
+    def __init__(self, options: MyDataSourceOptions):
+        self.name = options.name
+        self.options = options
+        self.searchClient = SearchClient(
+            options.azureAISearchEndpoint,
+            options.indexName,
+            AzureKeyCredential(options.azureAISearchApiKey)
+        )
+        
+    def name(self):
+        return self.name
+
+    async def render_data(self, _context: TurnContext, memory: Memory, tokenizer: Tokenizer, maxTokens: int):
+        query = memory.get('temp.input')
+        embedding = await get_embedding_vector(query)
+        vector_query = VectorizedQuery(vector=embedding, k_nearest_neighbors=2, fields="descriptionVector")
+
+        if not query:
+            return Result('', 0, False)
+
+        selectedFields = [
+            'docTitle',
+            'description',
+            'descriptionVector',
+        ]
+
+        searchResults = self.searchClient.search(
+            search_text=query,
+            select=selectedFields,
+            vector_queries=[vector_query],
+        )
+
+        if not searchResults:
+            return Result('', 0, False)
+
+        usedTokens = 0
+        doc = ''
+        for result in searchResults:
+            tokens = len(tokenizer.encode(json.dumps(result["description"])))
+
+            if usedTokens + tokens > maxTokens:
+                break
+
+            doc += json.dumps(result["description"])
+            usedTokens += tokens
+
+        return Result(doc, usedTokens, usedTokens > maxTokens)
+```
+
+</details>
+
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
 ## Add more API for Custom API as data source
