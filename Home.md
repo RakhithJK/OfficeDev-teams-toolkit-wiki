@@ -10,6 +10,6 @@ Teams Toolkit provides support for the end-to-end Teams development journey, inc
 * Rapid iteration with full stack debugging, hot reload, and secure tunneling.
 * Simplified SSO authentication.
 * Integrated support for hosting, data storage, and serverless functions.
-* CI/CD actions for GitHub and Azure DevOps to deliver apps with confidence.
+* CI/CD pipelines for GitHub and Azure DevOps to deliver apps with confidence.
 
 
