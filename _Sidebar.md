@@ -23,6 +23,6 @@ How To Guides
 * [How to configure Bot capability within your Teams app](https://aka.ms/teamsfx-add-bot)
 * [How to configure an Outlook Add-in capability within your Teams app](https://github.com/OfficeDev/TeamsFx/wiki/Configure-Outlook-Add-in-capability-within-your-Teams-app)
 * [How to configure Message Extension capability within your Teams app](https://aka.ms/teamsfx-add-message-extension)
-* [How to automate ci/cd pipelines](https://github.com/OfficeDev/TeamsFx/wiki/How-to-automate-cicd-pipelines)
+* [How to automate ci/cd pipelines](https://aka.ms/teamsfx-add-cicd-new)
 * [How to integrate Azure Functions with your Teams app](https://github.com/OfficeDev/TeamsFx/wiki/How-to-integrate-Azure-Functions-with-your-Teams-app)
 * [How to integrate Azure API Management](https://aka.ms/teamsfx-add-azure-apim)
