@@ -2,7 +2,53 @@
 
 1. **Important**: Visual Studio version >= 17.10 Preview 3
 
-## Debug with Multiple Profiles in Visual Studio Generally Available Version
+## Debug with "Multi-Project Launch Profiles" Preview Feature
+
+To use this feature:
+1. Go to Tools -> Options -> Preview Features
+2. Select 'Enable Multi-Project Launch Profiles'
+<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/enable-multiple-profiles-feature.png)
+
+### Start the app in Outlook
+1. Select `Outlook (browser)` in debug dropdown menu
+<br/> ![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/switch-to-outlook.png)
+2. Press F5, or select Debug > Start Debugging menu in Visual Studio
+<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
+
+### Start the app in Teams App Test Tool
+
+> Note: if your template is `AI Assistant Bot` you should fill in both OpenAI API Key and the created Assistant ID into `appsettings.TestTool.json`
+>   ```
+>   "OpenAI": {
+>      "ApiKey": "<your-openai-api-key>",
+>      "AssistantId": "<your-openai-assistant-id>"
+>   }
+>   ```
+
+> If your template is `AI Chat Bot`, you should fill in your OpenAI API Key or Azure OpenAI settings in `appsettings.TestTool.json`
+>    ```
+>    # If using OpenAI
+>    "OpenAI": {
+>      "ApiKey": "<your-openai-api-key>"
+>    },
+>    # If using Azure OpenAI
+>    "Azure": {
+>      "OpenAIApiKey": "<your-azure-openai-api-key>",
+>      "OpenAIEndpoint": "<your-azure-openai-endpoint>"
+>    }
+>    ```
+> If using Azure OpenAI, update "gpt-35-turbo" in `Program.cs` to your own model deployment name
+
+1. Select `Teams App Test Tool (browser)` in the debug dropdown menu
+<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/switch-to-test-tool.png)
+2. Press F5, or select Debug > Start Debugging menu in Visual Studio
+<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
+
+### Others
+
+Same as above, select the pre-defined profile from the debug dropdown menu.
+
+## Debug without "Multi-Project Launch Profiles" Preview Feature
 
 ### Start the app in Outlook
 1. Select `TeamsApp` in the project selection dropdown menu.
@@ -58,49 +104,3 @@
 ### Others
 
 Same as above, select the correct profile of the `TeamsApp` and `{{YOUR_CSHARP_PROJECT}}`, configure `Multiple startup projects` and then start it.
-
-## Debug with Multi-Project Launch Profiles in Visual Studio Preview Version
-
-To use this feature:
-1. Go to Tools -> Options -> Preview Features
-2. Select 'Enable Multi-Project Launch Profiles'
-<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/enable-multiple-profiles-feature.png)
-
-### Start the app in Outlook
-1. Select `Outlook (browser)` in debug dropdown menu
-<br/> ![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/switch-to-outlook.png)
-2. Press F5, or select Debug > Start Debugging menu in Visual Studio
-<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
-
-### Start the app in Teams App Test Tool
-
-> Note: if your template is `AI Assistant Bot` you should fill in both OpenAI API Key and the created Assistant ID into `appsettings.TestTool.json`
->   ```
->   "OpenAI": {
->      "ApiKey": "<your-openai-api-key>",
->      "AssistantId": "<your-openai-assistant-id>"
->   }
->   ```
-
-> If your template is `AI Chat Bot`, you should fill in your OpenAI API Key or Azure OpenAI settings in `appsettings.TestTool.json`
->    ```
->    # If using OpenAI
->    "OpenAI": {
->      "ApiKey": "<your-openai-api-key>"
->    },
->    # If using Azure OpenAI
->    "Azure": {
->      "OpenAIApiKey": "<your-azure-openai-api-key>",
->      "OpenAIEndpoint": "<your-azure-openai-endpoint>"
->    }
->    ```
-> If using Azure OpenAI, update "gpt-35-turbo" in `Program.cs` to your own model deployment name
-
-1. Select `Teams App Test Tool (browser)` in the debug dropdown menu
-<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/switch-to-test-tool.png)
-2. Press F5, or select Debug > Start Debugging menu in Visual Studio
-<br/>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/debug-button.png)
-
-### Others
-
-Same as above, select the pre-defined profile from the debug dropdown menu.
