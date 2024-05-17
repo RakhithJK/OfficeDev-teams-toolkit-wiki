@@ -622,6 +622,33 @@ ALL_RESOURCE_IDS__AZUREWEBAPP__FRONTENDRESOURCEID=web app id 2
 ALL_RESOURCE_IDS__AZURESTORAGEID=storage id
 ```
 
+## Troubleshooting
+
+If you see errors from this action. You can follow below steps to find detailed error message:
+1. Select the `Teams toolkit` channel of the output .
+1. Find the execution summary at the bottom of the output channel.
+1. Get the error code and error message from ARM.
+
+Here're some common errors from ARM you might meet with Teams Toolkit's project templates.
+
+### Website with given name xxx already exists.
+### The storage account named xxx already exists under the subscription.
+### The name 'xxx' already exists. Choose a different name.
+Mitigation:
+
+This above errors indicate the name for one or multiple Azure resources that going to be created already exists. The default name for all Azure resources is calculated based on the `resourceBaseName` parameter in `azure.parameters.{envName}.json`. Please update the value of `resourceBaseName` to fix this error.
+
+### The subscription registration is in 'Unregistered' state. The subscription must be registered to use namespace 'xxx'.
+This error indicates your Azure account does not have required permission to register the namespace. There are two ways to mitigate this issue:
+
+Mitigation option 1:
+
+Switch to an Azure account that has subscription level Contributor role.
+
+Mitigation option 2:
+
+Ask your subscription administrator to register the namespace mentioned in the error message by following this [link](https://aka.ms/rps-not-found).
+
 # botAadApp/create
 This action will create a new or reuses an existing Microsoft Entra application for bot.
 
