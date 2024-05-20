@@ -44,20 +44,9 @@ $ kill <process id>
 ```
 
 ## What to do if I want to add my own environment variables for debugging?
-You can add your own debug environment variables for frontend (`tabs/`), function (`api/`) and bot (`bot/`) components. There may already be a `.env.teamsfx.local` file under each component folder, with following content:
-```
-# TeamsFx will overwrite the following variable values when running debug
-M365_CLIENT_ID=xxx
-M365_CLIENT_SECRET=xxx
-...
-# Following variables can be customized or you can add your owns
-# FOO=BAR
-...
-```
+Teams Toolkit scaffolded projects come with 2 predefined environments, local and dev. We will use local for the debug process. More about [environments](https://aka.ms/teamsfx-v5.0-guide#environments)
 
-Just append your own local environment variables to that file.
-
-Or, if there's no `.env.teamsfx.local` file in your project (e.g., migrated from legacy project), feel free to create `.env.teamsfx.local` file under `tabs/` or `api/` or `bot/` folder with your own environment variables. Teams Toolkit does add values to `.env.teamsfx.local` but will reserve yours.
+Update `env/.env.local` or `env/.env.local.user` with your own environment variables for debugging.
 
 ## What to do if I want to use my own tunneling service instead of the built-in one for Bot or Messaging Extension?
 ### Reason
