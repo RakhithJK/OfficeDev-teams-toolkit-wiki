@@ -192,12 +192,12 @@ The `{{$[scope].property}}` is used in the following way:
 
     export interface TempState extends DefaultTempState { ... }
     export interface UserState extends DefaultUserState { ... }
-    export interface ConversationState extends DefaultConversationState {
-        tasks: Record<string, Task>; # Your data definition here
-    }
     export interface Task {
         title: string;
         description: string;
+    }
+    export interface ConversationState extends DefaultConversationState {
+        tasks: Record<string, Task>; # Your data definition here
     }
     export type ApplicationTurnState = TurnState<ConversationState, UserState, TempState>;
     ``` 
