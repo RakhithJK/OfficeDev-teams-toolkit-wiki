@@ -115,6 +115,21 @@ This action will validate Teams app package using validation rules.
 ## Output:
 * NONE
 
+# teamsApp/validateWithTestCases
+This action will send out async validation requests to the Developer Portal to validate the app package.
+
+## Syntax:
+```
+  - uses: teamsApp/validateAppPackage
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip # Required. Relative path to this file. This is the path for built zip file.
+      showMessage: true # Optional. Show message or not.
+      showProgressBar: true # Optional. Show progress bar or not.
+```
+
+## Output:
+* NONE
+
 # teamsApp/zipAppPackage
 This action will render Teams app manifest template with environment variables, and zip manifest file with two icons.
 
