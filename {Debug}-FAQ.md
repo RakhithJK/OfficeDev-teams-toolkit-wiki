@@ -23,7 +23,7 @@ Some frequently asked questions are listed bellow.
 ## What to do if some port is already in use?
 
 ### Error
-![Port Already In Use](debug/port-already-in-use.png)
+![Port Already In Use](https://github.com/OfficeDev/TeamsFx/assets/13211513/2e12eff1-2a25-427e-8725-937c5ec4d0ac)
 
 ### Reason
 This is mainly because this port was not successfully closed after last debug.
@@ -96,14 +96,14 @@ You can follow [this document](https://docs.microsoft.com/en-us/microsoftteams/p
 ### Reason
 Since Teams requires https Tab hosting endpoint, a localhost development certificate will be automatically generated and installed to your system after your confirmation. The confirmation window will be popped up during debugging, like:
 
-![image](https://github.com/OfficeDev/TeamsFx/assets/13211513/f3adf5bd-fde4-42e5-b2fa-244bec5faa73)
+![Install-Certificate-Confirmation](https://github.com/OfficeDev/TeamsFx/assets/13211513/f3adf5bd-fde4-42e5-b2fa-244bec5faa73)
 
 ### Mitigation
 We recommend you to install the development certificate. However, if you do not want to install the development certificate and do not want the confirmation window to pop up every time during debugging, you can follow the script bellow to disable the development certificate.
 
 Comment out the install dev cert action in teamsapp.local.yml and use your own certificate and key file for the SSL certificate.
 
-![image](https://github.com/OfficeDev/TeamsFx/assets/13211513/b2d2e6f9-6da0-4848-8137-b37f01cb1d18)
+![Remove-dev-cert-check](https://github.com/OfficeDev/TeamsFx/assets/13211513/b2d2e6f9-6da0-4848-8137-b37f01cb1d18)
 
 If so, an error will show in the Tab page of your app, look like:
 
