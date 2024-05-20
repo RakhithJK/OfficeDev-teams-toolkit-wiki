@@ -16,6 +16,8 @@ The error may occur when you local debug or kick off provisioning resources in a
     - Start local debugging or provision, and Teams Toolkit will provision resources in the new Microsoft 365 tenant.
 
 # Teams Toolkit V4
+Info below will help you understand what will happen when provisioning in an already-provisioned environment but with different account or Azure subscription or local debugging again with another Microsoft 365 account. We will also explain how to recover from the backups.
+> Important Notes: After switching accounts and provisioning or local debugging again, resources have been created before in the old Microsoft 365 tenant or Azure subscription won't be deleted by default, and you have to manully delete them to avoid further costs if any. 
 ## Switch Microsoft 365 Account
 ### Local Debug
 You could run local debugging for a Teams project with one Microsoft 365 tenant and then easily switch to another tenant for further local debugging. To do this, you only need to:
