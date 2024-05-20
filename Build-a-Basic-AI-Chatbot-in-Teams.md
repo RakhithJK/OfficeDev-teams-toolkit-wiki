@@ -186,7 +186,7 @@ The `{{$[scope].property}}` is used in the following way:
 <details>
 <summary> For Javascript language: </summary>
 
-- In `src/app/turnState.ts`, define your temp state, user state, conversation state and application turn state.
+- In `src/app/turnState.ts`, define your temp state, user state, conversation state and application turn state. Or, if there's no `src/app/turnState.ts` file in your project, feel free to create `turnState.ts` file under `src/app/`.
     ```ts
     export interface TempState extends DefaultTempState { ... }
     export interface UserState extends DefaultUserState { ... }
@@ -198,6 +198,7 @@ The `{{$[scope].property}}` is used in the following way:
 
 - In `src/app/app.ts`, use application turn state to initialize application.
     ```ts
+    import { ApplicationTurnState } from "./turnState";
     const app = new Application<ApplicationTurnState>(...);
     ```
 
@@ -207,7 +208,7 @@ The `{{$[scope].property}}` is used in the following way:
 <details>
 <summary> For Python language: </summary>
 
-- In `src/state.py`, define your temp state, user state, conversation state and application turn state.
+- In `src/state.py`, define your temp state, user state, conversation state and application turn state. Or, if there's no `src/state.py` file in your project, feel free to create `state.py` file under `src/`.
     ```python
     from teams.state import TempState, ConversationState, UserState, TurnState
 
