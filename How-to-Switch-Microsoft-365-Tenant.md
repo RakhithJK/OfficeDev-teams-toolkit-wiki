@@ -1,5 +1,5 @@
 This doc is to help you mitigate the error when the Microsoft 365 tenant of your currently signed-in account does not match with what you previously used. If you are using Teams Toolkit v4, please check [Teams Toolkit V4](./How-to-Switch-Microsoft-365-Tenant#teams-toolkit-v4)
-# Teams Toolkit v5
+# Teams Toolkit V5
 "M365TenantIdNotMatchError" error may occur when you local debug or kick off provisioning resources in a remote environment but we notice that the Microsoft 365 tenant you are currently using is different from what recorded in .env file. We will not provision AAD or Bot resources in the new tenant by default but would like to ask you to confirm the account and then follow the mitigation steps mentioned below to either fix the wrong account or continue provisioning resources in the new tenant.
 
 
