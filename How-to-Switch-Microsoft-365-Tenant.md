@@ -1,4 +1,4 @@
-This doc is to help you mitigate the error when the Microsoft 365 tenant of your currently signed-in account does not match with what you previously used. If you are using Teams Toolkit v4,
+This doc is to help you mitigate the error when the Microsoft 365 tenant of your currently signed-in account does not match with what you previously used. If you are using Teams Toolkit v4, please check https://github.com/OfficeDev/TeamsFx/wiki/How-to-Switch-Microsoft-365-Tenant#teams-toolkit-v4
 # Teams Toolkit v5
 ## Why
 The error may occur when you local debug or kick off provisioning resources in a remote environment but we notice that the Microsoft 365 tenant you are currently using is different from what recorded in .env file. We will not provision AAD or Bot resources in the new tenant by default but would like to ask you to confirm the account and then follow the mitigation steps mentioned below to either fix the wrong account or continue provisioning resources in the new tenant.
@@ -41,7 +41,6 @@ After that, we will
 2. Create a new Teams app and a new AAD app (if needed) in the new Microsoft 365 tenant. 
 3. If the project requires Azure bot service, we will generate a new bot service name and save it as the value of "botServiceName" in `azure.parameters.{env}.json`. We will use this new name to provision a new Azure bot service in the selected resource group and the subscription since it is not allowed to edit the value of Microsoft App ID of an existing Azure bot service. 
 4. If the project requires AAD, `{env}.userdata` will be overwritten with the new client secret.
-
 
 ## Switch Azure Subscription
 ### Provision in a Remote Environment
