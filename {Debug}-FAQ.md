@@ -3,12 +3,9 @@
 ## Overall
 Teams Toolkit allows you to debug your Teams app locally by leveraging Visual Studio Code debugging features. After pressing F5, several components of the app will be automatically started. The Teams web client will then be launched in your browser. Specifically, the following components may be started according to your app capabilities:
 - Tab: a react app required by Teams Tab capability
-- Auth: an authentication service acting as a proxy between the app and Microsoft Entra
 - Function: a Azure Functions app that may be needed by Tab
 - Bot: a bot server required by Teams Bot capability
-- Ngrok: a tunneling service required by Teams Bot that forwards local address to public address
-
-> **Note**: Teams Toolkit downloads npm package ngrok@4.3.3 which contains [NGROK](https://ngrok.com/) v2.3.X. Customer must have a valid license to use NGROK software. Microsoft does not license use of the NGROK.
+- Dev Tunnel: a tunneling service required by Teams Bot that forwards local address to public address
 
 During debugging, a localhost development certificate will also be automatically generated and installed to your system after your confirmation.
 
@@ -18,7 +15,6 @@ Some frequently asked questions are listed bellow.
 | Component | Port |
 | --- | --- |
 | Tab | 53000, or 3000 (for Teams Toolkit version < 3.2.0) |
-| Auth | 55000. or 5000 (for Teams Toolkit version < 3.2.0) |
 | Function | 7071 |
 | Node inspector for Function | 9229 |
 | Bot / Messaging Extension | 3978 |
@@ -86,15 +82,6 @@ You should also close the ngrok validation during debugging.
 For VSCode, you should set the setting `fx-extension.prerequisiteCheck.skipNgrok` to be false.
 ![VSCode skip ngrok](debug/vsc-skip-ngrok.jpg)
 For CLI, you should run command `teamsfx config set validate-ngrok off`.
-
-## localdebug-plugin.NgrokTunnelNotConnected
-### Error Message
-Ngrok tunnel is not connected. Check your network settings and try again.
-
-### Mitigation
-Please ensure that your network connection is stable and then try again.
-
-Or you can use your own tunneling service by following [the configuration](#what-to-do-if-i-want-to-use-my-own-tunneling-service-instead-of-the-built-in-one-for-bot-or-messaging-extension).
 
 ## What to do if Teams shows "App not found" when the Teams web client is opened?
 ### Error
@@ -239,19 +226,3 @@ If still fail with the same error, try:
   }
   ```
 - Clear Azure Functions Core Tools local cache at `${HOME}/.azure-functions-core-tools/`.
-
-## Error "ERR_NGROK_6022" when starting bot sso project
-### Error
-![image](https://github.com/OfficeDev/TeamsFx/assets/49138419/2b27d2be-cae9-453a-a8d1-d108306c51dc)
-### Reason
-In order to visit `auth-start.html`, you need to set the ngrok auth token.
-### Mitigation
-1. Stop debugging in Visual Studio Code.
-2. Sign up an ngrok account in https://dashboard.ngrok.com/signup.
-3. Copy your personal ngrok authtoken from https://dashboard.ngrok.com/get-started/your-authtoken.
-4. Run the following commands in Visual Studio Code terminal.
-   ```
-   cd ~/.fx/bin/ngrok
-   ngrok authtoken <your-personal-ngrok-authtoken>`
-   ```
-5. Start debugging the project again by hitting the F5 key in Visual Studio Code.
