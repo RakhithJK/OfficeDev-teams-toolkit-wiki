@@ -17,6 +17,7 @@ The error may occur when you local debug or kick off provisioning resources in a
 
 
 
+
 ## Troubleshoot
 ### Could not be Redirected to the Expected Teams Web Page
 If you have previewed (local or remote) your Teams app in one Microsoft 365 tenant and then switch to another Microsoft 365 account, you may encounter error as shown below 
