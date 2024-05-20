@@ -50,27 +50,8 @@ Update `env/.env.local` or `env/.env.local.user` with your own environment varia
 
 ## What to do if I want to use my own tunneling service instead of the built-in one for Bot or Messaging Extension?
 ### Reason
-Since Bot and Messaging Extension requires a public address as the messaging endpoint, ngrok will be used by default to automatically create a tunnel connection forwarding localhost address to public address.
-
-### Mitigation
-
-> Following mitigation is for project created by Teams Toolkit (<= 4.0.6). For project created by Teams Toolkit (>= 4.1.0), see [How to use my own bot messaging endpoint]({Debug}-Teams-Toolkit-VS-Code-Tasks#how-to-use-my-own-bot-messaging-endpoint).
-
-To use your own tunneling service, you should set `siteEndpoint` configuration in *.fx/configs/config.local.json* under the project root.
-```json
-{
-    "bot": {
-        "siteEndpoint": "https://02f6-2404-f801-9000-1a-908c-79ca-3a8-ee86.ngrok.io"
-    }
-}
-```
-Please note that the `botEndpoint` should use https protocol.
-
-You should also close the ngrok validation during debugging.
-
-For VSCode, you should set the setting `fx-extension.prerequisiteCheck.skipNgrok` to be false.
-![VSCode skip ngrok](debug/vsc-skip-ngrok.jpg)
-For CLI, you should run command `teamsfx config set validate-ngrok off`.
+Since Bot and Messaging Extension requires a public address as the messaging endpoint, dev tunnel will be used by default to automatically create a tunnel connection forwarding localhost address to public address.
+You can follow [Choose your own tunnel solutio](https://github.com/OfficeDev/TeamsFx/wiki/%7BDebug%7D-Teams-Toolkit-v5-VS-Code-Tasks#choose-your-own-tunnel-solution).
 
 ## What to do if Teams shows "App not found" when the Teams web client is opened?
 ### Error
