@@ -1,10 +1,10 @@
 This doc is to help you mitigate the error when the Microsoft 365 tenant of your currently signed-in account does not match with what you previously used. If you are using Teams Toolkit v4,
-
-# Why
+# Teams Toolkit v5
+## Why
 The error may occur when you local debug or kick off provisioning resources in a remote environment but we notice that the Microsoft 365 tenant you are currently using is different from what recorded in .env file. We will not provision AAD or Bot resources in the new tenant by default but would like to ask you to confirm the account and then follow the mitigation steps mentioned below to either fix the wrong account or continue provisioning resources in the new tenant.
 
 
-# Mitigation
+## Mitigation
 1. Check your Microsoft 365 account.    
     a) If you switched to the account unintentionally , please sign out of the current account and sign in with the correct one. Continue local debugging or provision in remote environemnt.     
     b) If you plan to continue with the new account to provision resources in new tenant, please follow step 2.    
@@ -76,14 +76,14 @@ Note: if you want to recover for a remote environment and you have added new fea
 * Delete the backups when you think there is no need to keep them.
 
 
-## Troubleshoot
-### Could not be Redirected to the Expected Teams Web Page
+# Troubleshoot
+## Could not be Redirected to the Expected Teams Web Page
 If you have previewed (local or remote) your Teams app in one Microsoft 365 tenant and then switch to another Microsoft 365 account, you may encounter error as shown below 
 ![teams-signin-error](https://github.com/OfficeDev/TeamsFx/assets/86260893/448b82c6-b785-4871-b2c9-9ce17750389f)
 
 once the browser is launched when previewing in the new Microsoft 365 tenant. If clicking "try again" or waiting for a few seconds to let Teams bring you to the sign in page, you may notice that the page won't be redirected correctly to the page of adding the Teams app. This happens due to the previous account info saved in the browser storage.
 
-#### Mitigation
+### Mitigation
 * Launch browser with userData    
 By default, the browser is launched with a separate user profile in a temp folder. You could override the value of "userDataDir" to "true" and then specify the path of user data folder in runtimeArgs.
   *  Visual Studio Code    
@@ -164,7 +164,7 @@ By default, the browser is launched with a separate user profile in a temp folde
 
      If you want to preview a Teams app in a remote environment, you could launch the browser in incognito mode and then copy the preview URL shown in the output pane and paste it in the browser.
     
-### Could not Authorize or Send Request in Visual Studio
+## Could not Authorize or Send Request in Visual Studio
 After preparing Teams app dependencies again in Visual Studio with another Microsoft 365 account in a different tenant, you may notice issues like receiving 401 response when sending a bot command or could not authorize to get the user's profile photo in the tab as the image shown below when local debugging.
 ![vs-authorize-error](https://github.com/OfficeDev/TeamsFx/assets/86260893/cbf87279-8b9b-40b2-a575-85718fbf0f41)
 
@@ -174,17 +174,17 @@ We are still improving this scenario but for now a workaround is:
 3. Run F5 again.
 4. If you have customized appsettings.Development.json before, please restore these values based on the backup.
 
-### 409 Conflict error for Teams app creation
+## 409 Conflict error for Teams app creation
 You may meet 409 conflict error when the Teams app id provided in `.env.{env}.json` file is conflicting with another Teams app under the same tenant. This usually happens when developers work on the same project, or switch account under same tenant. To resolve it, you can either be added as the owner of existing Teams app, or use another Teams app id to avoid conflict.
 
-#### Teams app owner
+### Teams app owner
 You need to know who owns the existing Teams app, and let the owner add your M365 account to the owner list. Please refer to [Collaborate on Teams project using Microsoft Teams Toolkit](https://docs.microsoft.com/en-us/microsoftteams/platform/toolkit/teamsfx-collaboration).
 
-#### Use another app id
+### Use another app id
 You can manually update Teams app id in `.env.{env}.json` file. Run "Provision to the Cloud" again to create the Teams app. Teams Toolkit will generate a new Teams app id.
 
-## Appendix 
-### Add Browser Configuration in Visual Studio
+# Appendix 
+## Add Browser Configuration in Visual Studio
 To create a new browser configuration in Visual Studio, you could
 1. Open the dropdown and select "Browser with".  
 ![vs-open-browser-with](https://github.com/OfficeDev/TeamsFx/assets/86260893/501249db-e430-4914-a9d2-f6f940b87809)
