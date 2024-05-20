@@ -51,6 +51,8 @@ Update `env/.env.local` or `env/.env.local.user` with your own environment varia
 ## What to do if I want to use my own tunneling service instead of the built-in one for Bot or Messaging Extension?
 ### Reason
 Since Bot and Messaging Extension requires a public address as the messaging endpoint, dev tunnel will be used by default to automatically create a tunnel connection forwarding localhost address to public address.
+
+### Mitigation
 You can follow [choose your own tunnel solution](https://github.com/OfficeDev/TeamsFx/wiki/%7BDebug%7D-Teams-Toolkit-v5-VS-Code-Tasks#choose-your-own-tunnel-solution) to use your own tunneling service.
 
 ## What to do if Teams shows "App not found" when the Teams web client is opened?
