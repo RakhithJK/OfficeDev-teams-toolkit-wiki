@@ -120,7 +120,7 @@ This action will send out async validation requests to the Developer Portal to v
 
 ## Syntax:
 ```
-  - uses: teamsApp/validateAppPackage
+  - uses: teamsApp/validateWithTestCases
     with:
       appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip # Required. Relative path to this file. This is the path for built zip file.
       showMessage: true # Optional. Show message or not.
