@@ -20,7 +20,8 @@ The error may occur when you local debug or kick off provisioning resources in a
 ## Troubleshoot
 ### Could not be Redirected to the Expected Teams Web Page
 If you have previewed (local or remote) your Teams app in one Microsoft 365 tenant and then switch to another Microsoft 365 account, you may encounter error as shown below 
-![image](../images/fx-core/preview/teams-signin-error.png)
+![teams-signin-error](https://github.com/OfficeDev/TeamsFx/assets/86260893/448b82c6-b785-4871-b2c9-9ce17750389f)
+
 once the browser is launched when previewing in the new Microsoft 365 tenant. If clicking "try again" or waiting for a few seconds to let Teams bring you to the sign in page, you may notice that the page won't be redirected correctly to the page of adding the Teams app. This happens due to the previous account info saved in the browser storage.
 
 #### Mitigation
@@ -106,7 +107,7 @@ By default, the browser is launched with a separate user profile in a temp folde
     
 ### Could not Authorize or Send Request in Visual Studio
 After preparing Teams app dependencies again in Visual Studio with another Microsoft 365 account in a different tenant, you may notice issues like receiving 401 response when sending a bot command or could not authorize to get the user's profile photo in the tab as the image shown below when local debugging.
-![image](../images/fx-core/localdebug/vs-authorize-error.png)
+![vs-authorize-error](https://github.com/OfficeDev/TeamsFx/assets/86260893/cbf87279-8b9b-40b2-a575-85718fbf0f41)
 
 We are still improving this scenario but for now a workaround is:
 1. Please keep a copy of the current content of appsettings.Development.json.
@@ -131,31 +132,22 @@ You can manually update Teams app id in `state.{env}.json` file, e.g. remove the
 ```
 
 ### Set Up Bot Error
-An error with name "AlreadyCreatedBotNotExist" may pop up when local debugging a bot project while the bot id is provided in `state.local.json` file. This usually happens when you have local debugged a project with one Microsoft 365 account, and then switched to another account in the same tenant and run local debugging. To resolve it, you can either add the new account as the owner of the existing bot, or create a new bot. 
+An error with name "AlreadyCreatedBotNotExist" may pop up when local debugging a bot project while the bot id is provided in `env.local` file. This usually happens when you have local debugged a project with one Microsoft 365 account, and then switched to another account in the same tenant and run local debugging. To resolve it, you can either add the new account as the owner of the existing bot, or create a new bot. 
 
 #### Add Bot Owner
 You need to know who owns the existing bot, and visit https://dev.botframework.com/bots with the account owning the bot now. And then you could add owners in the "Settings" page.     
-![image](../images/fx-core/preview/add-bot-owner.png)
+![add-bot-owner](https://github.com/OfficeDev/TeamsFx/assets/86260893/66748bbb-0529-4871-b5da-c38cb1c1ce23)
 
-Please try [Create a New Bot](#create-a-new-bot) if this does not work for you.
-#### Create a New Bot
-You can manually update `state.local.json` by setting the value of "botId" to an empty string. Teams Toolkit will create a new bot and AAD app for you wen you start local debugging again.
-```
-"fx-resource-bot": {
-        ...
-        "botId": "",
-        ...
-    },
-```
+Please try remove value of bot id in env.local if this does not work for you and Teams Toolkit will create a new bot for you when you start local debugging again or prepare Teams app dependencies if in Visual Studio.
 
 ## Appendix 
 ### Add Browser Configuration in Visual Studio
 To create a new browser configuration in Visual Studio, you could
-1. Open the dropdown and select "Browser with".     
-![image](../images/fx-core/preview/vs-open-browser-with.png)
+1. Open the dropdown and select "Browser with".  
+![vs-open-browser-with](https://github.com/OfficeDev/TeamsFx/assets/86260893/501249db-e430-4914-a9d2-f6f940b87809)
 2. Select "Ädd" to add a new profile   
-![image](../images/fx-core/preview/vs-add-browser-configuration.png)
+![vs-open-browser-with](https://github.com/OfficeDev/TeamsFx/assets/86260893/b9b0c543-c625-4f70-88d0-2f7e92e0fb90)
 3. Find the path of the program, type the arguments you need in the field of "Arguments", and give it a friendly name. For example, we add a new configuration for Edge inPrivate mode as shown in the image below.    
-![image](../images/fx-core/preview/vs-add-browser-program.png)
+![vs-add-browser-program](https://github.com/OfficeDev/TeamsFx/assets/86260893/573e7929-cfb3-4de1-9201-6033cd59b0b6)
 4. Select the newly added broswer configuration and then Visual Studio will launch browser with the selected configuration.    
-![image](../images/fx-core/preview/vs-switch-browser-configuration.png)
+![vs-switch-browser-configuration](https://github.com/OfficeDev/TeamsFx/assets/86260893/3cc37075-df5a-4653-962d-97f770087c0a)
