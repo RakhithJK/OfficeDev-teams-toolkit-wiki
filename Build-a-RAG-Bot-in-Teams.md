@@ -810,6 +810,240 @@ class MyDataSource(DataSource):
 
 <p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
 
+### Integrate vectorization
+
+This section will show you how to create vectorized data on Azure AI Search and run a series of queries in Python language.
+
+> Note: For more details, you can refer to this [demo sample](https://github.com/Azure/azure-search-vector-samples/blob/main/demo-python/code/integrated-vectorization/azure-search-integrated-vectorization-sample.ipynb).
+
+* **Connect to Blob Storage and load documents**
+
+  Retrieve documents from Blob Storage. Upload your local documents.
+
+  You need to prepare a **blob connection** in your Azure AI Search service, and get your `blob_connection_string` and `blob_container_name`.
+    ```python
+    from azure.storage.blob import BlobServiceClient  
+    import os
+
+    # Connect to Blob Storage
+    blob_service_client = BlobServiceClient.from_connection_string(blob_connection_string)
+    container_client = blob_service_client.get_container_client(blob_container_name)
+    if not container_client.exists():
+        container_client.create_container()
+
+    documents_directory = os.path.join("<your-local-doc-path>")
+    for file in os.listdir(documents_directory):
+        with open(os.path.join(documents_directory, file), "rb") as data:
+            name = os.path.basename(file)
+            if not container_client.get_blob_client(name).exists():
+                container_client.upload_blob(name=name, data=data)
+    ```
+* **Create a blob data source connector on Azure AI Search**
+    ```python
+    from azure.search.documents.indexes import SearchIndexerClient
+    from azure.search.documents.indexes.models import (
+        SearchIndexerDataContainer,
+        SearchIndexerDataSourceConnection
+    )
+    from azure.search.documents.indexes._generated.models import NativeBlobSoftDeleteDeletionDetectionPolicy
+
+    # Create a data source 
+    indexer_client = SearchIndexerClient(endpoint, credential)
+    container = SearchIndexerDataContainer(name=blob_container_name)
+    data_source_connection = SearchIndexerDataSourceConnection(
+        name=f"{index_name}-blob",
+        type="azureblob",
+        connection_string=blob_connection_string,
+        container=container,
+        data_deletion_detection_policy=NativeBlobSoftDeleteDeletionDetectionPolicy()
+    )
+    data_source = indexer_client.create_or_update_data_source_connection(data_source_connection)
+    ```
+* **Create a search index**
+
+  This step is similar to the step in [Build your own Data Ingestion/Sample Code(Python language)/search_index.py](#build-your-own-data-ingestion). But vector and nonvector content is stored in a search index, and we will create a different search configuration.
+    ```python
+    # Create a search index  
+    index_client = SearchIndexClient(endpoint=endpoint, credential=credential)  
+    fields = [  
+        SearchField(name="parent_id", type=SearchFieldDataType.String, sortable=True, filterable=True, facetable=True),  
+        SearchField(name="title", type=SearchFieldDataType.String),  
+        SearchField(name="chunk_id", type=SearchFieldDataType.String, key=True, sortable=True, filterable=True, facetable=True, analyzer_name="keyword"),  
+        SearchField(name="chunk", type=SearchFieldDataType.String, sortable=False, filterable=False, facetable=False),  
+        SearchField(name="vector", type=SearchFieldDataType.Collection(SearchFieldDataType.Single), vector_search_dimensions=1536, vector_search_profile_name="myHnswProfile"),  
+    ]  
+    
+    # Configure the vector search configuration  
+    vector_search = VectorSearch(  
+        algorithms=[  
+            HnswAlgorithmConfiguration(  
+                name="myHnsw",  
+                parameters=HnswParameters(  
+                    m=4,  
+                    ef_construction=400,  
+                    ef_search=500,  
+                    metric=VectorSearchAlgorithmMetric.COSINE,  
+                ),  
+            ),  
+            ExhaustiveKnnAlgorithmConfiguration(  
+                name="myExhaustiveKnn",  
+                parameters=ExhaustiveKnnParameters(  
+                    metric=VectorSearchAlgorithmMetric.COSINE,  
+                ),  
+            ),  
+        ],  
+        profiles=[  
+            VectorSearchProfile(  
+                name="myHnswProfile",  
+                algorithm_configuration_name="myHnsw",  
+                vectorizer="myOpenAI",  
+            ),  
+            VectorSearchProfile(  
+                name="myExhaustiveKnnProfile",  
+                algorithm_configuration_name="myExhaustiveKnn",  
+                vectorizer="myOpenAI",  
+            ),  
+        ],  
+        vectorizers=[  
+            AzureOpenAIVectorizer(  
+                name="myOpenAI",  
+                kind="azureOpenAI",  
+                azure_open_ai_parameters=AzureOpenAIParameters(  
+                    resource_uri=azure_openai_endpoint,  
+                    deployment_id=azure_openai_embedding_deployment,  
+                    api_key=azure_openai_key,  
+                ),  
+            ),  
+        ],  
+    )  
+    
+    semantic_config = SemanticConfiguration(  
+        name="my-semantic-config",  
+        prioritized_fields=SemanticPrioritizedFields(  
+            content_fields=[SemanticField(field_name="chunk")]  
+        ),  
+    )  
+    
+    # Create the semantic search with the configuration  
+    semantic_search = SemanticSearch(configurations=[semantic_config])  
+    
+    # Create the search index
+    index = SearchIndex(name=index_name, fields=fields, vector_search=vector_search, semantic_search=semantic_search)  
+    result = index_client.create_or_update_index(index)
+    ```
+* **Create a skillset**
+
+  Skills drive integrated vectorization. [Text Split](https://learn.microsoft.com/azure/search/cognitive-search-skill-textsplit) provides data chunking. [AzureOpenAIEmbedding](https://learn.microsoft.com/azure/search/cognitive-search-skill-azure-openai-embedding) handles calls to Azure OpenAI, using the connection information you provide in the environment variables. An [indexer projection](https://learn.microsoft.com/azure/search/index-projections-concept-intro) specifies secondary indexes used for chunked data.
+    ```python
+    # Create a skillset  
+    skillset_name = f"{index_name}-skillset"  
+    
+    split_skill = SplitSkill(  
+        description="Split skill to chunk documents",  
+        text_split_mode="pages",  
+        context="/document",  
+        maximum_page_length=2000,  
+        page_overlap_length=500,  
+        inputs=[  
+            InputFieldMappingEntry(name="text", source="/document/content"),  
+        ],  
+        outputs=[  
+            OutputFieldMappingEntry(name="textItems", target_name="pages")  
+        ],  
+    )  
+    
+    embedding_skill = AzureOpenAIEmbeddingSkill(  
+        description="Skill to generate embeddings via Azure OpenAI",  
+        context="/document/pages/*",  
+        resource_uri=azure_openai_endpoint,  
+        deployment_id=azure_openai_embedding_deployment,  
+        api_key=azure_openai_key,  
+        inputs=[  
+            InputFieldMappingEntry(name="text", source="/document/pages/*"),  
+        ],  
+        outputs=[  
+            OutputFieldMappingEntry(name="embedding", target_name="vector")  
+        ],  
+    )  
+    
+    index_projections = SearchIndexerIndexProjections(  
+        selectors=[  
+            SearchIndexerIndexProjectionSelector(  
+                target_index_name=index_name,  
+                parent_key_field_name="parent_id",  
+                source_context="/document/pages/*",  
+                mappings=[  
+                    InputFieldMappingEntry(name="chunk", source="/document/pages/*"),  
+                    InputFieldMappingEntry(name="vector", source="/document/pages/*/vector"),  
+                    InputFieldMappingEntry(name="title", source="/document/metadata_storage_name"),  
+                ],  
+            ),  
+        ],  
+        parameters=SearchIndexerIndexProjectionsParameters(  
+            projection_mode=IndexProjectionMode.SKIP_INDEXING_PARENT_DOCUMENTS  
+        ),  
+    )  
+    
+    skillset = SearchIndexerSkillset(  
+        name=skillset_name,  
+        description="Skillset to chunk documents and generating embeddings",  
+        skills=[split_skill, embedding_skill],  
+        index_projections=index_projections,  
+    )  
+    
+    client = SearchIndexerClient(endpoint, credential)  
+    client.create_or_update_skillset(skillset)
+    ```
+* **Create an indexer**
+    ```python
+    # Create an indexer  
+    indexer_name = f"{index_name}-indexer"  
+    
+    indexer = SearchIndexer(  
+        name=indexer_name,  
+        description="Indexer to index documents and generate embeddings",  
+        skillset_name=skillset_name,  
+        target_index_name=index_name,  
+        data_source_name=data_source.name,  
+        # Map the metadata_storage_name field to the title field in the index to display the PDF title in the search results  
+        field_mappings=[FieldMapping(source_field_name="metadata_storage_name", target_field_name="title")]  
+    )  
+    
+    indexer_client = SearchIndexerClient(endpoint, credential)  
+    indexer_result = indexer_client.create_or_update_indexer(indexer)  
+    
+    # Run the indexer  
+    indexer_client.run_indexer(indexer_name)
+    ```
+* **Perform a vector similarity search**
+
+  This example shows a pure vector search using the vectorizable text query, all you need to do is pass in text and your vectorizer will handle the query vectorization.
+  If you indexed the health plan PDF file, send queries that ask plan-related questions.
+    ```python
+    # Pure Vector Search
+    query = "<your-query>"  
+    
+    search_client = SearchClient(endpoint, index_name, credential=credential)
+    vector_query = VectorizableTextQuery(text=query, k_nearest_neighbors=1, fields="vector", exhaustive=True)
+    # Use the below query to pass in the raw vector query instead of the query vectorization
+    # vector_query = RawVectorQuery(vector=generate_embeddings(query), k_nearest_neighbors=3, fields="vector")
+    
+    results = search_client.search(  
+        search_text=None,  
+        vector_queries= [vector_query],
+        select=["parent_id", "chunk_id", "chunk"],
+        top=1
+    )  
+    
+    for result in results:  
+        print(f"parent_id: {result['parent_id']}")  
+        print(f"chunk_id: {result['chunk_id']}")  
+        print(f"Score: {result['@search.score']}")  
+        print(f"Content: {result['chunk']}")
+    ```
+
+<p align="right"><a href="#in-this-tutorial-you-will-learn">back to top</a></p>
+
 ## Add more API for Custom API as data source
 You can follow the following steps to extend the Custom Copilot from Custom API template with more APIs.
 
