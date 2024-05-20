@@ -176,13 +176,14 @@ We are still improving this scenario but for now a workaround is:
 4. If you have customized appsettings.Development.json before, please restore these values based on the backup.
 
 ## 409 Conflict error for Teams app creation
-You may meet 409 conflict error when the Teams app id provided in `.env.{env}.json` file is conflicting with another Teams app under the same tenant. This usually happens when developers work on the same project, or switch account under same tenant. To resolve it, you can either be added as the owner of existing Teams app, or use another Teams app id to avoid conflict.
+You may meet 409 conflict error when the Teams app id provided in `.env.{env}.json` (`state.{env}.json file` if you are using V4) file is conflicting with another Teams app under the same tenant. This usually happens when developers work on the same project, or switch account under same tenant. To resolve it, you can either be added as the owner of existing Teams app, or use another Teams app id to avoid conflict.
 
 ### Teams app owner
 You need to know who owns the existing Teams app, and let the owner add your M365 account to the owner list. Please refer to [Collaborate on Teams project using Microsoft Teams Toolkit](https://docs.microsoft.com/en-us/microsoftteams/platform/toolkit/teamsfx-collaboration).
 
 ### Use another app id
-You can manually update Teams app id in `.env.{env}.json` file. Run "Provision to the Cloud" again to create the Teams app. Teams Toolkit will generate a new Teams app id.
+You can manually update Teams app id in `.env.{env}.json` file (If you are using Teams Toolkit V4, it should be `state.{env}.json file`). Run "Provision to the Cloud" again to create the Teams app. Teams Toolkit will generate a new Teams app id.
+
 
 # Appendix 
 ## Add Browser Configuration in Visual Studio
