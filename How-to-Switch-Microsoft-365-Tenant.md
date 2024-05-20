@@ -10,7 +10,7 @@ The error may occur when you local debug or kick off provisioning resources in a
     b) If you plan to continue with the new account to provision resources in new tenant, please follow step 2.    
 2. To provision resources in new tenant, 
     - Clear the value of following keys in `.env.{env}` file in teamsfx folder. For example, the file would be .env.dev for dev environment,
-        -  Clear the value of TEAMS_APP_TENANT_ID in .env.
+        - Clear the value of TEAMS_APP_TENANT_ID in .env.
         - Clear the value of AAD_APP_CLIENT_ID if you need an AAD aap.
         - Clear the value of BOT_ID if your project includes a Bot app.
     - Start local debugging or provision, and Teams Toolkit will provision resources in the new Microsoft 365 tenant.
@@ -124,15 +124,6 @@ You need to know who owns the existing Teams app, and let the owner add your M36
 
 #### Use another app id
 You can manually update Teams app id in `.env.{env}.json` file. Run "Provision to the Cloud" again to create the Teams app. Teams Toolkit will generate a new Teams app id.
-
-### Set Up Bot Error
-An error with name "AlreadyCreatedBotNotExist" may pop up when local debugging a bot project while the bot id is provided in `env.local` file. This usually happens when you have local debugged a project with one Microsoft 365 account, and then switched to another account in the same tenant and run local debugging. To resolve it, you can either add the new account as the owner of the existing bot, or create a new bot. 
-
-#### Add Bot Owner
-You need to know who owns the existing bot, and visit https://dev.botframework.com/bots with the account owning the bot now. And then you could add owners in the "Settings" page.     
-![add-bot-owner](https://github.com/OfficeDev/TeamsFx/assets/86260893/66748bbb-0529-4871-b5da-c38cb1c1ce23)
-
-Please try remove value of bot id in env.local if this does not work for you and Teams Toolkit will create a new bot for you when you start local debugging again or prepare Teams app dependencies if in Visual Studio.
 
 ## Appendix 
 ### Add Browser Configuration in Visual Studio
