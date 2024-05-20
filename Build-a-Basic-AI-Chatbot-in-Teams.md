@@ -188,10 +188,16 @@ The `{{$[scope].property}}` is used in the following way:
 
 - In `src/app/turnState.ts`, define your temp state, user state, conversation state and application turn state. Or, if there's no `src/app/turnState.ts` file in your project, feel free to create `turnState.ts` file under `src/app/`.
     ```ts
+    import { DefaultConversationState, DefaultTempState, DefaultUserState, TurnState } from "@microsoft/teams-ai";
+
     export interface TempState extends DefaultTempState { ... }
     export interface UserState extends DefaultUserState { ... }
     export interface ConversationState extends DefaultConversationState {
-        tasks: Record<string, Task>;
+        tasks: Record<string, Task>; # Your data definition here
+    }
+    export interface Task {
+        title: string;
+        description: string;
     }
     export type ApplicationTurnState = TurnState<ConversationState, UserState, TempState>;
     ``` 
