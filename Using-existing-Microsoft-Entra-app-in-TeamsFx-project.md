@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Content in this document has been moved to [Teams platform documentation](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/use-existing-aad-app). Please do not refer to or update this document.
+
 This doc is for using existing Microsoft Entra app or Manually Create Microsoft Entra app for TeamsFx project in Visual Studio or Visual Studio Code. Please follow the instruction and make sure all reqirued info is properly set in your TeamsFx project.
 
 
