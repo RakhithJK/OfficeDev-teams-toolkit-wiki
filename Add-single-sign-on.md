@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Content in this document has been moved to [Teams platform documentation](https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/conversations/notification-bot-in-teams?tabs=ts1%2Cts2%2Cts3%2Cts4%2Cjsts%2Cts5). Please do not refer to or update this document.
+
 # Add single sign on experience
 
 > This feature is currently under active development. Report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
