@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Content in this document has been moved to [Teams platform documentation](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/teams-toolkit-cli?pivots=version-three). Please do not refer to or update this document.
+
 > The content is under construction and is subject to rapid changes.
 
 # teamsfx preview
