@@ -158,7 +158,7 @@ To resolve this, please follow below instrucntion:
 
 ### <a name="functionDepsCheckerdotnetnotfound"></a>DotnetNotFound
 
-> Cannot find .NET Core SDK (v3.1 or v5.0). For the details why .NET SDK is needed, refer to https://aka.ms/teamsfx-envchecker-help
+> Cannot find .NET Core SDK (v3.1 or v5.0).
 
 To resolve this issue, please refer to [the guide](#how-to-install-net-sdk) to install `.NET SDK` manually.
 
