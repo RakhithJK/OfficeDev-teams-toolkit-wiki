@@ -49,6 +49,6 @@ Follow below instructions to get started with this application template for loca
 
 * [Extend a Teams personal tabs across Microsoft 365](https://docs.microsoft.com/microsoftteams/platform/m365-apps/extend-m365-teams-personal-tab?tabs=manifest-teams-toolkit)
 * [Teams Toolkit Documentations](https://docs.microsoft.com/microsoftteams/platform/toolkit/teams-toolkit-fundamentals)
-* [Teams Toolkit CLI](https://docs.microsoft.com/microsoftteams/platform/toolkit/teamsfx-cli)
+* [Teams Toolkit CLI](https://docs.microsoft.com/microsoftteams/platform/toolkit/teams-toolkit-cli)
 * [TeamsFx SDK](https://docs.microsoft.com/microsoftteams/platform/toolkit/teamsfx-sdk)
 * [Teams Toolkit Samples](https://github.com/OfficeDev/TeamsFx-Samples)
