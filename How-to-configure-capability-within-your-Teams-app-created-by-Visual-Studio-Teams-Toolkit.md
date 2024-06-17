@@ -24,7 +24,7 @@ Please go to: [Configure Tab capability](#Configure-Tab-capability)
 A bot, chatbot, or conversational bot is an app that responds to simple commands sent in chat and replies in meaningful ways. Examples of bots in everyday use include: bots that notify about build failures, bots that provide information about the weather or bus schedules, or provide travel information. A bot interaction can be a quick question and answer, or it can be a complex conversation. Being a cloud application, a bot can provide valuable and secure access to cloud services and corporate resources. Learn more from [Build bots for Teams
 ](https://learn.microsoft.com/microsoftteams/platform/bots/what-are-bots).
 
-Please go to: [Configure Tab capability](#Configure-Bot-capability)
+Please go to: [Configure Bot capability](#Configure-Bot-capability)
 
 ### Message Extension
 Message Extension allows users to interact with your web service while composing messages in the Microsoft Teams client. Users can invoke your web service to assist message composition, from the message compose box, or from the search bar.
@@ -32,7 +32,7 @@ Message Extension allows users to interact with your web service while composing
 Message Extensions are implemented on top of the Bot support architecture within Teams. Learn more from [Build message extensions for Teams
 ](https://learn.microsoft.com/en-us/microsoftteams/platform/messaging-extensions/what-are-messaging-extensions?tabs=dotnet).
 
-Please go to: [Configure Tab capability](#Configure-Message-Extension-capability)
+Please go to: [Configure Message Extension capability](#Configure-Message-Extension-capability)
 
 ## Configure Tab capability
 
