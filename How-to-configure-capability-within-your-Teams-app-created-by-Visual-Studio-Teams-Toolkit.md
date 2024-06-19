@@ -172,14 +172,16 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
 
     Example:
     ```json
-     "composeExtensions": [
+    "composeExtensions": [
         {
             "botId": "${{BOT_ID}}",
             "commands": [
                 {
                     "id": "createCard",
                     "context": [
-                        "compose"
+                      "compose",
+                      "message",
+                      "commandBox"
                     ],
                     "description": "Command to run action to create a Card from Compose Box",
                     "title": "Create Card",
@@ -204,58 +206,19 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
                             "inputType": "textarea"
                         }
                     ]
-                },
-                {
-                    "id": "shareMessage",
-                    "context": [
-                        "message"
-                    ],
-                    "description": "Test command to run action on message context (message sharing)",
-                    "title": "Share Message",
-                    "type": "action",
-                    "parameters": [
-                        {
-                            "name": "includeImage",
-                            "title": "Include Image",
-                            "description": "Include image in Hero Card",
-                            "inputType": "toggle"
-                        }
-                    ]
-                },
-                {
-                    "id": "searchQuery",
-                    "context": [
-                        "compose",
-                        "commandBox"
-                    ],
-                    "description": "Test command to run query",
-                    "title": "Search",
-                    "type": "query",
-                    "parameters": [
-                        {
-                            "name": "searchQuery",
-                            "title": "Search Query",
-                            "description": "Your search query",
-                            "inputType": "text"
-                        }
-                    ]
-                }
-            ],
-            "messageHandlers": [
-                {
-                    "type": "link",
-                    "value": {
-                        "domains": [
-                            "*.botframework.com"
-                        ]
-                    }
                 }
             ]
         }
     ]
     ```
+    ```json
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ]
+    ```
 
-1. Update `teamsapp.local.yml`. Add action `botAadApp/create` and `botFramework/create` under provision. Then update `file/createOrUpdateEnvironmentFile` action under deploy:
+1. Update `teamsapp.local.yml`. Add action `botAadApp/create` and `botFramework/create` under provision.
     ```yml
     provision:
       - uses: botAadApp/create
@@ -277,6 +240,18 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
           description: ""
           channels:
             - name: msteams
+
+      # Generate runtime appsettings to JSON file
+      - uses: file/createOrUpdateJsonFile
+        with:
+          target: ../MESSAGE_EXTENSION_SOURCE_CODE_PROJECT_PATH/appsettings.Development.json
+          content:
+            BOT_ID: ${{BOT_ID}}
+            BOT_PASSWORD: ${{SECRET_BOT_PASSWORD}}
+    ```
+    Replace `MESSAGE_EXTENSION_SOURCE_CODE_PROJECT_PATH` with your Bot source code. `BOT_ID` and `BOT_PASSWORD` is using in the runtime. If you have registered it before, you can just configure `.env.local` to add `BOT_ID` to it.
+
+1. Configure your Message Extension source code to use `BOT_ID` and `BOT_PASSWORD`. No changes if your app is using them before.
 
 1. Follow [Prepare for local debugging](#Prepare-for-local-debugging) then start local debugging. You will see a Teams website in a new browser opens and ask you to install your app.
 
