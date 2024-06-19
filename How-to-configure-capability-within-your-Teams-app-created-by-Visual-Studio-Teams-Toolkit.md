@@ -63,7 +63,8 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
           }
       ],
     ```
-    Make sure `contentUrl`, `websiteUrl` and `configurationUrl` are right. If your tab is not configurable, you can ignore `configurableTabs` field.
+    Make sure `contentUrl`, `websiteUrl` and `configurationUrl` are right. If your Tab is not configurable, you can ignore `configurableTabs` field.
+    Refer to [Tab schema](https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#configurabletabs) for customizing them.
 
 1. Add your tab domain to the `validDomains` field.
     Example:
