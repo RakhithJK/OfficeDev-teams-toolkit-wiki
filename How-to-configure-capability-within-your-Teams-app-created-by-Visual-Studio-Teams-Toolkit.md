@@ -151,7 +151,18 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
           description: ""
           channels:
             - name: msteams
+
+      # Generate runtime appsettings to JSON file
+      - uses: file/createOrUpdateJsonFile
+        with:
+          target: ../BOT_SOURCE_CODE_PROJECT_PATH/appsettings.Development.json
+          content:
+            BOT_ID: ${{BOT_ID}}
+            BOT_PASSWORD: ${{SECRET_BOT_PASSWORD}}
     ```
+    Replace `BOT_SOURCE_CODE_PROJECT_PATH` with your Bot source code. `BOT_ID` and `BOT_PASSWORD` is using in the runtime. If you have registered it before, you can just configure `.env.local` to add `BOT_ID` to it.
+
+1. Configure your Bot source code to use `BOT_ID` and `BOT_PASSWORD`. No changes if your app is using them before.
 
 1. Follow [Prepare for local debugging](#Prepare-for-local-debugging) then start local debugging. You will see a Teams website in a new browser opens and ask you to install your app.
 
