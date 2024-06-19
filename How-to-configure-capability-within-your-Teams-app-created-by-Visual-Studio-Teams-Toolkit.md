@@ -164,6 +164,9 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
 
 1. Configure your Bot source code to use `BOT_ID` and `BOT_PASSWORD`. No changes if your app is using them before.
 
+1. In the debug dropdown menu, select Dev Tunnels > Create A Tunnel (set authentication type to Public) or select an existing public dev tunnel
+</br>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/create-devtunnel-button.png)
+
 1. Follow [Prepare for local debugging](#Prepare-for-local-debugging) then start local debugging. You will see a Teams website in a new browser opens and ask you to install your app.
 
 ## Configure Message Extension capability
@@ -252,6 +255,9 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
     Replace `MESSAGE_EXTENSION_SOURCE_CODE_PROJECT_PATH` with your Bot source code. `BOT_ID` and `BOT_PASSWORD` is using in the runtime. If you have registered it before, you can just configure `.env.local` to add `BOT_ID` to it.
 
 1. Configure your Message Extension source code to use `BOT_ID` and `BOT_PASSWORD`. No changes if your app is using them before.
+
+1. In the debug dropdown menu, select Dev Tunnels > Create A Tunnel (set authentication type to Public) or select an existing public dev tunnel
+</br>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/create-devtunnel-button.png)
 
 1. Follow [Prepare for local debugging](#Prepare-for-local-debugging) then start local debugging. You will see a Teams website in a new browser opens and ask you to install your app.
 
