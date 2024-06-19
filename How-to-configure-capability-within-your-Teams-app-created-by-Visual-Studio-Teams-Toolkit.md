@@ -43,8 +43,8 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
           {
               "entityId": "index",
               "name": "Personal Tab",
-              "contentUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
-              "websiteUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
+              "contentUrl": "${{TAB_ENDPOINT}}/tab",
+              "websiteUrl": "${{TAB_ENDPOINT}}/tab",
               "scopes": [
                   "personal"
               ]
@@ -54,7 +54,7 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
     ```
       "configurableTabs": [
           {
-              "configurationUrl": "${{TAB_ENDPOINT}}/index.html#/config",
+              "configurationUrl": "${{TAB_ENDPOINT}}/config",
               "canUpdateConfiguration": true,
               "scopes": [
                   "team",
@@ -63,6 +63,8 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
           }
       ],
     ```
+
+``Please make sure `contentUrl`, `WebsiteUrl` and `configurationUrl` are right.``
 
 1. Add your tab domain to the `validDomains` field.
     Example:
@@ -82,8 +84,12 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
         with:
           run: 
             echo "::set-output TAB_DOMAIN=localhost:44302"
-            echo "::set-output TAB_ENDPOINT=https://localhost:53000"
+            echo "::set-output TAB_ENDPOINT=https://localhost:44302"
     ```
+
+1. Before local debug (F5), you need to right-click ttkproj and run `Teams Toolkit -> Prepare Teams App Dependencies...`. Select or login your Microsoft 365 account in the pop-up account picker.
+
+1. Configure Startup project
 
 ## Configure Bot capability
 
