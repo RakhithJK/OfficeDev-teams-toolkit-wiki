@@ -85,7 +85,7 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
             echo "::set-output TAB_DOMAIN=localhost:44302"
             echo "::set-output TAB_ENDPOINT=https://localhost:44302"
     ```
-    `TAB_DOMAIN` and `TAB_ENDPOINT` should be the URL when your source code starts up. Maybe they are defined in `launchSettings.json` of your source code.
+    `TAB_DOMAIN` and `TAB_ENDPOINT` should be the application URL when your source code starts up. Maybe they are defined in `launchSettings.json` of your source code.
 
 1. Follow [Prepare for local debugging](#Prepare-for-local-debugging) then start local debugging. You will see a Teams website in a new browser opens and ask you to install your app.
 
