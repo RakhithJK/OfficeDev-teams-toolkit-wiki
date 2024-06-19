@@ -63,8 +63,7 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
           }
       ],
     ```
-
-``Please make sure `contentUrl`, `WebsiteUrl` and `configurationUrl` are right.``
+    Make sure `contentUrl`, `websiteUrl` and `configurationUrl` are right. If your tab is not configurable, you can ignore `configurableTabs` field.
 
 1. Add your tab domain to the `validDomains` field.
     Example:
@@ -86,10 +85,9 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
             echo "::set-output TAB_DOMAIN=localhost:44302"
             echo "::set-output TAB_ENDPOINT=https://localhost:44302"
     ```
+    `TAB_DOMAIN` and `TAB_ENDPOINT` should be the URL when your source code starts up. Maybe they are defined in `launchSettings.json` of your source code.
 
-1. Before local debug (F5), you need to right-click ttkproj and run `Teams Toolkit -> Prepare Teams App Dependencies...`. Select or login your Microsoft 365 account in the pop-up account picker.
-
-1. Configure Startup project
+1. Follow [Prepare for local debugging](#Prepare-for-local-debugging) then start local debugging. You will see a Teams website in a new browser opens and ask you to install your app.
 
 ## Configure Bot capability
 
@@ -154,8 +152,9 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
             - name: msteams
     ```
 
-## Configure Message Extension capability
+1. Follow [Prepare for local debugging](#Prepare-for-local-debugging) then start local debugging. You will see a Teams website in a new browser opens and ask you to install your app.
 
+## Configure Message Extension capability
 
 1. You can configure message extension in `appPackage/manifest.json`. You can also refer to [message extension schema](https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#composeextensions) if you want to customize.
 
@@ -266,3 +265,11 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
           description: ""
           channels:
             - name: msteams
+
+1. Follow [Prepare for local debugging](#Prepare-for-local-debugging) then start local debugging. You will see a Teams website in a new browser opens and ask you to install your app.
+
+## Prepare for local debugging
+
+1. Right-click `ttkproj` and run `Teams Toolkit -> Prepare Teams App Dependencies`. Select or login your Microsoft 365 account in the pop-up account picker.
+
+1. Configure startup projects to let `ttkproj` and your source code start up together. [More details](https://aka.ms/vs-ttk-debug-multi-profiles).
