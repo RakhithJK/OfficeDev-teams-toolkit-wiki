@@ -20,6 +20,7 @@ Aligning with the official VS Code schema, the `tasks.json` contains **`tasks`**
 | **Set up SSO**<br>(*teamsfx:debug-set-up-sso*) | Register resources and prepare local launch information for SSO functionality. |
 | **Build & Upload Teams manifest**<br>(*teamsfx:debug-prepare-manifest*) | Build then upload Teams App manifest. |
 | **Start services**<br>(*shell:npm run ...*) | Launch all local services. |
+| **Launch desktop client**) | Launch Teams desktop client. (Will support soon) |
 
 > Note: Depend on your project type, your `tasks.json` may contain a subset of above tasks.
 >
@@ -526,6 +527,26 @@ Or, if you'd like to replace partial tasks, follow this mapping between old task
 > ```
 
 Or, if your project structure did not change too much, you can create a new empty project with all your features/components, and replace the whole `.vscode/tasks.json` file with the newly generated one. (Since the entry task label changes, you will need to update "*preLaunchTask*" property in `.vscode/launch.json` as well.)
+
+### Launch desktop client
+
+This task is to launch Teams desktop client. (Will support soon)
+
+| Arguments | Type | Required | Description |
+|--|--|--|--|
+| url            | string | required | The Teams desktop client url with app id. |
+
+#### Sample
+```json
+{
+    "label": "Start desktop client",
+    "type": "teamsfx",
+    "command": "launch-desktop-client",
+    "args": {
+        "url": "teams.microsoft.com/l/app/${{local:TEAMS_APP_ID}}?installAppPackage=true"
+    }
+}
+```
 
 ## Frequently Asked Questions
 ### How to customize the service ports?
