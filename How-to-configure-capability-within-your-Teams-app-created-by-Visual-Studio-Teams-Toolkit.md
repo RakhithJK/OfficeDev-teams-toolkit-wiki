@@ -51,18 +51,7 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
           }
       ],
     ```
-    ```
-      "configurableTabs": [
-          {
-              "configurationUrl": "${{TAB_ENDPOINT}}/config",
-              "canUpdateConfiguration": true,
-              "scopes": [
-                  "team",
-                  "groupchat"
-              ]
-          }
-      ],
-    ```
+  
     Make sure `contentUrl`, `websiteUrl` and `configurationUrl` are right. If your Tab is not configurable, you can ignore `configurableTabs` field.
     Refer to [Tab schema](https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#configurabletabs) for customizing them.
 
