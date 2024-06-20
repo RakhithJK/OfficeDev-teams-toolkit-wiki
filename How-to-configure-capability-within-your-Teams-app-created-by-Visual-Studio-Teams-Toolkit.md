@@ -10,29 +10,13 @@ There is a project named `xxx.ttkproj` and ensure that:
 
 Prior to continuing, we strongly recommend creating and going through an app with related capability by Teams Toolkit. You can find all templates in Visual Studio Teams Toolkit (starting from 17.10 GA).
 
-## Introduction to capability
+## Choose the Teams capability for your project
 
-### Tab
+Teams offers multiple interfaces, known as Teams Capabilities. Choose the right capability to integrate your application's functions within Teams. 
 
-Tabs are Teams-aware webpages embedded in Microsoft Teams. They're simple HTML <iframe\> tags that point to domains declared in the app manifest and can be added as part of a channel inside a team, group chat, or personal app for an individual user. You can include custom tabs with your app to embed your own web content in Teams or add Teams-specific functionality to your web content. Learn more from [Build tabs for Teams
-](https://learn.microsoft.com/microsoftteams/platform/tabs/what-are-tabs).
+If you want to embed your web application to provide a browser-like experience within Teams, configure the Teams Tab capability. For exposing your functions or APIs through chat interactions, configure the Teams Bot capability. Additionally, if you need to offer functions or APIs directly within the message composition box, configure the Teams Message Extension capability.
 
-Please go to: [Configure Tab capability](#Configure-Tab-capability)
-
-### Bot
-
-A bot, chatbot, or conversational bot is an app that responds to simple commands sent in chat and replies in meaningful ways. Examples of bots in everyday use include: bots that notify about build failures, bots that provide information about the weather or bus schedules, or provide travel information. A bot interaction can be a quick question and answer, or it can be a complex conversation. Being a cloud application, a bot can provide valuable and secure access to cloud services and corporate resources. Learn more from [Build bots for Teams
-](https://learn.microsoft.com/microsoftteams/platform/bots/what-are-bots).
-
-Please go to: [Configure Bot capability](#Configure-Bot-capability)
-
-### Message Extension
-Message Extension allows users to interact with your web service while composing messages in the Microsoft Teams client. Users can invoke your web service to assist message composition, from the message compose box, or from the search bar.
-
-Message Extensions are implemented on top of the Bot support architecture within Teams. Learn more from [Build message extensions for Teams
-](https://learn.microsoft.com/en-us/microsoftteams/platform/messaging-extensions/what-are-messaging-extensions?tabs=dotnet).
-
-Please go to: [Configure Message Extension capability](#Configure-Message-Extension-capability)
+The following are the steps to add Teams capability to your project.
 
 ## Configure Tab capability
 
@@ -118,7 +102,10 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
         ]
     ```
 
-1. Update `teamsapp.local.yml`. Add action `botAadApp/create` and `botFramework/create` under provision. Then update `file/createOrUpdateEnvironmentFile` action under deploy:
+1. If you have had registered a Bot app in Teams platform before, you only need to add `BOT_ID` to `.env.local` file. And skip step #3 & step #4. 
+
+1. If you never registered a Bot app yet, follow the step 3&4 to let Teams Toolkit do it for you.
+You will need to edit `teamsapp.local.yml` to tell Teams Toolkit the desired actions. Add action `botAadApp/create` and `botFramework/create` under provision module. Then update `file/createOrUpdateEnvironmentFile` action under deploy module like below code piece:
     ```yml
     provision:
       - uses: botAadApp/create
@@ -149,9 +136,9 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
             BOT_ID: ${{BOT_ID}}
             BOT_PASSWORD: ${{SECRET_BOT_PASSWORD}}
     ```
-    Replace `BOT_SOURCE_CODE_PROJECT_PATH` with your Bot source code. `BOT_ID` and `BOT_PASSWORD` is using in the runtime. If you have registered it before, you can just configure `.env.local` to add `BOT_ID` to it.
+    Replace `BOT_SOURCE_CODE_PROJECT_PATH` with your Bot project source code. Note that `BOT_ID` and `BOT_PASSWORD` are using in the runtime. 
 
-1. Configure your Bot source code to use `BOT_ID` and `BOT_PASSWORD`. No changes if your app is using them before.
+1. Configure your Bot source code project to use `BOT_ID` and `BOT_PASSWORD`. 
 
 1. In the debug dropdown menu, select Dev Tunnels > Create A Tunnel (set authentication type to Public) or select an existing public dev tunnel
 </br>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/create-devtunnel-button.png)
@@ -210,7 +197,10 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
     ]
     ```
 
-1. Update `teamsapp.local.yml`. Add action `botAadApp/create` and `botFramework/create` under provision.
+1. If you have had registered a Message Extensions app in Teams platform before, you only need to add `BOT_ID` to `.env.local` file. And skip step #3 & step #4. 
+
+1. If you never registered a Message Extensions app yet, follow the step #3 & #4 to let Teams Toolkit do it for you.
+You will need to edit `teamsapp.local.yml` to tell Teams Toolkit the desired actions. Add action `botAadApp/create` and `botFramework/create` under provision module.
     ```yml
     provision:
       - uses: botAadApp/create
@@ -241,9 +231,9 @@ Please go to: [Configure Message Extension capability](#Configure-Message-Extens
             BOT_ID: ${{BOT_ID}}
             BOT_PASSWORD: ${{SECRET_BOT_PASSWORD}}
     ```
-    Replace `MESSAGE_EXTENSION_SOURCE_CODE_PROJECT_PATH` with your Bot source code. `BOT_ID` and `BOT_PASSWORD` is using in the runtime. If you have registered it before, you can just configure `.env.local` to add `BOT_ID` to it.
+   Replace `MESSAGE_EXTENSION_SOURCE_CODE_PROJECT_PATH` with your Message Extensions project source code. `BOT_ID` and `BOT_PASSWORD` are using in the runtime. 
 
-1. Configure your Message Extension source code to use `BOT_ID` and `BOT_PASSWORD`. No changes if your app is using them before.
+1. Configure your Message Extension source code to use `BOT_ID` and `BOT_PASSWORD`.
 
 1. In the debug dropdown menu, select Dev Tunnels > Create A Tunnel (set authentication type to Public) or select an existing public dev tunnel
 </br>![image](https://raw.githubusercontent.com/OfficeDev/TeamsFx/dev/docs/images/visualstudio/debug/create-devtunnel-button.png)
