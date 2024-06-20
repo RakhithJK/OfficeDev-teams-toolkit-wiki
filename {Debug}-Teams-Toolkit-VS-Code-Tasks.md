@@ -20,7 +20,7 @@ Aligning with the official VS Code schema, the `tasks.json` contains **`tasks`**
 | **Set up SSO**<br>(*teamsfx:debug-set-up-sso*) | Register resources and prepare local launch information for SSO functionality. |
 | **Build & Upload Teams manifest**<br>(*teamsfx:debug-prepare-manifest*) | Build then upload Teams App manifest. |
 | **Start services**<br>(*shell:npm run ...*) | Launch all local services. |
-| **Launch desktop client**) | Launch Teams desktop client. (Will support soon) |
+| **Launch desktop client** | Launch Teams desktop client. (Will support soon) |
 
 > Note: Depend on your project type, your `tasks.json` may contain a subset of above tasks.
 >
