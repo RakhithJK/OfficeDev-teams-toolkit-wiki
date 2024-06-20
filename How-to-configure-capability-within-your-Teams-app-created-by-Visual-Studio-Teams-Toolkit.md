@@ -36,7 +36,7 @@ The following are the steps to add Teams capability to your project.
       ],
     ```
   
-    Make sure `contentUrl`, `websiteUrl` and `configurationUrl` are right. If your Tab is not configurable, you can ignore `configurableTabs` field.
+    Make sure `contentUrl`, `websiteUrl` and `configurationUrl` are right.
     Refer to [Tab schema](https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#configurabletabs) for customizing them.
 
 1. Add your tab domain to the `validDomains` field.
