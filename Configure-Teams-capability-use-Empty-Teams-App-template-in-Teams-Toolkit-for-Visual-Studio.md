@@ -1,5 +1,3 @@
-# Configure capability within your Teams app created by Visual Studio Teams Toolkit
-
 ## Prerequisites
 
 There is a project named `xxx.ttkproj` and ensure that:
