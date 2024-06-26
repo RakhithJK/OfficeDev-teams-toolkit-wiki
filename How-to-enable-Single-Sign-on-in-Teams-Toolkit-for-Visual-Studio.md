@@ -68,10 +68,13 @@ For Teams Tab Application
     ```
    3. "name": Replace the value with your expected Microsoft Entra app name.
 
-2. Update Teams app manifest. Open your Teams app manifest file, add a `WebApplicationInfo` object with the value of your SSO app.[HelpLink.](https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#webapplicationinfo)
+2. Update Teams app manifest. Open your Teams app manifest file, update the content of the `validDomain` property and add a `WebApplicationInfo` object with the value of your SSO app.[HelpLink.](https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema#webapplicationinfo)
   
     For example:
     ```
+    "validDomains": [
+      "${{TAB_HOSTNAME}}"
+    ],
     "webApplicationInfo": {
       "id": "${{AAD_APP_CLIENT_ID}}",
       "resource": "SAME_AS_YOUR_IDENTIFIERURIS"
@@ -81,7 +84,14 @@ For Teams Tab Application
 
     Example for TeamsFx Tab template
 
-    Open `{{TEAMSAPP_FOLDER}}/appPackage/manifest.json`, and append the following object in the manifest:
+    Open `{{TEAMSAPP_FOLDER}}/appPackage/manifest.json`, update the content of the `validDomain` property:
+    ```
+    "validDomains": [
+      "${{TAB_HOSTNAME}}"
+    ]
+    ```
+
+    Then, append the following object in the manifest:
     ```
     "webApplicationInfo": {
       "id": "${{AAD_APP_CLIENT_ID}}",
@@ -147,6 +157,15 @@ For Teams Tab Application
                   ClientSecret: ${{SECRET_AAD_APP_CLIENT_SECRET}}
                   InitiateLoginEndpoint: ${{TAB_ENDPOINT}}/auth-start.html
                   OAuthAuthority: ${{AAD_APP_OAUTH_AUTHORITY}}
+      ```
+    - Update `script` under `provison` to add env variables for your tab project.
+      ```
+      - uses: script
+        with:
+          run:
+            echo "::set-teamsfx-env TAB_HOSTNAME=localhost";
+            echo "::set-teamsfx-env TAB_DOMAIN=localhost:44302";
+            echo "::set-teamsfx-env TAB_ENDPOINT=https://localhost:44302";
       ```
 
 4. Update Infra
@@ -231,6 +250,11 @@ For Teams Tab Application
         TeamsFx__Authentication__OAuthAuthority: uri(tabAadAppOauthAuthorityHost, tabAadAppTenantId)
       }
     }
+   ```
+
+   Also, append the following content in the same file:
+   ```
+   output TAB_HOSTNAME string = webApp.properties.defaultHostName
    ```
 
 5. Update `{{PROJECT_FOLDER}}/appsettings.json` and `{{PROJECT_FOLDER}}/appsettings.Development.json`
