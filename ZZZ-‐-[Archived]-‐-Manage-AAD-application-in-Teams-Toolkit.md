@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Content in this document has been moved to [Teams platform documentation](https://learn.microsoft.com/microsoftteams/platform/toolkit/aad-manifest-customization). Please do not refer to or update this document.
+
 # Microsoft Entra manifest introduction
 
 > This feature is currently under active development. Report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
