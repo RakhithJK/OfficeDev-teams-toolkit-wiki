@@ -1,7 +1,7 @@
 Build Custom Copilots
-* [Build a basic AI chatbot for Teams using Teams AI library](https://aka.ms/teamsfx-basic-ai-chatbot)
+* [Build a basic AI chatbot for Teams](https://aka.ms/teamsfx-basic-ai-chatbot)
 * [Build an AI agent chatbot for Teams that can make decisions and perform actions based on LLM reasoning](https://aka.ms/teamsfx-ai-agent)
-* [Expand AI bot's knowledge with your content to get more accurate answers to your questions](https://aka.ms/teamsfx-rag-bot)
+* [Expand AI bot's knowledge with your content](https://aka.ms/teamsfx-rag-bot)
 
 Scenario-based Tutorials
 * [Send notifications to Teams](https://aka.ms/teamsfx-send-notification)
