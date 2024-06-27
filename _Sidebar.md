@@ -21,7 +21,7 @@ How To Guides
 * [How to enable Single Sign-on in Teams Toolkit for Visual Studio](https://github.com/OfficeDev/TeamsFx/wiki/How-to-enable-Single-Sign-on-in-Teams-Toolkit-for-Visual-Studio)
 * [How to configure Tab capability within your Teams app](https://aka.ms/teamsfx-add-tab)
 * [How to configure Bot capability within your Teams app](https://aka.ms/teamsfx-add-bot)
-* [How to configure an Outlook Add-in capability within your Teams app](https://github.com/OfficeDev/TeamsFx/wiki/Configure-Outlook-Add-in-capability-within-your-Teams-app)
+* [How to configure an Outlook Add-in capability within your Teams app](https://aka.ms/teamsfx-add-outlook-add-in)
 * [How to configure Message Extension capability within your Teams app](https://aka.ms/teamsfx-add-message-extension)
 * [How to automate ci/cd pipelines](https://aka.ms/teamsfx-add-cicd-new)
 * [How to integrate Azure Functions with your Teams app](https://github.com/OfficeDev/TeamsFx/wiki/How-to-integrate-Azure-Functions-with-your-Teams-app)
