@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Content in this document has been moved to [Teams platform documentation](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/debug-message-extension-app-in-test-tool?tabs=action-commands#message-extension-test-tool-faq). Please do not refer to or update this document.
+
 ## The "Command ID" and "Parameter name" Parameters in Search Command
 
 <img height=400px src='https://github.com/OfficeDev/TeamsFx/assets/9698542/3e04557d-3805-46f8-b6d2-f5d80b2e992e'/>
