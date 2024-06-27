@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Content in this document has been moved to [Teams platform documentation](https://learn.microsoft.com/microsoftteams/platform/toolkit/debug-mobile?tabs=cline%2Cios1%2Cios2). Please do not refer to or update this document.
+
 # Run and debug your Teams application on iOS or Android client.
 
 Please follow the instructions in this tutorial to debug your bot or message extension apps or preview your tab application on mobile devices.
