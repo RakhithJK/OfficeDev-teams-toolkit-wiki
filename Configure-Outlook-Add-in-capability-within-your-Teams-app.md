@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Content in this document has been moved to [Teams platform documentation](https://learn.microsoft.com/microsoftteams/platform/m365-apps/combine-office-add-in-and-teams-app). Please do not refer to or update this document.
+
 # Configure Outlook Add-in capability within your Teams app
 
 ## Introduction
