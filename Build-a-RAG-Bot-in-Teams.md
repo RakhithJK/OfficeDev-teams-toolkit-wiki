@@ -1,4 +1,5 @@
-> The feature is in Preview, we appreciate your feedback, please report any issues to us [here](https://github.com/OfficeDev/TeamsFx/issues/new/choose).
+> [!IMPORTANT]
+> Content in this document has been moved to [Teams platform documentation](https://learn.microsoft.com/microsoftteams/platform/toolkit/build-a-rag-bot-in-teams?tabs=javascript%2Cjavascript1%2Cjavascript2%2Cjavascript4%2Cjavascript3). Please do not refer to or update this document.
 
 One of the most powerful applications enabled by LLMs is sophisticated question-answering (Q&A) chatbots. These are applications that can answer questions about specific source information. These applications use a technique known as [Retrieval Augmented Generation](https://python.langchain.com/docs/use_cases/question_answering/#what-is-rag), or RAG. For example:
 - **Knowledge Base**: "Company's shuttle bus may be 15 minutes late on rainy days."
