@@ -3,7 +3,7 @@
 You should have a Teams bot app that has been deployed to Azure with the following resources:
 1.	Azure bot service
 2.	An Entra id that is used for bot authentication
-3.	An Azure resource that hosts your bot app (app service, Azure functions, etc)
+3.	An Azure resource that hosts your bot app (App Service, Azure Functions, etc)
 
 ## Steps:
 
