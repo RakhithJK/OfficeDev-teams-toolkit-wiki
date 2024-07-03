@@ -1,5 +1,5 @@
 ## Introduction:
-You can follow this guide to update your bot project to use [certificate](#steps-updating-to-certificate) or [MSI](#steps-updating-to-msi) for bot authentication to resolve the compliance issue of using Entra id with secret.
+You can follow this guide to update your existing bot project to use [certificate](#steps-updating-to-certificate) or [MSI](#steps-updating-to-msi) for bot authentication to resolve the compliance issue of using Entra id with secret.
 
 ## Prerequisites:
 
