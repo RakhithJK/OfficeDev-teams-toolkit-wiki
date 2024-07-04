@@ -43,7 +43,8 @@ builder.Services.AddSingleton<ServiceClientCredentialsFactory>((e) => new Certif
 
     Since Azure bot service’s id and type cannot be modified after creation, you need to create a new Azure bot service. Select type “User-Assigned Managed Identity” and creation type “Create new Microsoft App ID”, and it will create both the Azure bot service and the managed identity for you.
 ![image](https://github.com/OfficeDev/teams-toolkit/assets/25220706/4dc2073f-93f9-4d7b-9721-6903c7463056)
-    You can also manually create a managed identity first then create the Azure bot service with creation type “Use existing app registration”.
+    
+You can also manually create a managed identity first then create the Azure bot service with creation type “Use existing app registration”.
 
     You need to update the new Azure bot service’s **messaging endpoint** and **Channels** to be the same as the old one.
 
