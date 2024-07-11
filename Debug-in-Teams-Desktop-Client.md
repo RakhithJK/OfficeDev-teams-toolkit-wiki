@@ -36,3 +36,5 @@ Step 5: Debug works the same as if it's in the Teams web client. You can put bre
 ## Important notes
 1. Before proceeding, make sure your Teams desktop login matches your current Microsoft 365 account used in Teams Toolkit, otherwise you will see an `app not found` error.
 2. The system-level notification will pop up only once per project. Next time you click `Debug in Desktop` Teams Toolkit will remind you about the account using notifications from VSCode.
+
+![image](https://github.com/OfficeDev/teams-toolkit/assets/11220663/bd8cd459-da24-43fa-9c24-a42bbbeb1f77)
