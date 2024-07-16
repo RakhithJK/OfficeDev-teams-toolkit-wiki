@@ -29,8 +29,7 @@ For a complete example, please refer to [Hello World Bot with Tab](https://githu
 
 ## Configure Tab capability in Teams application manifest
 
-1. To configure your tab within a group or channel, or personal scope in your Teams application manifest `appPackage/manifest.json`, follow these examples:
-    Examples:
+1. To configure your tab within a group or channel, or personal scope in your Teams application manifest `appPackage/manifest.json`, follow this example:
     ```
       "staticTabs": [
           {
@@ -39,19 +38,9 @@ For a complete example, please refer to [Hello World Bot with Tab](https://githu
               "contentUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
               "websiteUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
               "scopes": [
-                  "personal"
-              ]
-          }
-      ],
-    ```
-    ```
-      "configurableTabs": [
-          {
-              "configurationUrl": "${{TAB_ENDPOINT}}/index.html#/config",
-              "canUpdateConfiguration": true,
-              "scopes": [
-                  "team",
-                  "groupchat"
+                "personal",
+                "groupChat",
+                "team"
               ]
           }
       ],
