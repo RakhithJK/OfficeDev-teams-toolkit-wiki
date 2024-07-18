@@ -16,6 +16,7 @@ Aligning with the official VS Code schema, the `tasks.json` contains **`tasks`**
 | **Provision**<br>(*teamsfx:provision*)| Create Teams app related resources required by debugging. |
 | **Deploy**<br>(*teamsfx:deploy*)| Build project. |
 | **Start application**<br>(*shell:npm run ...*) | Launch all local services. |
+| **Launch desktop client** | Launch Teams desktop client. |
 
 > Note: Depend on your project type, your `tasks.json` may contain a subset of above tasks.
 >
@@ -390,5 +391,25 @@ This Task is to launch your application in Teams Web Client for remote developme
     "env": "local",
     "manifestPath": "${workspaceFolder}/appPackage/manifest.json"
   }
+}
+```
+
+### Launch desktop client
+
+This task is to launch Teams desktop client. (Will support soon)
+
+| Arguments | Type | Required | Description |
+|--|--|--|--|
+| url            | string | required | The Teams desktop client url with app id. |
+
+#### Sample
+```json
+{
+    "label": "Start desktop client",
+    "type": "teamsfx",
+    "command": "launch-desktop-client",
+    "args": {
+        "url": "teams.microsoft.com/l/app/${{local:TEAMS_APP_ID}}?installAppPackage=true"
+    }
 }
 ```
