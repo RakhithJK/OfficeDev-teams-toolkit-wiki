@@ -396,7 +396,7 @@ This Task is to launch your application in Teams Web Client for remote developme
 
 ### Launch desktop client
 
-This task is to launch Teams desktop client. (Will support soon)
+This task is to launch Teams desktop client.
 
 | Arguments | Type | Required | Description |
 |--|--|--|--|
