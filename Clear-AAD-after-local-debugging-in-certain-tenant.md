@@ -1,0 +1,1 @@
+Teams toolkit will delete the Microsoft Entra applications after debugging in certain tenant.
