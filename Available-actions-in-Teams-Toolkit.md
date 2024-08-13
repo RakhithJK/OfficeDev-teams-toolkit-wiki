@@ -1276,8 +1276,103 @@ writeToEnvironmentFile:
 - **testToolPath**: Path to the Teams App Test Tool binary.
 
 ---
+## Detailed Task Descriptions
 
-## Troubleshooting:
+### 1. Resolve Local Certificate
+
+The `resolveLocalCertificate` function is responsible for setting up and optionally trusting a local SSL certificate.
+
+#### Functional Steps:
+1. **Generate Certificate**: Create new certificates if they do not exist at the specified paths.
+2. **Trust Certificate**: Add the certificate to the store if not already trusted.
+3. **Output Handling**: Set environment variables with paths to the generated certificate and key files.
+4. **Logging**: Log and generate reports on the action's outcome.
+
+#### Potential Errors and Troubleshooting
+
+- **`SetupCertificateError`**:
+  - **Reason**: Failure in setting up the SSL certificate.
+  - **Solution**: Check certificate paths, permissions, and retry.
+
+- **`TrustCertificateError`**:
+  - **Reason**: Failure in trusting the SSL certificate.
+  - **Solution**: Confirm permissions and system compatibility.
+
+---
+
+### 2. Install Azure Functions Core Tools
+
+The `resolveFuncCoreTools` function manages the installation, versioning, and optional symlink creation of Azure Functions Core Tools.
+
+#### Potential Errors and Troubleshooting
+
+- **`FuncInstallationUserError`**:
+  - **Reason**: Installation failure.
+  - **Solution**: Verify system requirements and specified version.
+
+- **`DepsCheckerError`**:
+  - **Reason**: Dependency issues like missing Node.js.
+  - **Solution**: Ensure compatible Node.js version is installed.
+
+- **`LinuxNotSupportedError`**:
+  - **Reason**: Unsupported OS.
+  - **Solution**: Use supported OS like Windows or macOS.
+
+- **Symlink Errors**:
+  - **Reason**: Target directory for symlink already exists.
+  - **Solution**: Clean up existing symlinks or provide a new directory.
+
+---
+
+### 3. Install .NET SDK
+
+The `resolveDotnet` function determines if and how the .NET SDK is installed based on the input configurations.
+
+#### Potential Errors and Troubleshooting
+
+- **`DotnetInstallationUserError`**:
+  - **Reason**: Installation failure.
+  - **Solution**: Check system prerequisites and directory permissions.
+
+- **`DepsCheckerError`**:
+  - **Reason**: Dependency issues.
+  - **Solution**: Investigate the error message for specific details.
+
+- **`InvalidConfigurationError`**:
+  - **Reason**: Misconfigured .NET SDK path.
+  - **Solution**: Verify `dotnet.json` configuration.
+
+- **`InstallationValidationFailed`**:
+  - **Reason**: Installation validation failed.
+  - **Solution**: Reattempt installation, confirming version specifications.
+
+---
+
+### 4. Install Teams App Test Tool
+
+The `resolveTestTool` function manages the installation and required configuration for the Teams App Test Tool.
+
+#### Potential Errors and Troubleshooting
+
+- **`TestToolInstallationUserError`**:
+  - **Reason**: Installation failure due to prerequisites or network issues.
+  - **Solution**: Ensure Node.js installation and verify network connectivity.
+
+- **`DepsCheckerError`**:
+  - **Reason**: Version mismatch.
+  - **Solution**: Confirm version range and adjust configuration.
+
+- **`NodeNotFoundError`**:
+  - **Reason**: Node.js not found.
+  - **Solution**: Install Node.js before running the action.
+
+- **General Dependency Errors**:
+  - **Reason**: Issues like file not found or symlink creation failure.
+  - **Solution**: Ensure correct permissions and review log messages for specifics.
+
+---
+## Other Troubleshooting guides
+
 ### Manually install development tools
 In case the Teams Toolkit fails to install prerequisites for you, you can manually install them by following the guidelines below.
 #### How to install .NET SDK
