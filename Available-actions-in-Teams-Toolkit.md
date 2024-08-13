@@ -31,6 +31,128 @@ This action will create a new Microsoft Entra app to authenticate users if the e
       authority: <your-preferred-env-var-name> # Optional. The Microsoft Entra authority
       authorityHost: <your-preferred-env-var-name> # Optional. The host name of Microsoft Entra authority
 ```
+## Overview
+
+The `aadApp/create` action allows you to create a Microsoft Entra application with an optional client secret. This action generates identifiers such as `clientId`, `objectId`, `tenantId`, `authority`, and `authorityHost`, which are essential for managing the Microsoft Entra application. If required, a client secret can also be generated.
+
+## Input Specification
+
+### YAML Example
+
+**Creating an App Without a Client Secret:**
+```yaml
+name: Create My Entra App
+uses: aadApp/create
+with:
+  name: MyApp
+  generateClientSecret: false
+  signInAudience: AzureADMyOrg
+  serviceManagementReference: AppServiceRef
+writeToEnvironmentFile:
+  clientId: CLIENT_ID_ENV_VAR
+  objectId: OBJECT_ID_ENV_VAR
+  tenantId: TENANT_ID_ENV_VAR
+  authority: AUTHORITY_ENV_VAR
+  authorityHost: AUTHORITY_HOST_ENV_VAR
+```
+
+**Creating an App With a Client Secret:**
+```yaml
+name: Create My Entra App With Secret
+uses: aadApp/create
+with:
+  name: MyAppWithSecret
+  generateClientSecret: true
+  signInAudience: AzureADMyOrg
+  clientSecretExpireDays: 90
+  clientSecretDescription: "My client secret"
+writeToEnvironmentFile:
+  clientId: CLIENT_ID_ENV_VAR
+  objectId: OBJECT_ID_ENV_VAR
+  clientSecret: CLIENT_SECRET_ENV_VAR
+  tenantId: TENANT_ID_ENV_VAR
+  authority: AUTHORITY_ENV_VAR
+  authorityHost: AUTHORITY_HOST_ENV_VAR
+```
+
+### Input Details
+
+- **name** (Required): Specifies the name of the Microsoft Entra application.
+- **generateClientSecret** (Required): Indicates whether a client secret should be generated (`true` or `false`).
+- **signInAudience** (Required): Specifies the supported Microsoft accounts. Possible values are:
+  - `AzureADMyOrg`
+  - `AzureADMultipleOrgs`
+  - `AzureADandPersonalMicrosoftAccount`
+  - `PersonalMicrosoftAccount`
+- **serviceManagementReference** (Optional): Reference to an application or service contact information from a Service or Asset Management database.
+- **clientSecretExpireDays** (Optional): Number of days the client secret is valid. Must be a positive integer.
+- **clientSecretDescription** (Optional): Description of the client secret.
+
+### Input Validation Rules
+
+1. The `name` of the Microsoft Entra application must be a non-empty string and less than or equal to 120 characters.
+2. The `generateClientSecret` must be a boolean value.
+3. The `signInAudience` must be one of the allowed values.
+4. The `clientSecretExpireDays`, if specified, must be a positive integer.
+
+## Output Specification
+
+The outputs are written to environment variables defined in the `writeToEnvironmentFile` object. The required environment variables include:
+
+### Without Client Secret:
+
+- `clientId`: The client (application) id of the created Microsoft Entra application.
+- `objectId`: The object id of the created Microsoft Entra application.
+- `tenantId`: The tenant id of the created Microsoft Entra application.
+- `authority`: The authority of the created Microsoft Entra application.
+- `authorityHost`: The authority host name of the created Microsoft Entra application.
+
+### With Client Secret:
+
+Includes the above variables and additionally:
+- `clientSecret`: The generated client secret of the Microsoft Entra application.
+
+## Potential Errors for Troubleshooting
+
+### Error Classes and Reasons
+
+1. **InvalidActionInputError**
+   - **Reason**: Some of the required inputs are missing or have invalid values.
+   - **Solution**: Ensure that all required inputs (`name`, `generateClientSecret`, `signInAudience`) are correctly specified. The `name` should not exceed 120 characters.
+
+2. **AadAppNameTooLongError**
+   - **Reason**: The provided `name` exceeds the limit of 120 characters.
+   - **Solution**: Shorten the name of the Microsoft Entra application.
+
+3. **OutputEnvironmentVariableUndefinedError**
+   - **Reason**: The `writeToEnvironmentFile` object is not defined properly.
+   - **Solution**: Define appropriate environment variables to capture the outputs.
+
+4. **MissingEnvUserError**
+   - **Reason**: `objectId` environment variable is not defined when attempting to generate a client secret.
+   - **Solution**: Ensure the environment variable for `objectId` is provided.
+
+5. **HttpClientError**
+   - **Reason**: A client error occurred while making HTTP requests (status code 4xx).
+   - **Solution**: Recheck the request parameters and ensure the API is accessible.
+
+6. **HttpServerError**
+   - **Reason**: A server error occurred (status code 5xx).
+   - **Solution**: Retry the operation or check the service status.
+
+7. **CredentialInvalidLifetimeError**
+   - **Reason**: Provided client secret lifetime is invalid as per the application policy.
+   - **Solution**: Adjust the `clientSecretExpireDays` according to the allowed lifetime.
+
+8. **ClientSecretNotAllowedError**
+   - **Reason**: Client secrets are not allowed as per the application policy.
+   - **Solution**: Check the application policies and possibly alter the approach to authentications.
+
+### General Troubleshooting Steps:
+
+- Ensure all required parameters are provided and conform to the specified types and constraints.
+- Check network connectivity and service availability if HTTP errors occur.
+- Use the error messages and solution suggestions to debug and fix issues.
 
 # aadApp/update
 This action will update your Microsoft Entra app based on give Microsoft Entra app manifest. It will refer the `id` property in Microsoft Entra app manifest to determine which Microsoft Entra app to update.
