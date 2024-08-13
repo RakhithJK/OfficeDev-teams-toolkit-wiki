@@ -13,6 +13,10 @@ For information on environments, visit [Environments](https://aka.ms/teamsfx-v5.
 # aadApp/create
 This action will create a new Microsoft Entra app to authenticate users if the environment variable that stores clientId is empty.
 
+## Overview
+
+The `aadApp/create` action allows you to create a Microsoft Entra application with an optional client secret. This action generates identifiers such as `clientId`, `objectId`, `tenantId`, `authority`, and `authorityHost`, which are essential for managing the Microsoft Entra application. If required, a client secret can also be generated.
+
 ## Syntax:
 ```
   - uses: aadApp/create
@@ -31,10 +35,6 @@ This action will create a new Microsoft Entra app to authenticate users if the e
       authority: <your-preferred-env-var-name> # Optional. The Microsoft Entra authority
       authorityHost: <your-preferred-env-var-name> # Optional. The host name of Microsoft Entra authority
 ```
-## Overview
-
-The `aadApp/create` action allows you to create a Microsoft Entra application with an optional client secret. This action generates identifiers such as `clientId`, `objectId`, `tenantId`, `authority`, and `authorityHost`, which are essential for managing the Microsoft Entra application. If required, a client secret can also be generated.
-
 ## Input Specification
 
 ### YAML Example
