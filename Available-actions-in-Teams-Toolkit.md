@@ -466,6 +466,52 @@ The `outputZipFile` parameter indicates the path of the zip file for the package
       outputZipFile: ./.deployment/deployment.zip
 ```
 
+## Inputs
+
+The inputs for the action are specified in the `with` object. The following inputs are required and optional parameters:
+
+### Required Inputs
+
+- `artifactFolder` (string): 
+  - Description: Path to the distribution folder that contains the files to deploy.
+  - Example: `/path/to/artifacts`
+
+- `resourceId` (string):
+  - Description: The resource id of the Azure App Service.
+  - Example: `/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/sites/{appName}`
+
+### Optional Inputs
+
+- `workingDirectory` (string):
+  - Description: The working directory. The deploy program will find ignore files and create the upload package file based on this directory. Defaults to `./`
+  - Example: `/path/to/working-directory`
+
+- `ignoreFile` (string):
+  - Description: The path to the ignore file. Any files listed in this file will be ignored during upload. Defaults to ignoring nothing.
+  - Example: `.deployignore`
+
+- `dryRun` (boolean):
+  - Description: If `true`, the action will only package the files to be deployed without actually deploying them. Defaults to `false`.
+  - Example: `true`
+
+- `outputZipFile` (string):
+  - Description: The path to the packaged zip file. If not specified, the zip file will be saved to `workingDirectory/.deployment/deployment.zip`.
+  - Example: `/path/to/output.zip`
+
+### Example Usage in YAML
+
+```yaml
+uses: azureAppService/zipDeploy
+with:
+  artifactFolder: '/path/to/artifacts'
+  resourceId: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/sites/{appName}'
+  workingDirectory: '/path/to/working-directory'
+  ignoreFile: '.deployignore'
+  dryRun: false
+  outputZipFile: '/path/to/output.zip'
+```
+
+
 ## Output:
 NA
 
