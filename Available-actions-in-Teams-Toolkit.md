@@ -985,7 +985,10 @@ This action will upload your app as M365 title, so it can be viewed on Outlook a
 ```
 
 # file/createOrUpdateEnvironmentFile
-This action will create or update variables to environment file.
+## Overview
+
+This action reads the specified environment file, updates or appends the given environment variables, and writes the updates back to the target environment file. It ensures that the environment file is created if it does not already exist.
+
 
 ## Syntax:
 ```yml
@@ -997,8 +1000,65 @@ This action will create or update variables to environment file.
         <your-env-key-2>: <your-env-value-2>
 ```
 
-## Output:
-NA
+## Inputs
+
+The inputs for this action are specified within the `with` object. Below are the input parameters and the validation rules:
+
+- `envs` (required): The environment variables to be created or updated in the environment file. The values can be of type string, boolean, or number.
+- `target` (required): The path to the target environment file to be created or updated.
+
+### Input Validation Rules
+
+1. **`target`**:
+   - Must be a non-empty string.
+
+2. **`envs`**:
+   - Must be an object.
+   - Values must be either string, boolean, or number.
+
+### Example Input
+
+```yaml
+uses: file/createOrUpdateEnvironmentFile
+with:
+  target: './.env'
+  envs:
+    NODE_ENV: 'production'
+    DEBUG: false
+    API_URL: 'https://api.example.com'
+```
+## Potential Errors for Troubleshooting
+
+When executing the `file/createOrUpdateEnvironmentFile` action, you may encounter various errors. Below is a list of potential errors, reasons, and possible solutions:
+
+### 1. InvalidActionInputError
+
+**Reason:**
+- The input parameters are incorrect.
+
+**Possible Solution:**
+- Ensure the `target` is a non-empty string.
+- Ensure `envs` is an object and its values are of valid types (string, boolean, or number).
+
+### 2. File System Error (Catch-all error)
+
+**Reason:**
+- Issues related to file access, creation, or writing.
+
+**Possible Solution:**
+- Ensure the file path is valid and accessible.
+- Ensure sufficient permissions to read/write the target environment file.
+- Verify that there is no conflict with existing file-lock mechanisms or permissions.
+
+### 3. UserError or SystemError
+
+**Reason:**
+- Specific errors thrown by user code or system during the execution.
+
+**Possible Solution:**
+- Check the error logs for detailed error messages.
+- Review the stack trace or error message details to isolate the specific issue.
+
 
 # file/createOrUpdateJsonFile
 This action will create or update appsettings to JSON file.
@@ -1013,8 +1073,77 @@ This action will create or update appsettings to JSON file.
         BOT_PASSWORD: ${{SECRET_BOT_PASSWORD}}
 ```
 
-## Output:
-NA
+## Input Validation Rules
+
+The input for the `file/createOrUpdateJsonFile` action is defined within the "with" object. Below are the required and optional parameters along with their rules:
+
+### Required Parameters
+
+- `target`: 
+  - **Description**: The target file path where the JSON content will be created or updated.
+  - **Type**: String
+  - **Validation**: Must be a non-empty string.
+
+### Optional Parameters
+
+- `appsettings`: 
+  - **Description**: App settings to be generated.
+  - **Type**: Object
+  - **Validation**: If provided, must be of type object.
+
+- `content`: 
+  - **Description**: The JSON content to be created or updated, will be merged with existing content.
+  - **Type**: Object
+  - **Validation**: If provided, must be of type object.
+
+### Example Input (YAML format)
+
+```yaml
+with:
+  target: "./config/settings.json"
+  content:
+    logging: 
+      level: "info"
+      file: "log.txt"
+  # Alternatively, you can use 'appsettings' instead of 'content':
+  appsettings:
+    featureFlags:
+      enableNewFeature: true
+```
+
+**Note**: Only one of `content` or `appsettings` must be provided. If both are provided, the action will return an error.
+
+## Potential Errors for Troubleshooting
+
+This section enumerates potential errors that might be encountered during the execution of the action and provides possible solutions.
+
+### Error Classes
+
+- **UserError**: This error indicates incorrect input or configuration from the user.
+- **SystemError**: This error signifies an unexpected issue within the system or environment where the script is running.
+
+### Common Errors
+
+1. **InvalidActionInputError**
+   - **Reason**: This error occurs when one or more required parameters are missing or have invalid values.
+   - **Solution**: Verify the input parameters. Ensure `target` is provided and is a valid string, and at least one of `content` or `appsettings` is provided as an object.
+
+2. **FileNotExistError**
+   - **Reason**: The specified target file does not exist, and there is an issue creating it.
+   - **Solution**: Check the file path and permissions to ensure the file can be created at the specified location.
+
+3. **JsonParsingError**
+   - **Reason**: Errors encountered while reading or parsing the existing JSON file.
+   - **Solution**: Ensure the existing file has valid JSON content and is accessible.
+
+4. **FileWriteError**
+   - **Reason**: Errors encountered while writing to the JSON file.
+   - **Solution**: Check file system permissions to ensure the action has write access to the target file.
+
+5. **UnexpectedError**
+   - **Reason**: Any other unexpected error that is not handled specifically by the defined error classes.
+   - **Solution**: Review the error message for more details and check logs for additional diagnostic information.
+
 
 # file/updateJson
 
@@ -1874,8 +2003,114 @@ The outputs of the `apiKey/update` action are defined in the `writeToEnvironment
 - **Reason**: The action failed to retrieve valid domains from the API specification.
 - **Possible Solutions**: Check the API specification file to ensure it contains valid bearer token authentication schemes and the correct server configurations.
 
+# oauth/register
+
+## Overview
+The `oauth/register` action facilitates the creation of an OAuth registration within an application. It manages OAuth configurations, including creating a registration when it does not exist, and retrieving an existing registration if available. This action uses a source code implementation method `CreateOauthDriver.execute` to perform these operations.
+
+## Input Validation Rules
+The input parameters for the OAuth registration action are provided under the `with` object. Below are the parameters that must be fulfilled, including their data type, a description, and, where applicable, enumerated values:
+
+- `name`:
+  - **Description**: The name of the OAuth registration.
+  - **Type**: `string`
+  - **Validation**: Required, max length of 128 characters
+- `appId`:
+  - **Description**: The application ID for OAuth registration.
+  - **Type**: `string`
+  - **Validation**: Required
+- `apiSpecPath`:
+  - **Description**: Path to the API specification file.
+  - **Type**: `string`
+  - **Validation**: Required
+- `flow`:
+  - **Description**: Type of OAuth flow.
+  - **Type**: `string`
+  - **Validation**: Required, must be `"authorizationCode"`
+- `applicableToApps` (Optional):
+  - **Description**: Access scope of the OAuth registration.
+  - **Type**: `string`
+  - **Validation**: Must be one of `"SpecificApp"` or `"AnyApp"`, default is `"AnyApp"`
+- `targetAudience` (Optional):
+  - **Description**: Tenant access scope for the OAuth registration.
+  - **Type**: `string`
+  - **Validation**: Must be one of `"HomeTenant"` or `"AnyTenant"`, default is `"AnyTenant"`
+- `clientId` (Optional):
+  - **Description**: Client ID for OAuth registration.
+  - **Type**: `string`
+  - **Validation**: Required if present
+- `clientSecret` (Optional):
+  - **Description**: Client Secret for OAuth registration, required if `isPKCEEnabled` is `false`.
+  - **Type**: `string`
+  - **Validation**: Length should be within defined limits
+- `refreshUrl` (Optional):
+  - **Description**: The refresh URL for the OAuth registration.
+  - **Type**: `string`
+  - **Validation**: Should be a valid string URL
+- `isPKCEEnabled` (Optional):
+  - **Description**: Whether PKCE is enabled for OAuth registration.
+  - **Type**: `boolean`
+  - **Validation**: Defaults to `false`
+
+### Example Input
+```yaml
+with:
+  name: "MyOAuthRegistration"
+  appId: "12345"
+  apiSpecPath: "./path/to/api/spec"
+  flow: "authorizationCode"
+  applicableToApps: "AnyApp"
+  targetAudience: "AnyTenant"
+  clientId: "my-client-id"
+  clientSecret: "my-client-secret"
+  refreshUrl: "https://example.com/refresh"
+  isPKCEEnabled: false
+```
+
+## Output Specification
+The result of the action execution is written to environment variables specified in the `writeToEnvironmentFile` object. Below is the key-value mapping for the environment variables:
+
+- `configurationId`:
+  - **Description**: The configuration ID of the created OAuth registration.
+  - **Environment Variable Name**: Defined by the user in the `writeToEnvironmentFile` object
+
+### Example Output Configuration
+```yaml
+writeToEnvironmentFile:
+  configurationId: "OAUTH_CONFIG_ID"
+```
+
+## Potential Errors for Troubleshooting
+The following are potential errors that might occur during the execution of the OAuth registration action, along with their reasons and possible solutions:
+
+- **OutputEnvironmentVariableUndefinedError**
+  - **Reason**: The `outputEnvVarNames` parameter is undefined.
+  - **Solution**: Ensure that `outputEnvVarNames` is correctly defined.
+
+- **UserError or SystemError**
+  - **Reason**: General errors that arise from user input or system issues.
+  - **Solution**: Check the error message logs for specific details and resolve the indicated problems.
+
+- **OauthNameTooLongError**
+  - **Reason**: The provided registration name exceeds the maximum length of 128 characters.
+  - **Solution**: Shorten the registration name.
+
+- **InvalidActionInputError**
+  - **Reason**: Invalid or missing parameters in the input arguments.
+  - **Solution**: Verify that all required parameters are provided and valid according to the validation rules.
+
+- **OauthDomainInvalidError**
+  - **Reason**: The provided domain either exceeds the maximum allowed domains or is missing.
+  - **Solution**: Check the domain configuration in the API specification and adjust it accordingly.
+
+- **OauthFailedToGetDomainError**
+  - **Reason**: Failed to retrieve the domain from the API specification.
+  - **Solution**: Ensure the API specification path is correct and the domain configuration is available.
+
+
 
 # General Errors
+
 ## ActionNotFoundError
 This error means there's an unknown action in the yaml file. Please check whether the action type in 'uses' fields are supported. 
 ## YamlParsingError
