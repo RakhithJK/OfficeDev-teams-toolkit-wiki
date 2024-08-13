@@ -488,7 +488,10 @@ There's a known issue that `gulp bundle --ship --no-color` command will fail wit
 
 
 # cli/runNpmCommand
-This action will execute `npm` commands under specified directory with parameters. The parameter `workingDirectory` can be removed if you want to run this command in the project root.
+
+## Overview
+
+The `cli/runNpmCommand` action facilitates the execution of npm commands within a specified working directory. This action is particularly useful in contexts where automated scripts need to run npm commands with specific parameters and within defined environments.
 
 ## Syntax:
 ```
@@ -501,8 +504,71 @@ This action will execute `npm` commands under specified directory with parameter
       args: install
 ```
 
-## Output:
-NA
+## Input Specifications
+
+The input for this action is provided through the `with` object. Below are the required and optional parameters:
+
+```yaml
+- uses: cli/runNpmCommand
+  with:
+    args: "install"          # (required) The npm command arguments to execute.
+    workingDirectory: "./"   # (optional) The working directory. Defaults to './'.
+```
+
+### Input Validation Rules
+
+1. **`args`**:
+   - **Type**: `string`
+   - **Description**: The arguments passed to the npm command.
+   - **Required**: Yes
+   - **Validation**: Must be a non-empty string.
+   
+2. **`workingDirectory`**:
+   - **Type**: `string`
+   - **Description**: The working directory for the npm command. Defaults to `./`.
+   - **Required**: No
+   - **Validation**: If provided, must be a valid directory path.
+## Potential Errors for Troubleshooting
+
+When using the `cli/runNpmCommand` action, users may encounter certain errors. Below are some common error scenarios, their reasons, and possible resolutions:
+
+1. **`PrerequisiteError`**:
+   - **Reason**: This error occurs when a required input parameter is missing or undefined.
+   - **Possible Solutions**: Ensure that all required input parameters are provided and not null. For example, the `args` parameter must be a non-empty string.
+   
+2. **`ScriptExecutionError`**:
+   - **Reason**: This error indicates that the script execution failed due to various reasons such as incorrect command syntax, missing dependencies, or environmental issues.
+   - **Possible Solutions**:
+     - Check the command syntax and ensure it is correct.
+     - Verify that all necessary dependencies are installed.
+     - Ensure that the environment variables and working directory settings are correctly configured.
+
+3. **`ScriptTimeoutError`**:
+   - **Reason**: This error occurs if the script execution exceeded the allowed time limit and was forcibly terminated.
+   - **Possible Solutions**:
+     - Increase the timeout parameter (if supported).
+     - Optimize the npm script to run within the allowed time frame.
+
+## Example Usage
+
+Below is an example of how to configure the `cli/runNpmCommand` action within a YAML workflow:
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: Run npm install
+      uses: cli/runNpmCommand
+      with:
+        args: "install"
+        workingDirectory: "./my-project"
+```
+
+This sample workflow checks out the repository and executes `npm install` within the `./my-project` directory.
 
 ## Troubleshooting:
 ### Error message "Failed to run command"
