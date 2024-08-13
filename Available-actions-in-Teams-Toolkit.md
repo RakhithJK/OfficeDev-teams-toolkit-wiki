@@ -950,12 +950,82 @@ This action will upload and deploy generated sppkg to SharePoint app catalog. Yo
       packageSolutionPath: ./src/config/package-solution.json # Required. Path to package-solution.json in SPFx project. This action will honor the configuration to get target sppkg.
 ```
 
-## Output:
-NA
+## Input Parameters
 
-## Troubleshooting:
-### Error message: Failed to create tenant app catalog.
-Please retry later or create SharePoint app catalog manually.
+The `spfx/deploy` action requires certain inputs to function correctly, provided through the `with` object. The expected parameters and their validation rules are as follows:
+
+### Required Parameters
+
+- **`packageSolutionPath`** (`string`):
+  - Description: The path to `package-solution.json` in the SPFx project.
+  - This should be a valid path pointing to the `package-solution.json` file in the SPFx project.
+  - Example:
+    ```yaml
+    with:
+      packageSolutionPath: "config/package-solution.json"
+    ```
+
+### Optional Parameters
+
+- **`createAppCatalogIfNotExist`** (`boolean`):
+  - Description: Indicates whether to create a tenant app catalog if it does not already exist. The default value is `false`.
+  - This should be a boolean value.
+  - Example:
+    ```yaml
+    with:
+      createAppCatalogIfNotExist: true
+      packageSolutionPath: "config/package-solution.json"
+    ```
+
+### Complete Example
+```yaml
+uses: spfx/deploy
+with:
+  packageSolutionPath: "config/package-solution.json"
+  createAppCatalogIfNotExist: true
+```
+
+
+## Potential Errors and Troubleshooting
+
+During the execution of the `spfx/deploy` action, there are several potential errors that users may encounter. The corresponding error classes, reasons, and possible solutions are outlined below:
+
+### 1. `GetSPOTokenFailedError`
+- **Reason**: Failure to obtain the SharePoint Online (SPO) token.
+- **Solution**: Ensure that your Microsoft 365 access token is valid and has the necessary permissions.
+
+### 2. `CreateAppCatalogFailedError`
+- **Reason**: Failure to create the app catalog in the tenant.
+- **Solution**: Verify the tenant permissions and status. Make sure that the user has sufficient permissions to create an app catalog.
+
+### 3. `NoValidAppCatelog`
+- **Reason**: No valid app catalog found, and the `createAppCatalogIfNotExist` parameter is `false`.
+- **Solution**: Set `createAppCatalogIfNotExist` to `true` or ensure that an app catalog exists in the tenant.
+
+### 4. `FileNotFoundError`
+- **Reason**: The specified `packageSolutionPath` does not exist.
+- **Solution**: Ensure that the path to `package-solution.json` is correct and exists in the project directory.
+
+### 5. `NoSPPackageError`
+- **Reason**: The SPFx package file specified in `package-solution.json` is not found.
+- **Solution**: Check the `package-solution.json` to ensure the correct path to the zipped package is specified and confirm the file exists.
+
+### 6. `InsufficientPermissionError`
+- **Reason**: Insufficient permissions to upload the app package to the app catalog site.
+- **Solution**: Make sure that the user has the necessary permissions to upload apps to the app catalog.
+
+### 7. `UploadAppPackageFailedError`
+- **Reason**: Failure during the upload of the SPFx package.
+- **Solution**: Investigate the underlying error message. This could be due to network issues or insufficient permissions.
+
+### 8. `GetTenantFailedError`
+- **Reason**: Failure to retrieve the tenant information.
+- **Solution**: Ensure that the Microsoft 365 Graph API is accessible and that the user has the necessary permissions to query tenant information.
+
+### 9. `GetGraphTokenFailedError`
+- **Reason**: Failure to obtain the Microsoft Graph token.
+- **Solution**: Verify that the Microsoft 365 token provider is configured correctly and has the required scopes.
+
 
 # teamsApp/copyAppPackageToSPFx
 This action will copy the Teams App zipped package to `teams` folder in SPFx directory to keep it updated. This is to ensure user will have aligned experience whether to publish Teams App from Teams Toolkit or manually sync to Teams in SharePoint app catalog.
