@@ -777,6 +777,10 @@ If Teams Toolkit for Visual Studio failed to download and install Teams App Test
 # arm/deploy
 This action will deploy given ARM templates parallelly
 
+## Overview
+
+The `arm/deploy` action is responsible for creating Azure resources using referenced Bicep/JSON files. The outputs from these templates are stored in the current Teams Toolkit environment. This action helps automate Azure Resource Manager (ARM) template deployment, making it simpler to manage and scale Azure resources.
+
 ## Syntax
 ``` yaml
   - uses: arm/deploy
@@ -788,6 +792,32 @@ This action will deploy given ARM templates parallelly
         parameters: ./infra/azure.parameters.json # Required. Relative path to teamsfx folder. TeamsFx will replace the environment variable reference with real value before deploy ARM template.
         deploymentName: your-deployment-name # Required. Name of the ARM template deployment.
       bicepCliVersion: v0.9.1 # Optional. Teams Toolkit will download this bicep CLI version from github for you, will use bicep CLI in PATH if you remove this config.
+```
+
+## Input Validation Rules
+
+The input arguments for this action are defined in the `with` object. The input fields required for the action and their validation rules are:
+
+- `subscriptionId`: The subscription ID to deploy to. It should be a valid UUID.
+- `resourceGroupName`: The resource group name to deploy to. It must be a non-empty string.
+- `templates`: An array of templates to deploy. Each template should have:
+  - `deploymentName`: The name of the ARM deployment. It must be a non-empty string.
+  - `path`: The relative path to the ARM template. Both Bicep and JSON formats are supported.
+  - `parameters` (optional): The relative path to the ARM parameters file. Teams Toolkit will expand environment variables in the parameters file.
+
+### Example Input
+
+```yaml
+with:
+  subscriptionId: "your-subscription-id"
+  resourceGroupName: "your-resource-group"
+  bicepCliVersion: "0.4.1008" # optional
+  templates:
+    - deploymentName: "template1-deployment"
+      path: "./templates/template1.bicep"
+      parameters: "./parameters/template1-parameters.json" # optional
+    - deploymentName: "template2-deployment"
+      path: "./templates/template2.json"
 ```
 
 ## Output
@@ -842,6 +872,44 @@ Switch to an Azure account that has subscription level Contributor role.
 Mitigation option 2:
 
 Ask your subscription administrator to register the namespace mentioned in the error message by following this [link](https://aka.ms/rps-not-found).
+
+Below are the potential errors encountered during the execution of the `arm/deploy` action, along with possible reasons and suggested solutions:
+
+### InvalidAzureCredentialError
+
+- **Reason:** Azure credentials are required but failed to obtain.
+- **Solution:** Ensure that the Azure account is authenticated and that the credentials are correctly configured.
+
+### CompileBicepError
+
+- **Reason:** An error occurred while compiling the Bicep file to JSON.
+- **Solution:** Ensure that the Bicep file syntax is correct and that the Bicep CLI is correctly installed.
+
+### MissingEnvironmentVariablesError
+
+- **Reason:** Required environment variables are missing in the parameters file.
+- **Solution:** Verify that all necessary environment variables are defined and accessible.
+
+### ConvertArmOutputError
+
+- **Reason:** The output key from the ARM deployment result has a naming conflict.
+- **Solution:** Check the ARM deployment output for naming collisions and adjust the template or action accordingly.
+
+### DeployArmError
+
+- **Reason:** An error occurred during the ARM deployment.
+- **Solution:** Review the ARM deployment logs to identify the specifics of the deployment failure.
+
+### InstallSoftwareError
+
+- **Reason:** The installation of the Bicep CLI failed.
+- **Solution:** Check the network connection and permissions required to download and install the Bicep CLI.
+
+### UserError / SystemError
+
+- **Reason:** Broad categories for user-generated or system-generated errors.
+- **Solution:** Review the specific error message to determine whether it's an issue with the input values or a broader system issue.
+
 
 # botAadApp/create
 This action will create a new or reuses an existing Microsoft Entra application for bot.
