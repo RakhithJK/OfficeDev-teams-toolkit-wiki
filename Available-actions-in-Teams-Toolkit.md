@@ -883,6 +883,14 @@ If `shell` is not specified, use default shell. The rule is applied in the follo
 # apiKey/register
 This action will register an API key in Developer Portal for authentication of API based message extension.
  
+## Overview
+
+The `apiKey/register` action is designed to create a new API key for a Teams app. This process involves:
+
+1. Validating the provided input parameters.
+2. Connecting to the Teams Developer Portal to register the API key.
+3. Storing the registration ID of the created API key into an environment variable for future use.
+
 ## Syntax:
 ```
   - uses: apiKey/register
@@ -897,10 +905,100 @@ This action will register an API key in Developer Portal for authentication of A
     writeToEnvironmentFile:
       registrationId: <your-preferred-env-var-name> # Required. The registration id of the API key.
 ```
+## Input Validation Rules
+
+The input arguments are provided within the `with` object. Here's the schema for the required and optional parameters:
+
+```yaml
+with:
+  name: "example-api-key"              # Required, string: The name of API key.
+  appId: "your-app-id"                 # Required, string: The app ID of Teams app.
+  apiSpecPath: "path/to/api/spec.yaml" # Required, string: The path of API specification file.
+  primaryClientSecret: "abcd1234"      # Optional, string: Primary client secret of API key. Length must be between 10 and 128.
+  secondaryClientSecret: "efgh5678"    # Optional, string: Secondary client secret of API key. Length must be between 10 and 128.
+  applicableToApps: "AnyApp"           # Optional, string: Specifies which app can access the API key. Default is "AnyApp".
+  targetAudience: "AnyTenant"          # Optional, string: Specifies which tenant can access the API key. Default is "AnyTenant".
+```
+
+### Examples
+
+**Valid Input Example:**
+
+```yaml
+with:
+  name: "example-api-key"
+  appId: "12345-abcdef-67890"
+  apiSpecPath: "specs/apiSpec.yaml"
+  primaryClientSecret: "Nkjdh36Gfhshs"
+  secondaryClientSecret: "Wkej378Hgdhsh29"
+  applicableToApps: "SpecificApp"
+  targetAudience: "HomeTenant"
+```
+
+**Invalid Input Example:**
+
+```yaml
+with:
+  name: ""  # Invalid, name is required and cannot be empty
+  appId: "12345-abcdef-67890"
+  apiSpecPath: "specs/apiSpec.yaml"
+  primaryClientSecret: "short"  # Invalid, primaryClientSecret must be at least 10 characters long
+  applicableToApps: "InvalidValue"  # Invalid, must be "SpecificApp" or "AnyApp"
+```
+
+**Note:** All required fields (`name`, `appId`, `apiSpecPath`) must be provided and follow the correct formats and constraints.
+
+## Output Specification
+
+The output of the action execution is written to the environment file specified in the `writeToEnvironmentFile` object. 
+
+Here is the schema for the output specification:
+
+```yaml
+writeToEnvironmentFile:
+  registrationId: "API_KEY_REGISTRATION_ID"  # Required: The registration ID of the created API key.
+```
+
+## Potential Errors for Troubleshooting
+
+When executing the `apiKey/register` action, several errors might occur. Below is a list of potential errors, their descriptions, and suggested solutions:
+
+### 1. `InvalidActionInputError`
+
+- **Reason:** One or more parameters in the input are invalid.
+- **Solution:** Ensure all required parameters are provided and follow the correct formats and constraints as defined in the input validation rules.
+
+### 2. `ApiKeyClientSecretInvalidError`
+
+- **Reason:** The provided client secret(s) do not meet the length requirements (10 to 128 characters).
+- **Solution:** Verify that the `primaryClientSecret` and/or `secondaryClientSecret` are between 10 and 128 characters long.
+
+### 3. `ApiKeyDomainInvalidError`
+
+- **Reason:** The number of domains associated with the API key exceeds the maximum allowed limit.
+- **Solution:** Ensure the number of domains specified in the API specification file does not exceed the allowed limit.
+
+### 4. `ApiKeyFailedToGetDomainError`
+
+- **Reason:** No valid domain was retrieved from the API specification file.
+- **Solution:** Verify the API specification file for correctness and ensure it includes valid domains.
+
+### 5. `OutputEnvironmentVariableUndefinedError`
+
+- **Reason:** The output environment variable mapping is not defined.
+- **Solution:** Ensure the `writeToEnvironmentFile` object contains a valid `registrationId` key with the corresponding environment variable name.
+
+### 6. `SystemError` or `UserError`
+
+- **Reason:** An internal error occurred during the action execution.
+- **Solution:** Check the detailed error message for troubleshooting steps. Common causes might include network issues, authentication problems, or issues with the Teams Developer Portal API.
 
 # apiKey/update
 This action will update an API key in Developer Portal for authentication of API based message extension.
  
+## Overview
+The `apiKey/update` action is used to update an existing API key's properties within the Teams application ecosystem. The action validates the provided input parameters, checks for differences from the current API key properties, and updates the API key if necessary.
+
 ## Syntax:
 ```
   - uses: apiKey/update
@@ -912,6 +1010,85 @@ This action will update an API key in Developer Portal for authentication of API
       applicableToApps: <applicableToApps-setting-of-your-api-key> # Optional. Choose which apps can use this Api Key. Values: SpecificApp, AnyApp.
       targetAudience: <targetAudience-setting-of-your-api-key> # Optional. Choose which tenant can use this API Key. Values: HomeTenant, AnyTenant
 ```
+## Input Validation Rules
+The `apiKey/update` action accepts a set of input parameters defined within a `with` object. These parameters and their validation rules are as follows:
+
+- **name**:
+  - **Type**: `string`
+  - **Description**: The name of the API key.
+  - **Validation**: Must be a non-empty string and have a maximum length of 128 characters.
+
+- **appId**:
+  - **Type**: `string`
+  - **Description**: The app ID of the Teams app.
+  - **Validation**: Must be a non-empty string.
+
+- **apiSpecPath**:
+  - **Type**: `string`
+  - **Description**: The path of the API specification file.
+  - **Validation**: Must be a non-empty string.
+
+- **registrationId**:
+  - **Type**: `string`
+  - **Description**: The registration ID of the API key.
+  - **Validation**: Must be a non-empty string.
+
+- **applicableToApps** (optional):
+  - **Type**: `string`
+  - **Description**: Determines which app can access the API key. Values can be `"SpecificApp"` or `"AnyApp"`. Default is `"AnyApp"`.
+  - **Validation**: Must be one of the specified enum values.
+
+- **targetAudience** (optional):
+  - **Type**: `string`
+  - **Description**: Determines which tenant can access the API key. Values can be `"HomeTenant"` or `"AnyTenant"`. Default is `"AnyTenant"`.
+  - **Validation**: Must be one of the specified enum values.
+
+### Example Input
+```yaml
+with:
+  name: "MyUpdatedApiKey"
+  appId: "12345678-1234-1234-1234-1234567890ab"
+  apiSpecPath: "./specs/api.json"
+  registrationId: "9abcdef0-1234-5678-abcd-ef0123456789"
+  applicableToApps: "SpecificApp"
+  targetAudience: "HomeTenant"
+```
+
+## Output Specification
+The outputs of the `apiKey/update` action are defined in the `writeToEnvironmentFile` object. This object specifies where to write the results of the update.
+
+### Example Output
+- **result**:
+  - **Description**: This could store the success message or any output data post execution.
+  - **Type**: `string`
+  - **Example**: "API Key updated successfully."
+
+## Potential Errors for Troubleshooting
+
+### UserError
+- **Reason**: This type of error occurs when there is a mistake in the input parameters provided by the user.
+- **Possible Solutions**: Verify that all required parameters are correct and meet the validation rules.
+
+### SystemError
+- **Reason**: This error type occurs due to system issues, such as network problems or API failures.
+- **Possible Solutions**: Ensure that the system is functioning correctly, and retry the action after some time. Check network connections and API availability.
+
+### ApiKeyNameTooLongError
+- **Reason**: The provided API key name exceeds the length limit.
+- **Possible Solutions**: Ensure the `name` parameter is no longer than 128 characters.
+
+### ApiKeyDomainInvalidError
+- **Reason**: The provided domain list exceeds the maximum allowed domains or is empty.
+- **Possible Solutions**: Ensure that the domain list retrieved from the API spec file is correct and within the acceptable limits.
+
+### InvalidActionInputError
+- **Reason**: One or more input parameters are invalid.
+- **Possible Solutions**: Review the input parameters and ensure they meet the validation criteria specified.
+
+### ApiKeyFailedToGetDomainError
+- **Reason**: The action failed to retrieve valid domains from the API specification.
+- **Possible Solutions**: Check the API specification file to ensure it contains valid bearer token authentication schemes and the correct server configurations.
+
 
 # General Errors
 ## ActionNotFoundError
