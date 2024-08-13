@@ -1771,7 +1771,18 @@ When executing this action, several potential errors might arise. Below are the 
 
 
 # script
-This action will execute a user defined script.
+
+## Overview
+
+The **script** action allows you to execute a user-defined script. This action is part of a predefined series of tasks in a CI/CD pipeline or workflow. It provides the flexibility to run shell commands or scripts and manage environment variables essential for your project.
+
+### Functionality
+
+When you execute the **script** action:
+
+1. The specified script or command (`run`) is executed.
+2. The action can run with a specified shell (`shell`) and within a defined working directory (`workingDirectory`).
+3. Environment variables can be redirected and stored based on script output.
 
 ## Syntax:
 ```
@@ -1783,8 +1794,49 @@ This action will execute a user defined script.
      timeout: 1000 # timeout in ms
      redirectTo: paht/to/file # redirect stdout and stderr to a file
 ```
+## Input Validation Rules
+
+The inputs for the **script** action are defined in the `with` object. Here are the detailed validation rules:
+
+### Required Properties
+
+- **run**: _(string)_
+  - Description: The command to run or the path to the script. The action is considered successful if the script exits with code 0.
+  - Example: `"echo 'Hello World!'"`
+  
+### Optional Properties
+
+- **workingDirectory**: _(string)_
+  - Description: The directory to run the script in. Defaults to the directory of the configuration file.
+  - Example: `"/path/to/directory"`
+
+- **shell**: _(string)_
+  - Description: The shell to use for executing the script. If not provided, defaults to the following based on the platform:
+    - macOS: `/bin/zsh` if available, otherwise `/bin/bash`.
+    - Windows: value of `ComSpec` environment variable if available, otherwise `cmd.exe`.
+    - Linux/Other: `/bin/sh`.
+
+- **timeout**: _(number)_
+  - Description: Specifies a timeout for the script execution in milliseconds.
+  - Example: `5000`
+
+- **redirectTo**: _(string)_
+  - Description: File path to redirect stdout and stderr.
+  - Example: `"logs/output.log"`
+
+### Example Input (YAML Format)
+
+```yaml
+with:
+  run: "echo 'Hello World!'"
+  workingDirectory: "/path/to/directory"
+  shell: "/bin/bash"
+  timeout: 5000
+  redirectTo: "logs/output.log"
+```
 
 ## Output:
+
 All stdout start with "::set-teamsfx-env key=value" will be interpreted into outputs in .env file.
 
 ## Default shell command
@@ -1793,6 +1845,41 @@ If `shell` is not specified, use default shell. The rule is applied in the follo
 2. If current OS is macOS, then use '/bin/zsh' if it exists, otherwise use '/bin/bash'; 
 3. If current OS is Windows, then use the value of the 'ComSpec' environment variable if it exists, otherwise use 'cmd.exe'; 
 4. If current OS is Linux or other OS systems, use '/bin/sh' if it exists. 
+
+## Potential Errors and Troubleshooting
+
+Below are the potential errors that users might encounter when using the **script** action, along with their reasons and possible solutions.
+
+### `ScriptTimeoutError`
+
+- **Reason**: The script execution exceeded the specified timeout duration.
+- **Solution**: Increase the `timeout` value in the input configuration to allow more time for the script to execute.
+
+### `ScriptExecutionError`
+
+- **Reason**: The script execution failed, possibly due to a non-zero exit code.
+- **Solution**: Check the script for errors, ensure all commands are valid, and that all necessary dependencies are installed.
+
+### `InvalidInputError`
+
+- **Reason**: The input arguments provided do not match the required schema.
+- **Solution**: Verify that all required properties are included in the `with` object and that the values match the expected type and format.
+
+### `FileNotFoundError`
+
+- **Reason**: The specified script or working directory does not exist.
+- **Solution**: Ensure the `run` command points to a valid script and that the `workingDirectory` is correctly specified and exists.
+
+### `ShellNotFoundError`
+
+- **Reason**: The specified shell is not available on the machine.
+- **Solution**: Use a valid shell path or remove the `shell` property to use the default shell for the platform.
+
+### `EnvironmentVariableError`
+
+- **Reason**: Errors reading environment variables for use within the script.
+- **Solution**: Ensure all referenced environment variables are correctly defined and accessible.
+
 
 # apiKey/register
 This action will register an API key in Developer Portal for authentication of API based message extension.
