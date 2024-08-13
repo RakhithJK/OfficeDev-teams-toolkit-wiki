@@ -355,7 +355,10 @@ This action will enable static website setting in Azure Stroage.
 NA
 
 # azureStaticWebApps/getDeploymentToken
-This action will get deployment token from Azure Static Web Apps.
+
+## Overview
+
+The `azureStaticWebApps/getDeploymentToken` action is designed to retrieve the deployment token for an Azure Static Web App. This token is critical for deploying code to the Static Web App from a CI/CD pipeline. The action fetches the deployment token using the provided resource ID of the Azure Static Web App and writes it to an environment file for further usage.
 
 ## Version Info
 Since the Yaml schema v1.4
@@ -368,12 +371,53 @@ Since the Yaml schema v1.4
     writeToEnvironmentFile:
       deploymentToken: SECRET_TAB_SWA_DEPLOYMENT_TOKEN
 ```
+
+## Input Specification
+
+The input arguments for this action are encapsulated within the `with` object. Below are the input validation rules and example inputs.
+
+### Required Inputs
+
+- **resourceId**: The resource ID of the Azure Static Web App.
+  - **Type**: `string`
+  - **Description**: This is a unique identifier for the Azure Static Web App.
+
+### Example YAML Input
+
+```yaml
+uses: azureStaticWebApps/getDeploymentToken
+with:
+  resourceId: "/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Web/staticSites/{site-name}"
+writeToEnvironmentFile:
+  deploymentToken: SWA_DEPLOYMENT_TOKEN
+```
+
+
 ## Output:
-* The deployment token of the Azure Static Web Apps.
+- **deploymentToken**: The deployment token of the Azure Static Web App.
 
 ## Troubleshooting:
 * The deployment token will persist until it is reset. If you have reset the token, you must run this action again or update the deployment token in your .env file.
 
+1. **PrerequisiteError**
+   - **Reason**: Invalid or improperly formatted `resourceId`.
+   - **Solution**: Ensure that the `resourceId` follows the correct format: `/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Web/staticSites/{site-name}`.
+
+2. **OutputEnvironmentVariableUndefinedError**
+   - **Reason**: The `deploymentToken` key is not defined in `outputEnvVarNames`.
+   - **Solution**: Verify that `deploymentToken` is specified correctly in the `writeToEnvironmentFile` object.
+
+3. **BaseComponentInnerError**
+   - **Reason**: General internal error.
+   - **Solution**: Check the logs for detailed error messages and possible fixes. If the problem persists, consult the documentation or support.
+
+4. **ExternalApiCallError**
+   - **Reason**: Failures related to Azure credential retrieval.
+   - **Solution**: Ensure you are logged into Azure and that the credentials are correct. Retry the operation later if remote errors persist.
+
+5. **UserError or SystemError**
+   - **Reason**: General user or system errors.
+   - **Solution**: Read the detailed error messages and follow suggestions for resolving issues.
 # cli/runNpxCommand
 This action will execute `npx` commands under specified directory with parameters. It can be used to run `gulp` commands to bundle and package sppkg.
 
@@ -538,18 +582,18 @@ This error may have two possible causes:
 2. You are using an old version of the Teams Toolkit while your Web App has Basic Auth turned off. Log into the Azure Portal, find your Web App, then go to Settings - Configuration - General Settings - Basic Authentication and set it to ON before trying to redeploy again.
 
 # azureFunctions/zipDeploy
-This action will upload and deploy the project to Azure Functions using [the zip deploy feature](https://aka.ms/zip-deploy-to-azure-functions). 
-The parameter `workingDirectory` refers to the root folder for deploy action operations. It can be removed if you want to run deploy command in the project root.
 
-The `artifactFolder` parameter represents the folder where you want to upload the artifact. If your input value is a relative path, it is relative to the `workingDirectory`.
+## Overview
 
-The `ignoreFile` parameter specifies the file path of the ignore file used during upload. This file can be utilized to exclude certain files or folders from the `artifactFolder`. Its syntax is similar to the Git's ignore.
+The `azureFunctions/zipDeploy` action is designed to automate the process of uploading and deploying a project to Azure Functions using [the zip deploy feature](https://aka.ms/zip-deploy-to-azure-functions). It packages the specified distribution folder into a zip file and deploys it to the designated Azure Functions resource.
 
-The `resourceId` parameter indicates the resource ID of an Azure Function. It is generated automatically after running the provision command. If you already have an Azure Function, you can find its resource ID in the Azure portal (see this [link](https://azurelessons.com/how-to-find-resource-id-in-azure-portal/) for more information).
+Upon execution, the action carries out the following steps:
 
-You can set the `dryRun` parameter to true if you only want to test the preparation of the upload and do not intend to deploy it. This will help you verify that the packaging zip file is correct. The default value for this parameter is false.
-
-The `outputZipFile` parameter indicates the path of the zip file for the packaged artifact folder. It is relative to the `workingDirectory`, and its default value is `.deployment/deployment.zip`. This file will be reconstructed during deployment, reflecting all folders and files in your `artifactFolder`, and removing any non-existent files or folders.
+1. **Input Validation**: Ensures that required inputs (`artifactFolder` and `resourceId`) are provided and valid.
+2. **Packaging Files**: Packages the specified distribution folder (`artifactFolder`) into a zip file.
+3. **Deployment**: Deploys the zip file to the specified Azure Functions resource (`resourceId`).
+4. **Optional Dry Run**: If `dryRun` is set to `true`, the process terminates after packaging without actually deploying the files.
+5. **Error Handling**: Captures and logs any errors that occur during the deployment process.
 
 ## Syntax:
 ```
@@ -562,9 +606,32 @@ The `outputZipFile` parameter indicates the path of the zip file for the package
       dryRun: false
       outputZipFile: ./.deployment/deployment.zip
 ```
+## Input Validation Rules
 
-## Output:
-NA
+The action expects certain inputs through the `with` object. These inputs must adhere to specified rules:
+
+- **Required Inputs:**
+  - `artifactFolder`: Path to the folder containing the files to deploy. Must be a valid filesystem path. If your input value is a relative path, it is relative to the `workingDirectory`.
+  - `resourceId`: The resource ID of the Azure Functions. This must be a valid Azure Resource ID. It is generated automatically after running the provision command. If you already have an Azure Function, you can find its resource ID in the Azure portal (see this [link](https://azurelessons.com/how-to-find-resource-id-in-azure-portal/) for more information).
+  
+- **Optional Inputs:**
+  - `workingDirectory`: The directory to use as the base for relative paths. Defaults to the current directory (`"./"`).
+  - `ignoreFile`: Path to a file listing the files to ignore during packaging. Accepts a valid filesystem path. This file can be utilized to exclude certain files or folders from the `artifactFolder`. Its syntax is similar to the Git's ignore.
+  - `dryRun`: Boolean flag to indicate if the action should perform a dry run (i.e., package files without deploying). Defaults to `false`. This will help you verify that the packaging zip file is correct.
+  - `outputZipFile`: Path to save the zipped file. Defaults to `workingDirectory/.deployment/deployment.zip`. This file will be reconstructed during deployment, reflecting all folders and files in your `artifactFolder`, and removing any non-existent files or folders.
+
+### Example Inputs in YAML
+
+```yaml
+uses: azureFunctions/zipDeploy
+with:
+  artifactFolder: "dist"
+  resourceId: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/sites/{functionAppName}"
+  workingDirectory: "./"
+  ignoreFile: ".funcignore"
+  dryRun: false
+  outputZipFile: "output/deployment.zip"
+```
 
 ## Troubleshooting:
 ### Error message: No file is found in distribution folder
