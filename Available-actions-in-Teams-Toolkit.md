@@ -239,7 +239,7 @@ When you use Microsoft Entra app manifest displayed in [Azure App Registration p
 To fix this error: remove the extra properties mentioned in the error message and try to update your Microsoft Entra app again.
 
 # teamsApp/create
-This action will create a new Teams app for you if the environment variable that stores Teams app id is empty or the app with given id is not found from Teams Developer Portal.
+The `teamsApp/create` action automates the process of creating a new Microsoft Teams app using the Teams Developer Portal. It can either create a new app if an existing Teams App ID is not found or ensure that the required Teams app exists for a given Teams App ID.
 
 ## Syntax:
 ```
@@ -249,13 +249,78 @@ This action will create a new Teams app for you if the environment variable that
     writeToEnvironmentFile: # Write the information of created resources into environment file for the specified environment variable(s).
       teamsAppId: TEAMS_APP_ID
 ```
+## Input Validation Rules
+The input arguments for this action are defined within the `with` object. All inputs must be provided in a structured YAML format.
 
-## Output:
-* teamsAppId: The id for Teams app
-* TEAMS_APP_TENANT_ID: The tenant id for M365 account.
+### Required Inputs
+- **name**: The name of the Teams app to be created.
+
+```yaml
+with:
+  name: "Sample Teams App"
+```
+
+### Optional Inputs
+- **uses**: The action command, should be `teamsApp/create`.
+- **env**: Environment variables which might be required for the action.
+
+```yaml
+uses: "teamsApp/create"
+env:
+  CUSTOM_ENV_VAR: "some-value"
+  
+with:
+  name: "Sample Teams App"
+```
+
+## Output Specification
+The output from this action is written to the environment file as specified in the `writeToEnvironmentFile` object. The action primarily sets the following outputs:
+
+- **teamsAppId**: The ID of the created or verified Teams app.
+- **teamsAppTenantId**: The tenant ID associated with the Teams app.
+
+Example configuration in YAML:
+
+```yaml
+writeToEnvironmentFile:
+  teamsAppId: "TEAMS_APP_ID"
+  teamsAppTenantId: "TEAMS_APP_TENANT_ID"
+```
+## Potential Errors for Troubleshooting
+The Teams App Create action can encounter several errors during its execution. Below is a list of potential errors, their causes, and possible solutions:
+
+### User Errors
+#### InvalidActionInputError
+- **Reason**: The required input parameters are missing or invalid.
+- **Solution**: Ensure that the `name` parameter is provided in the input YAML.
+
+#### TeamsAppCreateConflictError
+- **Reason**: There is a conflict with an existing app registration.
+- **Solution**: Verify if the app already exists and handle the conflict, or use a different app name.
+
+#### TeamsAppCreateConflictWithPublishedAppError
+- **Reason**: The provided app ID conflicts with an existing published app.
+- **Solution**: Avoid using an app ID that is already associated with a published Teams app.
+
+#### InvalidTeamsAppIdError
+- **Reason**: The given App ID must be a valid GUID.
+- **Solution**: Ensure the App ID follows the GUID format.
+
+### System Errors
+#### TeamsAppCreateFailedError
+- **Reason**: General failure during the Teams app creation.
+- **Solution**: Utilize the provided help link and investigate the cause further. Ensure all dependencies and permissions are correctly configured.
+
 
 # teamsApp/update
 Apply the Teams app manifest to an existing Teams app in Teams Developer Portal. Will use the app id in manifest.json file to determine which Teams app to update.
+
+### What This Action Does:
+- Reads the app package from the provided path.
+- Extracts the `manifest.json` file from the app package to retrieve the Teams app ID.
+- Validates that the Teams app ID is correct and the app exists in the Teams Developer Portal.
+- Updates the app in Teams Developer Portal with the new contents from the app package.
+
 
 ## Syntax:
 ```
@@ -264,12 +329,89 @@ Apply the Teams app manifest to an existing Teams app in Teams Developer Portal.
       appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip # Required. Relative path to this file. This is the path for built zip file.
 ```
 
-## Output:
-* TEAMS_APP_TENANT_ID: The tenant id for M365 account.
-* TEAMS_APP_UPDATE_TIME: The latest update time for syncing local manifest file to Teams Developer Portal.
+## Input Validation Rules
+
+The action expects input parameters defined under the `with` object. Below is the expected structure and validation rules for the inputs.
+
+### Parameters:
+
+| Parameter      | Type   | Description                        | Requirement                           |
+|----------------|--------|------------------------------------|---------------------------------------|
+| `appPackagePath` | String | Path to the Teams app package file. | Required |
+
+### Example Input:
+
+```yaml
+uses: teamsApp/update
+with:
+  appPackagePath: "./path/to/teamsAppPackage.zip"
+```
+
+#### Rules:
+- `appPackagePath` must not be null or empty and must point to an existing file.
+- The `manifest.json` inside the app package must contain a valid Teams app ID (UUID format).
+
+### Detailed Example with Environment Variables:
+
+```yaml
+uses: teamsApp/update
+env:
+  M365_CLIENT_ID: <your-client-id>
+  M365_CLIENT_SECRET: <your-client-secret>
+  M365_TENANT_ID: <your-tenant-id>
+
+with:
+  appPackagePath: "./path/to/teamsAppPackage.zip"
+```
+
+## Output Specification
+
+Upon successful execution, the action will output specific details to environment variables. These details help to confirm and log the update process.
+
+### Output:
+
+| Key                        | Environment Variable        | Description                           |
+|----------------------------|-----------------------------|---------------------------------------|
+| `teamsAppTenantId`         | teamsAppTenantId            | The tenant ID where the Teams app resides. |
+| `teamsAppUpdateTime`       | teamsAppUpdateTime          | The timestamp when the Teams app was last updated. |
+
+## Potential Errors for Troubleshooting
+
+When executing this action, you may encounter several types of errors. Here will enumerate possible error classes, reasons, and suggested solutions.
+
+### Error Classes, Reasons, and Solutions:
+
+#### 1. **FileNotFoundError**
+- **Reason**: The specified app package path does not exist.
+- **Solution**: Ensure that the `appPackagePath` is correct and points to an existing file.
+
+#### 2. **InvalidTeamsAppIdError**
+- **Reason**: The Teams app ID extracted from the `manifest.json` is not a valid UUID.
+- **Solution**: Validate the `manifest.json` file within your app package to ensure the ID is correctly formatted as a UUID.
+
+#### 3. **TeamsAppNotExistsError**
+- **Reason**: The Teams app specified by the extracted ID does not exist in the Teams Developer Portal.
+- **Solution**: Double-check the Teams app ID in the `manifest.json` to make sure you're targeting the correct app.
+
+#### 4. **TeamsAppUpdateFailedError**
+- **Reason**: General error occurred while attempting to update the Teams app.
+- **Solution**: Review the error message and check any logs for more details; you may need to troubleshoot based on additional context given by the error message.
+
+#### 5. **AccessTokenError**
+- **Reason**: Failed to obtain an access token for the Microsoft 365 environment.
+- **Solution**: Validate your environment variables (`M365_CLIENT_ID`, `M365_CLIENT_SECRET`, `M365_TENANT_ID`) for correctness and retry.
+
 
 # teamsApp/validateManifest
-This action will render Teams app manifest template with environment variables, validate Teams app manifest file using its schema.
+The action `teamsApp/validateManifest` is designed to validate the Microsoft Teams app manifest file. It ensures that the manifest conforms to the predefined schema, checks for any errors or inconsistencies, and performs an additional validation if copilot extensions are present. This action is part of the broader set of tools provided to streamline the development and deployment of Teams applications.
+
+## Action Description
+
+The `teamsApp/validateManifest` action will:
+- Validate the provided Teams app manifest against the relevant schema.
+- Check for the presence of copilot extensions and their valid schema.
+- Use environment variables referenced within the manifest for validation.
+- Report detailed validation errors and result summaries.
 
 ## Syntax:
 ```
@@ -278,11 +420,64 @@ This action will render Teams app manifest template with environment variables, 
       manifestPath: ./appPackage/manifest.json # Required. Path to Teams app manifest file
 ```
 
-## Output:
-* NONE
+## Input Specifications
+
+The inputs for this action are provided through the `with` object. The only required input is the `manifestPath`.
+
+### Required Inputs
+
+- `manifestPath`: Path to the Teams app manifest file.
+
+**Example Input (YAML Format):**
+```yaml
+uses: teamsApp/validateManifest
+with:
+  manifestPath: "./path/to/teams-app-manifest.json"
+```
+## Potential Errors for Troubleshooting
+
+When performing the `teamsApp/validateManifest` action, various errors might occur. Below are the common errors, their reasons, and possible solutions:
+
+### 1. `ValidationFailedError`
+
+- **Error Reason**: The manifest validation failed due to schema mismatches or errors in the manifest content.
+- **Possible Solutions**:
+  - Ensure that the manifest file conforms to the defined schema.
+  - Verify the JSON syntax of the manifest.
+  - Cross-check any URLs or required fields within the manifest for accuracy.
+
+### 2. `InvalidActionInputError`
+
+- **Error Reason**: The input provided to the action is either missing or invalid.
+- **Possible Solutions**:
+  - Ensure the `manifestPath` is provided.
+  - Verify the path specified in `manifestPath` is correct and points to a valid file.
+
+### 3. `FileNotFoundError`
+
+- **Error Reason**: The manifest file specified in `manifestPath` does not exist.
+- **Possible Solutions**:
+  - Verify the file path provided.
+  - Ensure the file is not deleted or moved from the specified location.
+
+### 4. `JSONSyntaxError`
+
+- **Error Reason**: The manifest file contains invalid JSON.
+- **Possible Solutions**:
+  - Validate the JSON syntax using tools like `jsonlint`.
+  - Ensure proper formatting of the manifest file.
+
+### 5. `MissingEnvironmentVariablesError`
+
+- **Error Reason**: The manifest references environment variables that are not set.
+- **Possible Solutions**:
+  - Define all required environment variables.
+  - Ensure the variable names are correct and match those in the manifest.
+
 
 # teamsApp/validateAppPackage
-This action will validate Teams app package using validation rules.
+
+The `teamsApp/validateAppPackage` action validates a Microsoft Teams app package file against a set of predefined validation rules. It ensures that the app package conforms to the required standards and formats before it is submitted to the Teams Developer Portal.
 
 ## Syntax:
 ```
@@ -290,12 +485,61 @@ This action will validate Teams app package using validation rules.
     with:
       appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip # Required. Relative path to this file. This is the path for built zip file.
 ```
+## Input Validation Rules
 
-## Output:
-* NONE
+The input parameters for this action are defined in the `with` object. The required and optional parameters are as follows:
+
+- `appPackagePath` (required): The path to the zipped Teams app package file.
+
+### Example Input
+
+```yaml
+uses: teamsApp/validateAppPackage
+with:
+  appPackagePath: 'path/to/your/teams/app/package.zip'
+```
+
+## Output Specification
+
+The outputs of the action's execution are defined in the `writeToEnvironmentFile` object. The key is the target output name, and the value is the environment variable name to store the output value. Based on the source code, here are the potential outputs:
+
+- `validationSummary`: A summary of the validation results, including errors, warnings, and passes.
+- `validationResult`: Detailed results of the validation, including individual errors and warnings.
+
+## Potential Errors for Troubleshooting
+
+Here are some common errors that might occur during the execution of the `teamsApp/validateAppPackage` action, along with their reasons and potential solutions:
+
+1. **InvalidActionInputError**
+   - **Reason**: The required input parameter `appPackagePath` is missing or invalid.
+   - **Solution**: Ensure that the `appPackagePath` parameter is provided and points to the correct path of the zipped Teams app package file. Refer to the [Action Input Documentation](https://aka.ms/teamsfx-actions/teamsapp-validate) for more details.
+
+2. **FileNotFoundError**
+   - **Reason**: The specified app package file could not be found at the given path.
+   - **Solution**: Verify that the `appPackagePath` is correct and that the file exists at the specified location.
+
+3. **ValidationFailedError**
+   - **Reason**: The app package failed validation due to errors.
+   - **Solution**: Check the error messages provided in the validation summary. Review and correct the issues mentioned in the error messages.
+
+4. **AppStudioValidationError**
+   - **Reason**: An error occurred while communicating with the Teams Developer Portal API for validation.
+   - **Solution**: Ensure that you have a valid Microsoft 365 token and that you have network connectivity. Retry the validation process. If the issue persists, refer to the API documentation or support.
+
 
 # teamsApp/validateWithTestCases
-This action will send out async validation requests to the Developer Portal to validate the app package.
+The `teamsApp/validateWithTestCases` action performs asynchronous validation tests on a Microsoft Teams app package file. This process ensures that your app meets all required standards and guidelines for Microsoft Teams apps. 
+For more details, refer to the [documentation](https://aka.ms/teamsfx-actions/teamsapp-validate).
+
+## Functionality
+Upon execution, this action:
+1. Validates the provided input parameters.
+2. Checks if the specified app package file exists.
+3. Reads and processes the manifest from the app package.
+4. Initiates an application validation request with the Azure App Studio.
+5. Provides periodic updates and final results of the validation process.
+
+This validation ensures that the uploaded Teams app package file conforms to Microsoft Teams' guidelines and standards.
 
 ## Syntax:
 ```
@@ -306,11 +550,47 @@ This action will send out async validation requests to the Developer Portal to v
       showProgressBar: true # Optional. Show progress bar or not.
 ```
 
-## Output:
-* NONE
+## Input Validation
+The input parameters for this action are defined under the `with` object. All parameters are required unless otherwise specified.
+
+### Parameters
+- `appPackagePath` (string): **Required**. The path to the zipped Teams app package file.
+- `showMessage` (boolean): *Optional*. Whether to display messages during the validation process.
+- `showProgressBar` (boolean): *Optional*. Whether to show a progress bar during the validation process.
+
+### Example Input
+```yaml
+with:
+  appPackagePath: "./path/to/teamsApp.zip"
+  showMessage: true
+  showProgressBar: true
+```
+## Potential Errors
+The action might encounter several errors which have been categorized as follows:
+
+### 1. Input Errors
+- **Error Class**: InvalidActionInputError
+- **Reason**: Missing required input parameters (`appPackagePath`).
+- **Solution**: Ensure all required parameters are correctly specified in the input. Refer to the [documentation](https://aka.ms/teamsfx-actions/teamsapp-validate-test-cases) for more details.
+
+### 2. File Errors
+- **Error Class**: FileNotFoundError
+- **Reason**: The specified app package file does not exist at the given path.
+- **Solution**: Verify that the file path is correct and the app package file exists.
+
+### 3. App Studio Errors
+- **Error Class**: AppStudioError
+- **Reason**: Issues related to App Studio, such as token retrieval failures or network issues.
+- **Solution**: Ensure your App Studio token is valid and accessible. Check network connection and retry.
+
+### 4. Validation Status Errors
+- **Error Class**: AsyncAppValidationError
+- **Reason**: Errors in the validation status such as incomplete or aborted validations.
+- **Solution**: Check the status at the provided URL. If a current validation is in progress, wait until it completes before submitting a new request.
+
 
 # teamsApp/zipAppPackage
-This action will render Teams app manifest template with environment variables, and zip manifest file with two icons.
+The `teamsApp/zipAppPackage` action is designed to facilitate the process of packaging a Microsoft Teams app. It achieves this by rendering the Teams app manifest template with environment variables, and then zipping the manifest file along with two icons (color and outline icons). This action ensures a streamlined process for generating the required app package for deployment in Teams.
 
 ## Syntax:
 ```
@@ -321,11 +601,86 @@ This action will render Teams app manifest template with environment variables, 
       outputJsonPath: ./appPackage/build/manifest.${{TEAMSFX_ENV}}.json # Required. Relative path to this file. This is the path for built manifest json file.
 ```
 
-## Output:
-* NONE
+## Input Parameters
+
+The input parameters for this action are passed within the `with` object. 
+
+### Required Inputs
+
+- **manifestPath** (`string`): Path to the Teams app manifest file.
+- **outputZipPath** (`string`): Path where the output ZIP package will be created.
+- **outputJsonPath** (`string`): Path where the output manifest JSON file will be generated.
+
+### Example Input
+```yaml
+- uses: teamsApp/zipAppPackage
+  with:
+    manifestPath: "path/to/manifest.json"
+    outputZipPath: "path/to/output.zip"
+    outputJsonPath: "path/to/output.json"
+```
+
+## Process Flow and Detailed Execution
+
+1. **Input Validation**: Before proceeding, the action validates the provided input parameters to ensure that all required inputs (`manifestPath`, `outputZipPath`, and `outputJsonPath`) are present. If any of these parameters are missing, the action throws an `InvalidActionInputError`.
+
+2. **Path Normalization**: The paths provided in the inputs are normalized to absolute paths to ensure that the files can be accessed correctly.
+
+3. **Manifest File Processing**: 
+    - The manifest file specified by `manifestPath` is read and processed.
+    - Environment variables within the manifest file are resolved.
+
+4. **Icon Files Verification**:
+    - The action checks the existence of the icon files (color and outline) as specified in the manifest file. If these files are missing or located outside the allowed directory, corresponding errors (`FileNotFoundError` or `InvalidFileOutsideOfTheDirectotryError`) are thrown. 
+
+5. **Localization Files Verification**:
+    - If localization files are specified in the manifest, their existence is verified similarly. Missing files will result in appropriate exceptions.
+
+6. **Packaging**:
+    - The manifest file and the icon files are added to a ZIP package.
+    - If present, additional localization files, API specifications, Adaptive card templates, and plugins are included in the ZIP package.
+
+7. **Output Generation**:
+    - The final ZIP package is written to the `outputZipPath`.
+    - The processed manifest JSON is written to the `outputJsonPath`.
+
+8. **Summary and Logs**:
+    - Once the process is complete, relevant summaries and success messages are logged for user reference.
+## Potential Errors and Troubleshooting
+
+### InvalidActionInputError
+- **Reason**: One or more required input parameters are missing.
+- **Solution**: Ensure that all required parameters (`manifestPath`, `outputZipPath`, and `outputJsonPath`) are specified.
+
+### FileNotFoundError
+- **Reason**: The specified file (manifest, icon, localization, or plugin file) does not exist at the expected path.
+- **Solution**: Verify that all specified files exist at the given paths and adjust the paths if necessary.
+
+### InvalidFileOutsideOfTheDirectotryError
+- **Reason**: One of the specified files is outside the allowed directory scope.
+- **Solution**: Ensure that all file paths are within the appropriate directory structure relative to the manifest file.
+
+### JSONSyntaxError
+- **Reason**: The manifest or plugin file has incorrect JSON syntax.
+- **Solution**: Validate the JSON syntax of the manifest and plugin files. Use a JSON linter or validator to identify and fix the syntax errors.
+
+### MissingEnvironmentVariablesError
+- **Reason**: Environment variables referenced in the manifest or plugin files are not set.
+- **Solution**: Define all necessary environment variables in your environment or configuration.
+
 
 # teamsApp/publishAppPackage
 This action will publish built Teams app zip file to tenant app catalog.
+
+## What the Action Does
+
+This action performs the following steps:
+
+1. Validates the input arguments.
+2. Checks if the specified app package file exists.
+3. Reads and extracts the manifest file from the app package.
+4. Uses the Teams Dev Portal API to either publish a new app or update an existing one based on the app's presence in the Teams Admin Center.
+
 
 ## Syntax:
 ```
@@ -336,8 +691,58 @@ This action will publish built Teams app zip file to tenant app catalog.
       publishedAppId: TEAMS_APP_PUBLISHED_APP_ID
 ```
 
+## Input Validation Rules
+
+The input arguments are defined within the `with` object. Below are the input parameters and their validation rules:
+
+- **appPackagePath** (required): The path to the Teams app package that needs to be published.
+
+### Example Input
+
+Here is an example of how you can define the input parameters for this action:
+
+```yaml
+with:
+  appPackagePath: "path/to/your/teams/app/package.zip"
+```
+
+
 ## Output:
-* publishedAppId: The Teams app id in tenant app catalog. It is different from the app id in Teams developer Portal.
+The output of the action execution is defined in the `writeToEnvironmentFile` object. The key represents the target output name, and the value is the environment variable name to store the output value.
+
+- **publishedAppId**: The ID of the published Teams app.
+
+### Example Output
+
+Upon successful execution, the output will be set in the specified environment variable:
+
+```yaml
+writeToEnvironmentFile:
+  publishedAppId: PUBLISHED_APP_ID
+```
+## Potential Errors for Troubleshooting
+
+Understanding potential errors is crucial for troubleshooting issues. Below are the errors that may arise during the execution of this action:
+
+1. **FileNotFoundError**
+   - **Reason**: The specified app package file does not exist.
+   - **Possible Solutions**: Ensure that the app package path is correct and that the file exists at the specified location.
+
+2. **InvalidActionInputError**
+   - **Reason**: One or more required input parameters are missing or invalid.
+   - **Possible Solutions**: Validate that all required parameters are provided and correctly formatted.
+
+3. **TeamsAppPublishConflictError**
+   - **Reason**: A Teams app with the same external ID already exists in the staged app entitlements.
+   - **Possible Solutions**: Consider using the update mechanism to modify the existing app or provide a different app package.
+
+4. **TeamsAppPublishFailedError**
+   - **Reason**: General failure during the publishing process to the Teams App Catalog.
+   - **Possible Solutions**: Check the detailed error message for specific issues and ensure that all preconditions for publishing are met.
+
+5. **UserCancelError**
+   - **Reason**: The user cancels the publishing update operation.
+   - **Possible Solutions**: Confirm the publishing update when prompted.
 
 # azureStorage/enableStaticWebsite
 
@@ -1030,6 +1435,11 @@ During the execution of the `spfx/deploy` action, there are several potential er
 # teamsApp/copyAppPackageToSPFx
 This action will copy the Teams App zipped package to `teams` folder in SPFx directory to keep it updated. This is to ensure user will have aligned experience whether to publish Teams App from Teams Toolkit or manually sync to Teams in SharePoint app catalog.
 
+## Functionality
+- **Copy Teams App Package**: This action will copy the zipped Teams app package from the specified path to the `teams` directory within the specified SPFx project folder.
+- **Icon Replacement**: It will also extract and replace custom icons (`color.png` and `outline.png`) in the SPFx project folder, if any are defined in the Teams app manifest.
+
+
 ## Syntax:
 ```
   - uses: teamsApp/copyAppPackageToSPFx
@@ -1038,11 +1448,58 @@ This action will copy the Teams App zipped package to `teams` folder in SPFx dir
       spfxFolder: ./src # Path to SPFx solution.
 ```
 
-## Output:
-NA
+## Input Validation Rules
+The action requires users to provide certain parameters within the `with` object:
+
+- **`appPackagePath` (string)**: The path to the zipped Teams app package.
+- **`spfxFolder` (string)**: The source folder of the SPFx project.
+
+### Example Input
+```yaml
+uses: teamsApp/copyAppPackageToSPFx
+with:
+  appPackagePath: "./path/to/teamsapp.zip"
+  spfxFolder: "./path/to/spfx/project"
+```
+
+### Validation
+- Paths provided for `appPackagePath` and `spfxFolder` must be valid and accessible.
+- The `appPackagePath` should exist and be readable.
+  
+## Potential Errors for Troubleshooting
+Users of this action might encounter several types of errors during its execution. Below are some common errors, their possible reasons, and suggested solutions:
+
+### Errors and Possible Solutions
+1. **FileNotFoundError**
+   - **Reason**: The specified `appPackagePath` does not exist.
+   - **Solution**: Ensure that the `appPackagePath` is correct and the file exists at the location.
+
+2. **ManifestNotFoundError**
+   - **Reason**: The manifest file (`manifest.json`) is missing within the Teams app package.
+   - **Solution**: Verify the Teams app package to ensure it includes a `manifest.json` file.
+
+3. **PermissionDeniedError**
+   - **Reason**: Insufficient permissions to read from the `appPackagePath` or write to the `spfxFolder`.
+   - **Solution**: Ensure read and write permissions are granted for the specified paths.
+
+4. **IconNotFoundError**
+   - **Reason**: The specified icons (`color.png` or `outline.png`) are not found inside the Teams app package while their URLs are not external.
+   - **Solution**: Check the Teams app package to verify that the icons are included and correctly referenced.
+
+### Troubleshooting Steps
+- **Path Verification**: Ensure that all provided paths (`appPackagePath` and `spfxFolder`) are correct and accessible.
+- **Contents of Teams Package**: Verify the contents of the Teams app package to ensure it includes all necessary files (`manifest.json`, icons).
+- **Access Rights**: Make sure the executing user has necessary permissions to read from and write to the specified paths.
+
 
 # teamsApp/extendToM365
 This action will upload your app as M365 title, so it can be viewed on Outlook and Office.
+
+## Action Functionality
+- **Upload Teams App Package:** The action uploads the provided Teams app package to a side-loading service.
+- **Side-Load App:** It then facilitates side-loading into Microsoft 365.
+- **Output Values:** After successful execution, the action outputs values including the M365 Title ID and App ID.
+
 
 ## Syntax
 ```yml
@@ -1053,6 +1510,53 @@ This action will upload your app as M365 title, so it can be viewed on Outlook a
       titleId: M365_TITLE_ID # Required. The ID of M365 title.
       appId: M365_APP_ID # Required. The app ID of M365 title.
 ```
+
+## Input Validation Rules
+The action requires specific input parameters which must be defined within a `with` object. Below are the required inputs and their validation rules:
+
+### Required Inputs
+- **appPackagePath (string):** Path to the Teams app package. This should be a valid file path to the Teams app package ZIP file.
+  - _Examples:_
+    ```yaml
+    with:
+      appPackagePath: "./path/to/teams/app/package.zip"
+    ```
+## Output Specification
+On successful execution, the action outputs specific values stored in environment variables defined within the `writeToEnvironmentFile` object. The keys represent the output names, and the values correspond to the environment variable names.
+
+### Required Outputs
+- **titleId:** The ID of the M365 title.
+- **appId:** The App ID of the M365 title.
+
+  - _Examples:_
+    ```yaml
+    writeToEnvironmentFile:
+      titleId: "M365_TITLE_ID"
+      appId: "M365_APP_ID"
+    ```
+## Potential Errors and Troubleshooting
+When executing the `teamsApp/extendToM365` action, various errors can occur. Below is a list of potential errors, their causes, and possible solutions:
+
+### InvalidActionInputError
+- **Reason:** One or more inputs are invalid or missing.
+- **Solution:** Ensure that the `appPackagePath` is correctly specified and is a string. Verify that all required environment variable names (titleId, appId) in `writeToEnvironmentFile` are specified.
+
+### FileNotFoundError
+- **Reason:** The file specified in `appPackagePath` does not exist.
+- **Solution:** Check the file path provided and ensure that the file exists.
+
+### UserError
+- **Reason:** Issues such as invalid input data or access problems could trigger this error.
+- **Solution:** Validate the input data, ensure proper permissions and tokens are available.
+
+### SystemError
+- **Reason:** System related issues like network problems or internal errors.
+- **Solution:** Retry the action, checking for system logs and connectivity issues.
+
+### PackageServiceError
+- **Reason:** Related issues from the side-loading service, e.g., HTTP 400 due to invalid input or service misconfiguration.
+- **Solution:** Verify the side-loading service endpoint and ensure the input package ZIP file is valid.
+
 
 # file/createOrUpdateEnvironmentFile
 ## Overview
