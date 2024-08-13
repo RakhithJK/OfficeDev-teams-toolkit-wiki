@@ -157,6 +157,10 @@ Includes the above variables and additionally:
 # aadApp/update
 This action will update your Microsoft Entra app based on give Microsoft Entra app manifest. It will refer the `id` property in Microsoft Entra app manifest to determine which Microsoft Entra app to update.
 
+## Overview
+
+The `aadApp/update` action updates a Microsoft Entra application based on a provided application manifest. If the manifest uses `AAD_APP_ACCESS_AS_USER_PERMISSION_ID` and the corresponding environment variable is empty, this action will generate a random ID and output it.
+
 ## Syntax:
 ```
   - uses: aadApp/update
@@ -164,19 +168,72 @@ This action will update your Microsoft Entra app based on give Microsoft Entra a
       manifestPath: ./aad.manifest.json # Required. Relative path to this file. Environment variables in manifest will be replaced before apply to Microsoft Entra app.
       outputFilePath : ./build/aad.manifest.${{TEAMSFX_ENV}}.json # Required. Relative path to teamsfx folder. This action will output the final Microsoft Entra manifest used to update Microsoft Entra app to this path.
 ```
+## Input Validation Rules
 
-## Output:
-* AAD_APP_ACCESS_AS_USER_PERMISSION_ID: the id of access_as_user permission which is used to enable SSO
+The input arguments for this action are specified in the `with` object. All input parameters are mandatory:
 
-## Troubleshooting:
-### Error message "Permission (scope or role) cannot be deleted or updated unless disabled first
+- `manifestPath`: Path of the Microsoft Entra application manifest. Environment variables in the manifest will be replaced before applying the manifest to the Microsoft Entra application.
+- `outputFilePath`: Path to generate the final Microsoft Entra application manifest used to update the application.
+
+Example:
+```yaml
+with:
+  manifestPath: "./path/to/manifest.json"
+  outputFilePath: "./path/to/outputManifest.json"
+```
+
+### Validation Criteria
+- `manifestPath` must be a non-empty string.
+- `outputFilePath` must be a non-empty string.
+- If any of these criteria are not met, an `InvalidActionInputError` will be raised.
+
+
+## Output Specification
+
+The output of the action execution will be stored in the environment file as specified by the `writeToEnvironmentFile` object:
+
+- `AAD_APP_ACCESS_AS_USER_PERMISSION_ID`: The environment variable name to store the generated or existing permission ID.
+
+## Errors and Troubleshooting
+
+1. **InvalidActionInputError**
+   - **Reason**: One or more required input parameters are missing or invalid.
+   - **Possible Solution**: Ensure that `manifestPath` and `outputFilePath` are correctly provided and are non-empty strings.
+
+2. **FileNotFoundError**
+   - **Reason**: The specified manifest file does not exist.
+   - **Possible Solution**: Verify that the file path provided in `manifestPath` points to a valid file.
+
+3. **MissingFieldInManifestUserError**
+   - **Reason**: The manifest is missing a required field (`id`).
+   - **Possible Solution**: Check the manifest file to ensure all required fields are included.
+
+4. **HttpClientError**
+   - **Reason**: The request to the Microsoft Graph API resulted in a client error (4xx).
+   - **Possible Solution**: Verify the manifest content and ensure that the application has the necessary permissions to update the Microsoft Entra application.
+
+5. **HttpServerError**
+   - **Reason**: The request to the Microsoft Graph API resulted in a server error (5xx).
+   - **Possible Solution**: Retry the operation later. If the issue persists, contact Microsoft support.
+
+6. **DeleteOrUpdatePermissionFailedError**
+   - **Reason**: Error occurs when there is a failure in deleting or updating permissions.
+   - **Possible Solution**: Check permissions and ensure the manifest content is correct. Retry the action after some time.
+
+7. **HostNameNotOnVerifiedDomainError**
+   - **Reason**: The specified hostname is not on a verified domain.
+   - **Possible Solution**: Verify that the domain of the hostname is correctly configured and verified in Microsoft Entra.
+
+### Other issues
+
+#### Error message "Permission (scope or role) cannot be deleted or updated unless disabled first
 This is a known issue that OAuth permission id for an existing permission in your Microsoft Entra manifest is different than the id in Microsoft Entra application. One possible reason is the value of `AAD_APP_ACCESS_AS_USER_PERMISSION_ID` environment variable in `.env.{env_name}` is out of sync.
 
 To fix this error: find the id of `access_as_user` scope for your application in [Microsoft Entra app registration portal](https://ms.portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) and set it to `AAD_APP_ACCESS_AS_USER_PERMISSION_ID` environment variable in `.env.{env_name}`.
 
 ![image](https://user-images.githubusercontent.com/16605901/204182487-8eb46f6d-cee6-4d97-9cd4-68db59d4a572.png)
 
-### Expected property 'lang' is not present on resource of type 'Permissionscope'
+#### Expected property 'lang' is not present on resource of type 'Permissionscope'
 When you use Microsoft Entra app manifest displayed in [Azure App Registration portal](https://ms.portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade), you may meet this error or other similar errors. This is because the Microsoft Entra app manifest displayed in Azure Portal is not 100% compatible with [Microsoft Entra app manifest schema](https://learn.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest). This issue is being tracked and will be fixed in the future.
 
 To fix this error: remove the extra properties mentioned in the error message and try to update your Microsoft Entra app again.
