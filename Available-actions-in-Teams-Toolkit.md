@@ -1166,7 +1166,37 @@ This action will generate environment variables to `.env` file.
 If `target` is specified, NA. If `target` is not specified, `envs`.
 
 # devTool/install
-This action will install the development tool(s) required to debug a Teams app.
+
+## Overview
+
+The **`devTool/install`** action is designed to automate the installation of various development tools required for efficient software development. This action includes the following key sub-tasks:
+
+1. Resolving local SSL certificates.
+2. Installing Azure Functions Core Tools.
+3. Installing .NET SDK.
+4. Installing Teams App Test Tool.
+
+The guide provides a comprehensive overview, input validation rules, output specifications, and potential errors along with troubleshooting tips.
+
+---
+
+## What the Action Does
+
+`ToolsInstallDriver.execute` function manages the overall execution flow, encompassing the following primary tasks:
+
+1. **Resolve Local Certificates:**
+   - Install and optionally trust local SSL certificates.
+
+2. **Resolve Function Core Tools:**
+   - Install Azure Functions Core Tools and manage versioning.
+
+3. **Resolve .NET SDK:**
+   - Install .NET SDK based on configuration.
+
+4. **Resolve Test Tool:**
+   - Install Teams App Test Tool and manage versioning.
+
+---
 
 ## Syntax:
 ```yml
@@ -1184,6 +1214,69 @@ This action will install the development tool(s) required to debug a Teams app.
       funcPath: FUNC_PATH # Optional. The path of the Azure Functions Core Tools binary. This parameter takes effect only when `func` is `true`.
       dotnetPath: DOTNET_PATH # Optional. The path of the .NET binary. This parameter takes effect only when `dotnet` is `true`.
 ```
+
+## Input Validation Rules
+
+Inputs should be specified under the `with` parameter in a YAML format. Each input must comply with the following validation rules.
+
+### Example Input (YAML)
+
+```yaml
+uses: devTool/install
+with:
+  devCert:
+    trust: true
+  func:
+    version: "3.x"
+    symlinkDir: "/path/to/symlink"
+  dotnet: true
+  testTool:
+    version: "1.0.0"
+    symlinkDir: "/path/to/symlink"
+```
+
+### Input Parameters
+
+- **devCert**:
+  - **trust** (required, boolean): Indicates whether to trust the SSL certificate.
+
+- **func**:
+  - **version** (required, string/integer): Specifies the semantic versioning for Azure Functions Core Tools.
+  - **symlinkDir** (optional, string): Directory path for symlinked function binaries.
+
+- **dotnet** (optional, boolean): Determines if the .NET SDK should be installed.
+
+- **testTool**:
+  - **version** (required, string/integer): Specifies the version number of Teams App Test Tool.
+  - **symlinkDir** (required, string): Directory path for symlinked binaries for the Teams App Test Tool.
+
+---
+
+## Output Specification
+
+The results of the action's execution will be written as environment variables. These are specified in the `writeToEnvironmentFile` object.
+
+### Example Output Configuration (YAML)
+
+```yaml
+writeToEnvironmentFile:
+  sslCertFile: SSL_CERTIFICATE_FILE
+  sslKeyFile: SSL_KEY_FILE
+  funcPath: FUNCTIONS_CORE_TOOLS_PATH
+  dotnetPath: DOTNET_PATH
+  testToolPath: TEST_TOOL_PATH
+```
+
+### Output Variables
+
+- **sslCertFile**: Path to the SSL certificate file.
+- **sslKeyFile**: Path to the SSL key file.
+- **funcPath**: Path to the Azure Functions Core Tools binary.
+- **dotnetPath**: Path to the .NET binary.
+- **testToolPath**: Path to the Teams App Test Tool binary.
+
+---
+
 ## Troubleshooting:
 ### Manually install development tools
 In case the Teams Toolkit fails to install prerequisites for you, you can manually install them by following the guidelines below.
