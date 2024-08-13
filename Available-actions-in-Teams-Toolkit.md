@@ -581,18 +581,20 @@ When executing the `cli/runDotnetCommand` action, several potential errors may o
 3. **Validate Environment**: Ensure the execution environment has the necessary dependencies installed, such as the correct version of the Dotnet CLI.
 
 # azureAppService/zipDeploy
-This action will upload and deploy the project to Azure App Service using [the zip deploy feature](https://aka.ms/zip-deploy-to-app-services). 
-The parameter `workingDirectory` refers to the root folder for deploy action operations. It can be removed if you want to run deploy command in the project root.
 
-The `artifactFolder` parameter represents the folder where you want to upload the artifact. If your input value is a relative path, it is relative to the `workingDirectory`.
+## Overview
 
-The `ignoreFile` parameter specifies the file path of the ignore file used during upload. This file can be utilized to exclude certain files or folders from the `artifactFolder`. Its syntax is similar to the Git's ignore.
+The `azureFunctions/zipDeploy` action is designed to automate the process of uploading and deploying a project to Azure Functions using [the zip deploy feature](https://aka.ms/zip-deploy-to-app-services). It packages the specified distribution folder into a zip file and deploys it to the designated Azure Functions resource.
 
-The `resourceId` parameter indicates the resource ID of an Azure App Service. It is generated automatically after running the provision command. If you already have an Azure App Service, you can find its resource ID in the Azure portal (see this [link](https://azurelessons.com/how-to-find-resource-id-in-azure-portal/) for more information).
+## What the Action Does
 
-You can set the `dryRun` parameter to true if you only want to test the preparation of the upload and do not intend to deploy it. This will help you verify that the packaging zip file is correct. The default value for this parameter is false.
+Upon execution, the action carries out the following steps:
 
-The `outputZipFile` parameter indicates the path of the zip file for the packaged artifact folder. It is relative to the `workingDirectory`, and its default value is `.deployment/deployment.zip`. This file will be reconstructed during deployment, reflecting all folders and files in your `artifactFolder`, and removing any non-existent files or folders.
+1. **Input Validation**: Ensures that required inputs (`artifactFolder` and `resourceId`) are provided and valid.
+2. **Packaging Files**: Packages the specified distribution folder (`artifactFolder`) into a zip file.
+3. **Deployment**: Deploys the zip file to the specified Azure Functions resource (`resourceId`).
+4. **Optional Dry Run**: If `dryRun` is set to `true`, the process terminates after packaging without actually deploying the files.
+5. **Error Handling**: Captures and logs any errors that occur during the deployment process.
 
 ## Syntax:
 ```
