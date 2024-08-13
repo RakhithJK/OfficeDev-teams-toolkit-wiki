@@ -466,7 +466,9 @@ writeToEnvironmentFile:
    - **Reason**: General user or system errors.
    - **Solution**: Read the detailed error messages and follow suggestions for resolving issues.
 # cli/runNpxCommand
-This action will execute `npx` commands under specified directory with parameters. It can be used to run `gulp` commands to bundle and package sppkg.
+
+## Overview
+The `cli/runNpxCommand` action is designed to execute an `npx` command with specified arguments and within a given working directory. The command execution is monitored and telemetry data are collected for analysis. This action is particularly useful for running scripts or commands available through `npx` in a controlled CI/CD environment.
 
 ## Syntax:
 ```
@@ -479,12 +481,52 @@ This action will execute `npx` commands under specified directory with parameter
       workingDirectory: ./src
       args: gulp package-solution --ship --no-color
 ```
+## Input Validation Rules
+The input for the `cli/runNpxCommand` action is specified through the `with` object. The following properties are needed:
+
+- **args** (string; required): The arguments that will be passed to the `npx` command.
+- **workingDirectory** (string; optional): The working directory where the command should be executed. Defaults to './' if not specified.
+
+### Example Input
+Below is an example of the `cli/runNpxCommand` action input in YAML format:
+
+```yaml
+uses: cli/runNpxCommand
+with:
+  args: "create-react-app my-app"
+  workingDirectory: "./my-working-directory"
+```
 
 ## Output:
 * A client-side solution package that is located in `{workingDirectory}`/sharepoint/solution/*.sppkg
 
-## Troubleshooting:
-There's a known issue that `gulp bundle --ship --no-color` command will fail with exit code 1 if there's lint errors in your SPFx project. You'll need to fix them to continue although they're displayed as warning in log details.
+## Potential Errors and Troubleshooting
+This section enumerates common errors users might encounter, along with their reasons and possible solutions.
+
+### PrerequisiteError
+- **Error Class**: `PrerequisiteError`
+- **Reason**: Missing required argument such as `args`.
+- **Solution**: Ensure that the `args` attribute is provided in the `with` section of the action input. Example:
+
+  ```yaml
+  with:
+    args: "your-command-here"
+  ```
+
+### ScriptExecutionError
+- **Error Class**: `ScriptExecutionError`
+- **Reason**: The command failed during execution. This could occur due to syntax errors, missing dependencies, or issues within the script being run.
+- **Solution**: Check the error message and the script for potential issues. Ensure all dependencies are correctly installed. Error messages can be found in the `npx_error` output.
+
+### ScriptTimeoutError
+- **Error Class**: `ScriptTimeoutError`
+- **Reason**: The command took longer than the allowed time to execute and was terminated.
+- **Solution**: Optimize the script to run within the time limit or increase the timeout duration if possible.
+
+### EnvironmentError
+- **Error Class**: `EnvironmentError`
+- **Reason**: Issues with the environment setup such as incorrect working directory or missing environment variables.
+- **Solution**: Verify the `workingDirectory` path and ensure all required environment variables are correctly set.
 
 
 # cli/runNpmCommand
