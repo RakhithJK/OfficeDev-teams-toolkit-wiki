@@ -514,6 +514,26 @@ The input for this action is provided through the `with` object. Below are the r
     args: "install"          # (required) The npm command arguments to execute.
     workingDirectory: "./"   # (optional) The working directory. Defaults to './'.
 ```
+## Example Usage
+
+Below is an example of how to configure the `cli/runNpmCommand` action within a YAML workflow:
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: Run npm install
+      uses: cli/runNpmCommand
+      with:
+        args: "install"
+        workingDirectory: "./my-project"
+```
+
+This sample workflow checks out the repository and executes `npm install` within the `./my-project` directory.
 
 ### Input Validation Rules
 
@@ -549,26 +569,6 @@ When using the `cli/runNpmCommand` action, users may encounter certain errors. B
      - Increase the timeout parameter (if supported).
      - Optimize the npm script to run within the allowed time frame.
 
-## Example Usage
-
-Below is an example of how to configure the `cli/runNpmCommand` action within a YAML workflow:
-
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    
-    - name: Run npm install
-      uses: cli/runNpmCommand
-      with:
-        args: "install"
-        workingDirectory: "./my-project"
-```
-
-This sample workflow checks out the repository and executes `npm install` within the `./my-project` directory.
 
 ## Troubleshooting:
 ### Error message "Failed to run command"
