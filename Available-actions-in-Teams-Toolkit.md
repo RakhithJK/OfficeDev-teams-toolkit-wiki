@@ -340,7 +340,10 @@ This action will publish built Teams app zip file to tenant app catalog.
 * publishedAppId: The Teams app id in tenant app catalog. It is different from the app id in Teams developer Portal.
 
 # azureStorage/enableStaticWebsite
-This action will enable static website setting in Azure Stroage.
+
+## Overview
+
+The `azureStorage/enableStaticWebsite` action configures an Azure Storage account to host a static website. Upon successful execution, the storage account will be set up to serve web content directly from Azure, making it suitable for hosting static web pages, single-page applications, and more.
 
 ## Syntax:
 ```
@@ -351,8 +354,52 @@ This action will enable static website setting in Azure Stroage.
       errorPage: error.html
 ```
 
-## Output:
-NA
+## Input Parameters
+
+The input parameters for this action are defined within the `with` object. Below are the parameters along with their validation rules:
+
+- `storageResourceId` (string, required): The resource ID of the Azure Storage account.
+- `indexPage` (string, optional): The path to the index page of the static website (default: `index.html`).
+- `errorPage` (string, optional): The path to the error page of the static website (default: `index.html`).
+
+### Example Input in YAML
+
+```yaml
+- uses: azureStorage/enableStaticWebsite
+  with:
+    storageResourceId: "/subscriptions/{subscription-id}/resourceGroups/{resource-group-name}/providers/Microsoft.Storage/storageAccounts/{storage-account-name}"
+    indexPage: "index.html"
+    errorPage: "404.html"
+```
+## Potential Errors and Troubleshooting
+
+Here are some common errors you might encounter while executing this action, along with their reasons and possible solutions:
+
+### Error Classes
+
+1. **InvalidInputError**
+   - **Reason**: The `storageResourceId` parameter is missing or malformed.
+   - **Solution**: Ensure the `storageResourceId` is provided and correctly formatted.
+
+2. **AuthenticationError**
+   - **Reason**: Authentication to Azure failed.
+   - **Solution**: Verify that your Azure credentials are valid and have sufficient permissions to modify the specified storage account.
+
+3. **ConfigurationError**
+   - **Reason**: The static website configuration could not be applied, possibly due to an invalid index or error page path.
+   - **Solution**: Double-check the paths for `indexPage` and `errorPage` to ensure they exist and are properly configured.
+
+4. **NetworkError**
+   - **Reason**: Network issues while connecting to Azure services.
+   - **Solution**: Check your network connection and retry the operation.
+
+### Example Error Message
+
+If an error occurs, the output might include a message similar to this:
+
+```text
+Error: Invalid storageResourceId parameter. Please provide a valid Azure Storage resource ID.
+```
 
 # azureStaticWebApps/getDeploymentToken
 
@@ -654,7 +701,10 @@ If the package you attempted to deploy is larger than 500MB and your Azure Funct
 
 
 # azureStorage/deploy
-This action will upload and deploy the project to Azure Storage. The parameter `workingDirectory` can be removed if you want to run this command in the project root.
+## Overview
+The `azureStorage/deploy` action uploads and deploys a project to Azure Storage Service. This action is designed for users who need to automate the deployment of their project files into an Azure Storage account.
+
+The action handles reading input parameters (such as artifact folder and resource ID), processing the deployment, and managing error handling throughout the deployment process. It provides clear feedback and logs for the action execution, making it easy to troubleshoot and verify the deployment status.
 
 ## Syntax:
 ```
@@ -665,9 +715,46 @@ This action will upload and deploy the project to Azure Storage. The parameter `
       ignoreFile: ./.webappignore # Can be changed to any ignore file location, leave blank will ignore nothing
       resourceId: ${{BOT_AZURE_APP_SERVICE_RESOURCE_ID}} # The resource id of the cloud resource to be deployed to
 ```
+## Input Validation Rules
+The input parameters for the action are defined in the `with` object. Below are the parameters that the action accepts along with their validation rules:
 
-## Output:
-NA
+- **artifactFolder** (required): Path to the distribution folder that contains the files to deploy.
+  - Type: `string`
+  - Description: The path must be valid and point to an existing folder containing the deployment artifacts.
+  
+- **resourceId** (required): The resource ID of the storage account.
+  - Type: `string`
+  - Description: A valid Azure resource ID for the target storage account.
+
+- **workingDirectory** (optional): The working directory, deploy program will find ignore file and create upload package file based on this directory, default to `./`.
+  - Type: `string`
+  - Description: Default value is `./`. If provided, it should be a valid directory path.
+
+- **ignoreFile** (optional): The path to the ignore file. Any files listed in this file will be ignored during upload.
+  - Type: `string`
+  - Description: Defaults to ignoring nothing. If provided, should be a valid path to an ignore file.
+  
+Example of a valid input in YAML format:
+```yaml
+with:
+  artifactFolder: "./dist"
+  resourceId: "/subscriptions/xxxx/resourceGroups/xxxx/providers/Microsoft.Storage/storageAccounts/xxxx"
+  workingDirectory: "./"
+  ignoreFile: ".deployignore”
+```
+## Output Specification
+The action does not directly produce output as part of its execution. However, it manages internal logs and processes that can be utilized for debugging and status verification. Outputs of the action could be written to environment files which facilitate further steps in a CI/CD pipeline:
+
+The following outputs can be stored:
+
+- **DEPLOYMENT_STATUS**: The status of the deployment process.
+  
+The action uses the `writeToEnvironmentFile` object to specify the target output name and the environment variable name where the output value will be stored.
+
+Example environment file entry:
+```plaintext
+DEPLOYMENT_STATUS=Success
+```
 
 ## Troubleshooting:
 ### Error message: Failed to clear Azure Storage Account.
@@ -675,6 +762,22 @@ Please retry later or you can clear all files in your $web container and retry t
 
 ### Error message: Failed to upload local path xxxx to Azure Storage Account.
 Please retry this action later.
+
+### 1. `BaseComponentInnerError`
+- **Reason**: Custom operational errors within the deployment component.
+- **Solution**: Ensure that the input parameters are correct and valid. Check the logs for detailed error messages to understand the specific issue.
+
+### 2. `SystemError`
+- **Reason**: General system errors including network issues, filesystem problems, or other operational interruptions.
+- **Solution**: Retry the deployment operation. Verify network connectivity and the availability of the target storage account. Ensure the server has sufficient permissions and resources.
+
+### 3. `UserError`
+- **Reason**: Errors due to invalid user input or configuration issues.
+- **Solution**: Double-check the provided inputs, especially `artifactFolder` and `resourceId`. Ensure that all required parameters are correct and the paths are valid.
+
+### 4. `UnknownError`
+- **Reason**: Errors that are not recognized by the system, which may stem from unexpected conditions or unknown issues.
+- **Solution**: Consult the detailed error logs provided in the action execution output. Gather the error details and consider consulting Azure support if the issue persists.
 
 
 # spfx/deploy
@@ -1025,7 +1128,10 @@ Below are the potential errors encountered during the execution of the `arm/depl
 
 
 # botAadApp/create
-This action will create a new or reuses an existing Microsoft Entra application for bot.
+
+## Overview
+
+The `botAadApp/create` action is designed to create a new or reuse an existing Microsoft Entra application specifically for a bot. This action simplifies the process of setting up the necessary Microsoft Entra resources for bot authentication, which are essential for integrating bots with various Microsoft services.
 
 ## Syntax:
 ```yaml
@@ -1036,6 +1142,76 @@ This action will create a new or reuses an existing Microsoft Entra application 
       botId: BOT_ID # The Microsoft Entra application's client id created for bot.
       botPassword: SECRET_BOT_PASSWORD # The Microsoft Entra application's client secret created for bot. 
 ```
+## Input Validation Rules
+
+The input arguments for this action are defined within the `with` object. Below are the expected input parameters and their respective validation rules:
+
+- **name**: `string` (required)
+  - Description: The user-facing display name for the Microsoft Entra application.
+  - Validation: Must be a non-empty string, maximum length of 120 characters.
+  - Example:
+
+  ```yaml
+  with:
+    name: "MyBotEntraApp"
+  ```
+## Output Specification
+
+The outputs generated by the action execution are defined in the `writeToEnvironmentFile` object. Here are the expected outputs:
+
+- **botId**: Stores the client (application) ID of the created Microsoft Entra application.
+- **botPassword**: Stores the client secret of the created Microsoft Entra application.
+
+These outputs are returned as environment variables, and their values are essential for further bot operations.
+
+## Example Configuration
+
+```yaml
+botAadApp/create:
+  with:
+    name: "MyBotEntraApp"
+
+  writeToEnvironmentFile:
+    botId: "BOT_ID"
+    botPassword: "BOT_PASSWORD"
+```
+
+## Potential Errors for Troubleshooting
+
+When executing this action, several potential errors might arise. Below are the error classes, reasons, and possible solutions:
+
+- **InvalidActionInputError**:
+  - **Reason**: Occurs if the input parameters do not meet the validation criteria (e.g., missing `name` or name length exceeding 120 characters).
+  - **Solution**: Ensure the `name` parameter is provided and is a valid string, not exceeding 120 characters.
+
+- **OutputEnvironmentVariableUndefinedError**:
+  - **Reason**: Triggered when the expected output environment variables are not defined.
+  - **Solution**: Check the `writeToEnvironmentFile` configuration for correct environment variable entries (`botId` and `botPassword`).
+
+- **UnexpectedEmptyBotPasswordError**:
+  - **Reason**: Raised if a bot ID exists but its corresponding password is missing.
+  - **Solution**: Ensure that both the bot ID and bot password are correctly specified or generated.
+
+- **UserError** or **SystemError**:
+  - **Reason**: Generic errors related to user or system malfunctions.
+  - **Solution**: Inspect the error message to determine the specific issue and consider retrying or adjusting inputs.
+
+- **HttpClientError**:
+  - **Reason**: HTTP client-side errors (status code 400-499) during communication with the Microsoft Graph API.
+  - **Solution**: Verify network connectivity and ensure correct API permissions and inputs.
+
+- **HttpServerError**:
+  - **Reason**: HTTP server-side errors (status code 500-599) encountered during API calls.
+  - **Solution**: Wait for a while and retry the operation as these errors are usually temporary.
+
+- **CredentialInvalidLifetimeError**:
+  - **Reason**: The client secret's lifetime does not comply with the application's policy.
+  - **Solution**: Adjust the client secret's expiration date according to the policy guidelines.
+
+- **ClientSecretNotAllowedError**:
+  - **Reason**: The client secret type is not permitted as per the application's policy.
+  - **Solution**: Use an allowed client secret type.
+
 
 # script
 This action will execute a user defined script.
