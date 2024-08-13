@@ -2107,6 +2107,86 @@ The following are potential errors that might occur during the execution of the 
   - **Reason**: Failed to retrieve the domain from the API specification.
   - **Solution**: Ensure the API specification path is correct and the domain configuration is available.
 
+# oauth/update
+
+The `oauth/update` action allows users to update an existing OAuth registration. This action involves validating the given input parameters, retrieving the current OAuth registration, comparing it to the input parameters, potentially asking for user confirmation, and then executing the update if necessary.
+
+## Overview
+
+The `UpdateOauthDriver.execute` function performs the following steps:
+
+1. **Input Validation**: Validates the input arguments to ensure they are correctly provided.
+2. **Retrieving Current Registration**: Retrieves the current OAuth registration using the provided `configurationId`.
+3. **Comparison and Confirmation**: Compares the current registration with the provided inputs to determine if an update is necessary and, if so, asks the user for confirmation.
+4. **Updating OAuth Registration**: If confirmed (or if confirmation is not required), updates the OAuth registration using the provided inputs.
+
+## Input Validation Rules
+
+The input arguments are provided in the `with` object. The following are the required inputs and their validation rules:
+
+| Parameter         | Type      | Description                                                        | Required |
+| ----------------- | --------- | ------------------------------------------------------------------ | -------- |
+| `name`            | string    | The name of the OAuth registration.                               | Yes      |
+| `appId`           | string    | The app ID of the OAuth registration.                             | Yes      |
+| `apiSpecPath`     | string    | The path to the API specification file.                           | Yes      |
+| `configurationId` | string    | The configuration ID of the OAuth registration.                   | Yes      |
+| `applicableToApps`| string    | Which app can access the OAuth registration. Can be `SpecificApp` or `AnyApp`. Default is `AnyApp`.         | No       |
+| `targetAudience`  | string    | Which tenant can access the OAuth registration. Can be `HomeTenant` or `AnyTenant`. Default is `AnyTenant`. | No       |
+| `isPKCEEnabled`   | boolean   | Whether PKCE is enabled for the OAuth registration. Default is `False`.                                  | No       |
+
+### Example Input (YAML format)
+
+```yaml
+uses: oauth/update
+with:
+  name: "MyOAuthRegistration"
+  appId: "12345678-90ab-cdef-1234-567890abcdef"
+  apiSpecPath: "./api-specs/oauth-spec.json"
+  configurationId: "config-1234"
+  applicableToApps: "SpecificApp"
+  targetAudience: "HomeTenant"
+  isPKCEEnabled: true
+```
+
+## Output Specification
+
+Upon successful execution, the action writes the outputs to environment variables. The output is specified using the `writeToEnvironmentFile` object. The key represents the output name, and the value is the environment variable to store the output value.
+
+Example:
+```yaml
+writeToEnvironmentFile:
+  oauthUpdated: OAUTH_UPDATE_STATUS
+```
+
+The example above shows that the result of the OAuth update status is stored in the environment variable `OAUTH_UPDATE_STATUS`.
+
+## Potential Errors for Troubleshooting
+
+Here is a list of potential errors that could occur, along with their explanations and possible solutions:
+
+1. **InvalidActionInputError**
+   - **Reason**: One or more required input parameters are missing or invalid.
+   - **Solution**: Ensure that all required parameters are correctly specified and meet the validation rules.
+
+2. **OauthNameTooLongError**
+   - **Reason**: The provided `name` exceeds the maximum length of 128 characters.
+   - **Solution**: Ensure that the `name` parameter is within 128 characters.
+
+3. **OauthDisablePKCEError**
+   - **Reason**: Attempting to disable PKCE on an OAuth registration where it is currently enabled.
+   - **Solution**: Reconsider whether you need to disable PKCE. If necessary, you may need to manually adjust the registration in the portal or adjust your workflow.
+
+4. **OauthDomainInvalidError**
+   - **Reason**: The domain list exceeds the maximum allowed domains for the OAuth registration.
+   - **Solution**: Ensure that the domain list provided in the input is within the allowed limits.
+
+5. **OauthFailedToGetDomainError**
+   - **Reason**: Failed to retrieve the domain from the provided API specification.
+   - **Solution**: Ensure that the `apiSpecPath` is correct and the specification file contains valid domain information.
+
+6. **SystemError/UserError**
+   - **Reason**: These are generic error classes. If the error is caught as a `UserError` or `SystemError`, it means something went wrong that needs further investigation.
+   - **Solution**: Check the error message and logs for more details. Ensure all provided inputs and execution context are correct.
 
 
 # General Errors
