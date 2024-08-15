@@ -1,5 +1,5 @@
 # Worked with shared access signatures (SAS) disabled with bot added
-First of all, all those changes are need running as the user that granted to be [Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/general#contributor), [Owner](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/general#owner) or [Reader](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/general#reader). Otherwise, the `Microsoft.Authorization/roleAssignments` part in the Bicep will running fail.
+First of all, all those changes are need running as the user that granted to be [Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/general#contributor), [Owner](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/general#owner) or [Role Based Access Control Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/general#role-based-access-control-administrator). Otherwise, the `Microsoft.Authorization/roleAssignments` part in the Bicep will running fail.
 
 ## Bicep change
 ### Add SAS setting to make sure the SAS is disabled
