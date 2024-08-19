@@ -77,6 +77,8 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
 
 ## Code changes
 Code change is based on this [docs](https://learn.microsoft.com/en-us/entra/identity-platform/multi-service-web-app-access-storage?tabs=azure-portal%2Cprogramming-language-nodejs#grant-access-to-the-storage-account)
+
+Note: this code cannot be run in a local debugging environment. You may need to keep the old logic to make sure it can be run on local.
 ```javascript
 const credential = new DefaultAzureCredential({ managedIdentityClientId: process.env["MANAGED_IDENTITY_ID"] });
 const blobServiceClient = new BlobServiceClient(`https://${process.env["STORAGE_NAME"]}.blob.core.windows.net`, credential);
