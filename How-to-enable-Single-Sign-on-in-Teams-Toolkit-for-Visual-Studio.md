@@ -480,10 +480,12 @@ For Teams Bot Applications
    In `{{TEAMSAPP_FOLDER}}/teamsapp.local.yml` only:
     - Update `file/createOrUpdateJsonFile` under `provision` to add Microsoft Entra related configs to local debug service.
       ```
+      # Generate runtime appsettings to JSON file
       - uses: file/createOrUpdateJsonFile
         with:
-          target: ./{YOUR-APP-NAME}/appsettings.Development.json
-          appsettings:
+          target: ../{{PROJECT_FOLDER}}//appsettings.Development.json
+          content:
+            BOT_TYPE: 'MultiTenant'
             BOT_ID: ${{BOT_ID}}
             BOT_PASSWORD: ${{SECRET_BOT_PASSWORD}}
             TeamsFx:
@@ -530,7 +532,6 @@ For Teams Bot Applications
    param m365ClientId string
    param m365TenantId string
    param m365OauthAuthorityHost string
-   param m365ApplicationIdUri string = 'api://botid-${botAadAppClientId}'
    @secure()
    param m365ClientSecret string
    ```
@@ -544,9 +545,10 @@ For Teams Bot Applications
          TeamsFx__Authentication__ClientSecret: m365ClientSecret
          TeamsFx__Authentication__Bot__InitiateLoginEndpoint: uri('https://${webApp.properties.defaultHostName}', 'bot-auth-start')
          TeamsFx__Authentication__OAuthAuthority: uri(m365OauthAuthorityHost, m365TenantId)
-         TeamsFx__Authentication__ApplicationIdUri: m365ApplicationIdUri
-         BOT_ID: botAadAppClientId
-         BOT_PASSWORD: botAadAppClientSecret
+         TeamsFx__Authentication__ApplicationIdUri: 'api://botid-${identity.properties.clientId}'
+         BOT_ID: identity.properties.clientId
+         BOT_TENANT_ID: identity.properties.tenantId
+         BOT_TYPE: 'UserAssignedMsi'
          RUNNING_ON_AZURE: '1'
      }
    }
@@ -609,11 +611,14 @@ For Teams Bot Applications
         {
             public string BOT_ID { get; set; }
             public string BOT_PASSWORD { get; set; }
+            public string BOT_TYPE { get; set; }
+            public string BOT_TENANT_ID { get; set; }
             public TeamsFxOptions TeamsFx { get; set; }
         }
     }
     ```
     > Note: You need to replace {{YOUR_NAMESPACE}} with your namespace name
+    > Note: You may need to delete all `remove` items for these files in  your `.csproj` file
   
    2. Move `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth/Bot/SSO` and `{{TEAMSAPP_FOLDER}}/TeamsFx-Auth/Bot/Pages` to `{{PROJECT_FOLDER}}/`
      > Note: Remember to replace '{YOUR_NAMESPACE}' with your project namespace.
@@ -651,18 +656,22 @@ For Teams Bot Applications
     Find the following lines:
     ```
     builder.Services.AddSingleton<HelloWorldCommandHandler>();
+    builder.Services.AddSingleton<GenericCommandHandler>();
     builder.Services.AddSingleton(sp =>
     {
-      var options = new ConversationOptions()
-      {
-        Adapter = sp.GetService<CloudAdapter>(),
-        Command = new CommandOptions()
+        var options = new ConversationOptions()
         {
-          Commands = new List<ITeamsCommandHandler> { sp.GetService<HelloWorldCommandHandler>() }
-        }
-      };
+            Adapter = sp.GetService<CloudAdapter>(),
+            Command = new CommandOptions()
+            {
+                Commands = new List<ITeamsCommandHandler> { 
+                    sp.GetService<HelloWorldCommandHandler>(), 
+                    sp.GetService<GenericCommandHandler>() 
+                }
+            }
+        };
 
-      return new ConversationBot(options);
+        return new ConversationBot(options);
     });
     ```
     and replace with:
