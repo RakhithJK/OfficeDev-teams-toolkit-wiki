@@ -81,8 +81,8 @@ For c# project:
 4.	Update BOT_ID’s value in env file
 
     Go to your env file. Update BOT_ID’s value to be your newly created managed identity’s client id.
-
-5.	Test your bot app.
-6.	Clean up unneeded resources. 
+5. Generate the appPackage with new BOT_ID
+6.	Test your bot app
+7.	Clean up unneeded resources
 
     If your bot works, you can delete the old Azure bot service and the old Entra id.
