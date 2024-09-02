@@ -593,6 +593,15 @@ The action might encounter several errors which have been categorized as follows
 The `teamsApp/zipAppPackage` action is designed to facilitate the process of packaging a Microsoft Teams app. It achieves this by rendering the Teams app manifest template with environment variables, and then zipping the manifest file along with two icons (color and outline icons). This action ensures a streamlined process for generating the required app package for deployment in Teams.
 
 ## Syntax:
+version 1.7 or higher:
+```
+  - uses: teamsApp/zipAppPackage
+    with:
+      manifestPath: ./appPackage/manifest.json # Required. Relative path to this file. This is the path for Teams app manifest file.
+      outputZipPath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip # Required. Relative path to this file. This is the path for built zip file.
+      outputFolder: ./appPackage/build # Required. Relative path to this file. This is the folder where all resolved manifest(s) will be placed.
+```
+version < 1.6
 ```
   - uses: teamsApp/zipAppPackage
     with:
@@ -609,9 +618,20 @@ The input parameters for this action are passed within the `with` object.
 
 - **manifestPath** (`string`): Path to the Teams app manifest file.
 - **outputZipPath** (`string`): Path where the output ZIP package will be created.
-- **outputJsonPath** (`string`): Path where the output manifest JSON file will be generated.
+- **If version >= 1.7, outputFolder** (`string`): Path of the folder where all resolved manifest(s) will be placed.
+- **If version < 1.7, outputJsonPath** (`string`): Path where the output manifest JSON file will be generated.
 
 ### Example Input
+version 1.7 or higher:
+```yaml
+- uses: teamsApp/zipAppPackage
+  with:
+    manifestPath: "path/to/manifest.json"
+    outputZipPath: "path/to/output.zip"
+    outputFolder: "path/to/outputFolder"
+```
+
+version < 1.7
 ```yaml
 - uses: teamsApp/zipAppPackage
   with:
