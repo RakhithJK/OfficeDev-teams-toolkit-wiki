@@ -32,7 +32,7 @@ resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' 
 var StorageBlobDataContributorRole = 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
 
 resource storageRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('resourceBaseName-${uniqueString('StorageRoleAssignment')}')
+  name: guid('${storageName}-role-assignment')
   scope: storage
   properties: {
     principalId: identity.properties.principalId
